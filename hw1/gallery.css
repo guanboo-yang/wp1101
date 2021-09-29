@@ -1,0 +1,229 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&display=swap');
+
+* {
+	margin: 0;
+	padding: 0;
+	font-family: Montserrat;
+}
+
+body {
+	color: whitesmoke;
+	background: whitesmoke;
+	padding: 0 1rem;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	-webkit-tap-highlight-color: transparent;
+}
+
+.container {
+	min-height: 100vh;
+	width: 100%;
+	padding: 0 1rem 0 1rem;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	background-image: linear-gradient(to right, #ccc, #999);
+	background-image: url('bg.jpeg');
+	background-attachment: fixed;
+	background-size: auto 100%;
+}
+
+h1 {
+	align-self: start;
+	padding: 8rem 0 2rem 5rem;
+	font-size: clamp(3rem, 4vw + 2rem, 100rem);
+	font-weight: normal;
+	text-shadow: 0 0 5px black, 0 0 5px black, 0 0 5px black, 0 0 5px black, 0 0 5px black,
+		0 0 5px black, 0 0 5px black, 0 0 5px black, 0 0 5px black, 0 0 5px black;
+	-webkit-font-smoothing: antialiased;
+	-webkit-text-stroke-color: black;
+	-webkit-text-stroke-width: 1px;
+}
+
+h2 {
+	font-size: 2rem;
+	text-shadow: 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black,
+		0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black;
+	-webkit-font-smoothing: antialiased;
+	-webkit-text-stroke-color: black;
+	-webkit-text-stroke-width: 1px;
+}
+
+nav {
+	position: fixed;
+	z-index: 1;
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 20px;
+	background: #00000040;
+	backdrop-filter: blur(7px);
+	-webkit-backdrop-filter: blur(7px);
+	box-shadow: 2px 2px 30px #000;
+}
+
+nav > h2 {
+	margin-right: 5rem;
+}
+
+p {
+	line-height: 2;
+}
+
+@media (max-width: 600px) {
+	nav {
+		bottom: 0;
+		padding: 10px;
+	}
+	nav > h2 {
+		margin-right: 1rem;
+	}
+	h1 {
+		align-self: center;
+		padding: 1rem;
+		text-shadow: 0 0 3px black, 0 0 3px black, 0 0 3px black, 0 0 3px black, 0 0 3px black,
+			0 0 3px black, 0 0 3px black, 0 0 3px black, 0 0 3px black, 0 0 3px black;
+	}
+	.btn-list {
+		bottom: 0;
+		top: auto !important;
+	}
+	.list:hover > .btn-list {
+		transform: translateY(-20px) !important;
+	}
+}
+
+.btn {
+	position: relative;
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
+	line-height: 2.5;
+	padding: 0 14px;
+	margin: 6px;
+	font-size: clamp(0.5rem, 1vw + 0.3rem, 0.9rem);
+	font-weight: 500;
+	text-transform: uppercase;
+	letter-spacing: 0.15em;
+	border: none;
+	color: black;
+	background: #ffffffb0;
+	backdrop-filter: blur(10px);
+	-webkit-backdrop-filter: blur(10px);
+	cursor: pointer;
+	text-decoration: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	border-radius: 3px;
+	box-shadow: 2px 2px 10px #00000040;
+	transition: all 0.2s ease-in-out;
+}
+
+.btn::before {
+	content: '';
+	position: absolute;
+	border-radius: inherit;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	left: 0;
+	opacity: 0;
+	background-color: currentColor;
+	transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+}
+
+.btn:hover::before {
+	opacity: 0.1;
+}
+
+.grid {
+	width: 100%;
+	margin: 1rem;
+	display: grid;
+	gap: 0.8rem;
+}
+
+.grid-small {
+	grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+}
+
+.grid-big {
+	grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+}
+
+.grid > div {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	aspect-ratio: 270 / 200;
+	animation: loading 0.6s linear infinite alternate;
+	padding: 1px solid #ddd;
+	font-size: 2rem;
+	border-radius: 4px;
+	transition: all 0.3s;
+	cursor: pointer;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	overflow: hidden;
+	filter: brightness(0.8);
+}
+
+@keyframes loading {
+	from {
+		background: lightgrey;
+	}
+	to {
+		background: grey;
+	}
+}
+
+.grid > div > img {
+	width: 100%;
+	transition: all 0.3s;
+}
+
+.grid > div:hover {
+	box-shadow: 2px 2px 10px #222222a0, -2px -2px 10px #dddddd20;
+	font-size: 2.3rem;
+	filter: brightness(1);
+	padding: 4px solid #ddd;
+}
+
+.grid > div:hover > img {
+	transform: scale(1.1);
+}
+
+.list {
+	position: relative;
+}
+
+.btn-list {
+	display: none;
+	opacity: 0;
+	transition: all 0.3s;
+	padding: 10px;
+	top: 0;
+	align-self: center;
+}
+
+.btn-list li {
+	list-style-type: none;
+}
+
+.list:hover > .btn-list {
+	display: block;
+	position: absolute;
+	opacity: 1;
+	transform: translateY(30px);
+}
+
+footer {
+	margin: 1rem 1rem 5rem 1rem;
+	text-align: center;
+}

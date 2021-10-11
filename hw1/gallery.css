@@ -89,16 +89,9 @@ a:hover {
 	}
 	h1 {
 		align-self: center;
-		padding: 6rem 0 0.5rem 0;
+		padding: 7rem 0 0.5rem 0;
 		text-shadow: 0 0 3px black, 0 0 3px black, 0 0 3px black, 0 0 3px black, 0 0 3px black, 0 0 3px black, 0 0 3px black,
 			0 0 3px black, 0 0 3px black, 0 0 3px black;
-	}
-	/* .btn-list {
-		bottom: 0;
-		top: auto !important;
-	} */
-	.list:hover > .btn-list {
-		transform: translateY(15px) !important;
 	}
 }
 
@@ -162,7 +155,8 @@ a:hover {
 	grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
 }
 
-.grid > div {
+.grid > div,
+.display {
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -181,6 +175,10 @@ a:hover {
 	filter: brightness(0.8);
 }
 
+.display {
+	filter: brightness(1);
+}
+
 @keyframes loading {
 	from {
 		background: lightgrey;
@@ -195,7 +193,8 @@ a:hover {
 	transition: all 0.3s;
 }
 
-.grid > div:hover {
+.grid > div:hover,
+.display:hover {
 	box-shadow: 2px 2px 10px #222222a0, -2px -2px 10px #dddddd20;
 	font-size: 2.3rem;
 	filter: brightness(1);
@@ -204,6 +203,16 @@ a:hover {
 
 .grid > div:hover > img {
 	transform: scale(1.1);
+}
+
+.display {
+	margin: 30px auto;
+	width: 100%;
+	max-width: 800px;
+}
+
+.display > img {
+	width: 100%;
 }
 
 .list {

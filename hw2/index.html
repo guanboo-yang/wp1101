@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Digital Photo Album">
+  <!-- #region Links -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>❤️</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@6.1.95/css/materialdesignicons.min.css">
+  <!-- #endregion -->
+  <title>Digital Photo Album</title>
+  <link rel="stylesheet" type="text/css" media="screen" href="./styles.css" />
+</head>
+
+<body>
+  <!-- #region Main App -->
+  <main id="app">
+    <noscript>Your browser does not support JavaScript! Please enable JavaScript in your browser.</noscript>
+  </main>
+  <!-- #endregion -->
+  <!-- #region App Bar -->
+  <nav class="appbar navbar">
+    <!-- <button class="btn plain icon ripple" onclick="toggleMenu()" aria-label="Toggle Menu" style="background: transparent;">
+      <i class="mdi mdi-menu"></i>
+    </button> -->
+    <div id="toggle-menu" class="ripple" onclick="toggleMenu()"></div>
+    <h3>Digital Photo Album</h3>
+    <div class="spacer"></div>
+    <a href="#/" class="link ripple home">
+      <i class="icon mdi mdi-home"></i>
+      <p>Home</p>
+    </a>
+    <a href="#/albums" class="link ripple albums">
+      <i class="icon mdi mdi-image"></i>
+      <p>Albums</p>
+    </a>
+    <a href="#/about" class="link ripple about">
+      <i class="icon mdi mdi-information-outline"></i>
+      <p>About</p>
+    </a>
+    <div class="spacer"></div>
+    <button class="btn plain icon ripple" onclick="toggleTheme()" aria-label="Toggle Theme" style="background: transparent;">
+      <i class="mdi mdi-white-balance-sunny"></i>
+    </button>
+  </nav>
+  <!-- #endregion -->
+  <!-- #region Bottom Bar -->
+  <nav class="bottombar navbar">
+    <a href="#/" class="link ripple home">
+      <i class="icon mdi mdi-home"></i>
+      <p>Home</p>
+    </a>
+    <a href="#/albums" class="link ripple albums">
+      <i class="icon mdi mdi-image"></i>
+      <p>Albums</p>
+    </a>
+    <a href="#/about" class="link ripple about">
+      <i class="icon mdi mdi-information-outline"></i>
+      <p>About</p>
+    </a>
+  </nav>
+  <!-- #endregion -->
+  <!-- #region SideBar -->
+  <div class="sidebar" id="sidebar">
+    <a href="#/albums" class="sidebar-item ripple albums link">
+      <i class="icon mdi mdi-image"></i>
+      <p>Albums</p>
+    </a>
+    <div class="divider"></div>
+    <a href="#/albums/nature" class="sidebar-item ripple nature link">
+      <i class="icon mdi mdi-image-filter-hdr"></i>
+      <p>Nature</p>
+    </a>
+    <a href="#/albums/animals" class="sidebar-item ripple animals link">
+      <i class="icon mdi mdi-cat"></i>
+      <p>Animals</p>
+    </a>
+    <a class="sidebar-item ripple people link" onclick='alert("This album is empty!")'>
+      <i class="icon mdi mdi-account-group"></i>
+      <p>People</p>
+    </a>
+    <a class="sidebar-item ripple arch link" onclick='alert("This album is empty!")'>
+      <i class="icon mdi mdi-home-city"></i>
+      <p>Architecture</p>
+    </a>
+  </div>
+  <!-- #endregion -->
+  <script src="./main.js"></script>
+</body>
+
+</html>

@@ -5,19 +5,19 @@
 
 ### Basic Feature
 
-- Support RWD (responsive web design)
-- Hover & Active Effect
-- Multiple Albums
-- Warning Message when clicking on the empty album
+- [x] Support RWD (responsive web design)
+- [x] Hover & Active Effect
+- [x] Multiple Albums
+- [x] Warning Message when clicking on the empty album
 
 ### Additional Feature
 
-- Support system color theme (light & dark)
-- Show the total number of the picture and that of the current picture
-- Add image to the album
-- Color theme can be toggled by button on the top right
-- Ripple effect on button
-- Routing in Single Page (with hash history)
+- [x] Support system color theme (light & dark) and theme toggling
+- [x] Show the total number of the picture and the number of the current picture
+- [x] Add image to the album
+- [x] Ripple effect on button
+- [x] Routing in Single Page (with hash history)
+- [x] Support rotate, next, previous, and fullscreen on display image
 
 ### Browser Support
 

@@ -3,7 +3,7 @@ const HomeComponent = {
 	render: () => {
 		return /* html */ `
 			<div class="container">
-				<h1>Home</h1>
+				<h1>Digital Photo Album</h1>
 				<p>This is HOME</p>
 			</div>
 		`
@@ -42,7 +42,14 @@ const AboutComponent = {
 		return /* html */ `
 			<div class="container">
 				<h1>About</h1>
-				<p>The pictures are from <a href="https://placeimg.com/" target="_blank">https://placeimg.com/</a></p>
+				<p>version: 1.0.0</p>
+				<p>The pictures are from <a href="https://placeimg.com/" target="_blank">placeimg.com</a></p>
+				<p>Back to <a href="#/">Home</a> page</p>
+				<p>Copyright &copy; 2021</p>
+				<h1>Settings</h1>
+				<button class="btn plain icon ripple" onclick="toggleTheme()" aria-label="Toggle Theme" style="background: transparent;">
+					<i class="mdi mdi-white-balance-sunny"></i>
+				</button>
 			</div>
 		`
 	},
@@ -53,6 +60,23 @@ const NatureComponent = {
 	render: () => {
 		return /* html */ `
 			<h1 id="title" style="text-transform: uppercase;">nature</h1>
+			<div class="btn-group">
+				<button class="btn plain icon ripple" onclick="selectImage(-1)" aria-label="Toggle Theme" style="background: transparent; flex-shrink: 0;">
+					<i class="mdi mdi-chevron-left"></i>
+				</button>
+				<button class="btn plain icon ripple" onclick="rotateImage(-1)" aria-label="Toggle Theme" style="background: transparent; flex-shrink: 0;">
+					<i class="mdi mdi-rotate-left"></i>
+				</button>
+				<button class="btn plain icon ripple" onclick="rotateImage(1)" aria-label="Toggle Theme" style="background: transparent; flex-shrink: 0;">
+					<i class="mdi mdi-rotate-right"></i>
+				</button>
+				<button class="btn plain icon ripple" onclick="fullScreen()" aria-label="Toggle Theme" style="background: transparent; flex-shrink: 0;">
+					<i class="mdi mdi-fullscreen"></i>
+				</button>
+				<button class="btn plain icon ripple" onclick="selectImage(1)" aria-label="Toggle Theme" style="background: transparent; flex-shrink: 0;">
+					<i class="mdi mdi-chevron-right"></i>
+				</button>
+			</div>
 			<div class="display">
 				<img id="display" src="https://placeimg.com/800/450/nature?t=1" alt="picture" />
 			</div>
@@ -91,6 +115,23 @@ const AnimalsComponent = {
 	render: () => {
 		return /* html */ `
 			<h1 id="title" style="text-transform: uppercase;">animals</h1>
+			<div class="btn-group">
+				<button class="btn plain icon ripple" onclick="selectImage(-1)" aria-label="Toggle Theme" style="background: transparent; flex-shrink: 0;">
+					<i class="mdi mdi-chevron-left"></i>
+				</button>
+				<button class="btn plain icon ripple" onclick="rotateImage(-1)" aria-label="Toggle Theme" style="background: transparent; flex-shrink: 0;">
+					<i class="mdi mdi-rotate-left"></i>
+				</button>
+				<button class="btn plain icon ripple" onclick="rotateImage(1)" aria-label="Toggle Theme" style="background: transparent; flex-shrink: 0;">
+					<i class="mdi mdi-rotate-right"></i>
+				</button>
+				<button class="btn plain icon ripple" onclick="fullScreen()" aria-label="Toggle Theme" style="background: transparent; flex-shrink: 0;">
+					<i class="mdi mdi-fullscreen"></i>
+				</button>
+				<button class="btn plain icon ripple" onclick="selectImage(1)" aria-label="Toggle Theme" style="background: transparent; flex-shrink: 0;">
+					<i class="mdi mdi-chevron-right"></i>
+				</button>
+			</div>
 			<div class="display">
 				<img id="display" src="https://placeimg.com/800/450/animals?t=1" alt="picture" />
 			</div>
@@ -156,32 +197,38 @@ const router = () => {
 	const path = parseLocation()
 	const { component = ErrorComponent } = findComponentByPath(path, routes) || {}
 	document.getElementById('app').innerHTML = component.render()
+	addRipple()
 }
 window.addEventListener('hashchange', router)
 window.addEventListener('load', router)
 /* #endregion */
 /* #region Ripple */
-const rippleParents = document.querySelectorAll('.ripple')
-rippleParents.forEach(rippleParent => {
-	rippleParent.addEventListener('click', e => {
-		// e.preventDefault()
-		const parent = e.target.closest('.ripple')
-		const rect = parent.getBoundingClientRect()
-		let x = e.clientX - rect.left
-		let y = e.clientY - rect.top
-		const ripple = document.createElement('span')
-		const container = document.createElement('span')
-		ripple.classList.add('ripple_animation')
-		container.classList.add('ripple_container')
-		ripple.style.left = `${x}px`
-		ripple.style.top = `${y}px`
-		container.appendChild(ripple)
-		rippleParent.appendChild(container)
-		setTimeout(() => {
-			container.remove()
-		}, 600)
+function addRipple() {
+	const rippleParents = document.querySelectorAll('.ripple')
+	rippleParents.forEach(rippleParent => {
+		if (rippleParent.addEvent !== 1) rippleParent.addEventListener('click', e => rippleHandler(e, rippleParent))
+		rippleParent.addEvent = 1
 	})
-})
+}
+const rippleHandler = (e, rippleParent) => {
+	// e.preventDefault()
+	const parent = e.target.closest('.ripple')
+	const rect = parent.getBoundingClientRect()
+	let x = e.clientX - rect.left
+	let y = e.clientY - rect.top
+	const ripple = document.createElement('span')
+	const container = document.createElement('span')
+	ripple.classList.add('ripple_animation')
+	container.classList.add('ripple_container')
+	ripple.style.left = `${x}px`
+	ripple.style.top = `${y}px`
+	container.appendChild(ripple)
+	rippleParent.appendChild(container)
+	setTimeout(() => {
+		container.remove()
+	}, 600)
+}
+addRipple()
 /* #endregion */
 /* #region Color Theme */
 function toggleTheme() {
@@ -206,6 +253,8 @@ document.addEventListener('mousedown', e => {
 /* #region Set Image */
 function setImage(ele) {
 	const display = document.getElementById('display')
+	display.style.transform = 'rotate(0deg)'
+	angle = 0
 	if (ele.src) display.src = ele.src
 	document.querySelectorAll('.img').forEach(img => img.classList.remove('active'))
 	var parent = ele.parentNode
@@ -214,6 +263,13 @@ function setImage(ele) {
 	const number = document.getElementById('number')
 	number.innerText = index
 	window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+function selectImage(num) {
+	let idx = parseInt(document.getElementById('number').innerText) + num - 1
+	const total = parseInt(document.getElementById('total').innerText)
+	if (idx < 0 || idx >= total) return
+	const ele = document.querySelector('.grid').children[idx].children[0]
+	setImage(ele)
 }
 /* #endregion */
 /* #region Add Image */
@@ -225,5 +281,22 @@ function addImage(ele) {
 	ele.parentNode.insertBefore(div, ele)
 	const total = document.getElementById('total')
 	total.innerText = parseInt(total.innerText) + 1
+}
+/* #endregion */
+/* #region Full Screen */
+function fullScreen() {
+	const display = document.getElementById('display')
+	const overlay = document.getElementById('overlay')
+	overlay.addEventListener('click', e => (overlay.style.display = 'none'), { once: true })
+	overlay.children[0].src = display.src
+	overlay.children[0].alt = display.alt
+	overlay.style.display = 'flex'
+}
+/* #endregion */
+/* #region Rotate Image */
+let angle = 0
+function rotateImage(num) {
+	angle += num
+	document.getElementById('display').style.transform = `rotate(${angle * 90}deg)`
 }
 /* #endregion */

@@ -1,3 +1,4 @@
+const main = document.getElementById('app')
 /* #region Home Page */
 const HomeComponent = {
 	render: () => {
@@ -61,7 +62,7 @@ const NatureComponent = {
 		return /* html */ `
 			<h1 id="title" style="text-transform: uppercase;">nature</h1>
 			<div class="btn-group">
-				<button class="btn plain icon ripple" onclick="selectImage(-1)" aria-label="Toggle Theme" style="background: transparent; flex-shrink: 0;">
+				<button class="btn plain icon ripple disabled" id="prev" onclick="selectImage(-1)" aria-label="Toggle Theme" style="background: transparent; flex-shrink: 0;">
 					<i class="mdi mdi-chevron-left"></i>
 				</button>
 				<button class="btn plain icon ripple" onclick="rotateImage(-1)" aria-label="Toggle Theme" style="background: transparent; flex-shrink: 0;">
@@ -73,7 +74,7 @@ const NatureComponent = {
 				<button class="btn plain icon ripple" onclick="fullScreen()" aria-label="Toggle Theme" style="background: transparent; flex-shrink: 0;">
 					<i class="mdi mdi-fullscreen"></i>
 				</button>
-				<button class="btn plain icon ripple" onclick="selectImage(1)" aria-label="Toggle Theme" style="background: transparent; flex-shrink: 0;">
+				<button class="btn plain icon ripple" id="next" onclick="selectImage(1)" aria-label="Toggle Theme" style="background: transparent; flex-shrink: 0;">
 					<i class="mdi mdi-chevron-right"></i>
 				</button>
 			</div>
@@ -116,7 +117,7 @@ const AnimalsComponent = {
 		return /* html */ `
 			<h1 id="title" style="text-transform: uppercase;">animals</h1>
 			<div class="btn-group">
-				<button class="btn plain icon ripple" onclick="selectImage(-1)" aria-label="Toggle Theme" style="background: transparent; flex-shrink: 0;">
+				<button class="btn plain icon ripple disabled" id="prev" onclick="selectImage(-1)" aria-label="Toggle Theme" style="background: transparent; flex-shrink: 0;">
 					<i class="mdi mdi-chevron-left"></i>
 				</button>
 				<button class="btn plain icon ripple" onclick="rotateImage(-1)" aria-label="Toggle Theme" style="background: transparent; flex-shrink: 0;">
@@ -128,7 +129,7 @@ const AnimalsComponent = {
 				<button class="btn plain icon ripple" onclick="fullScreen()" aria-label="Toggle Theme" style="background: transparent; flex-shrink: 0;">
 					<i class="mdi mdi-fullscreen"></i>
 				</button>
-				<button class="btn plain icon ripple" onclick="selectImage(1)" aria-label="Toggle Theme" style="background: transparent; flex-shrink: 0;">
+				<button class="btn plain icon ripple" id="next" onclick="selectImage(1)" aria-label="Toggle Theme" style="background: transparent; flex-shrink: 0;">
 					<i class="mdi mdi-chevron-right"></i>
 				</button>
 			</div>
@@ -196,8 +197,12 @@ const router = () => {
 	document.querySelectorAll('.link').forEach(l => l.classList.remove('active'))
 	const path = parseLocation()
 	const { component = ErrorComponent } = findComponentByPath(path, routes) || {}
-	document.getElementById('app').innerHTML = component.render()
-	addRipple()
+	main.classList.add('fade')
+	setTimeout(() => {
+		document.getElementById('app').innerHTML = component.render()
+		main.classList.remove('fade')
+		addRipple()
+	}, 200)
 }
 window.addEventListener('hashchange', router)
 window.addEventListener('load', router)
@@ -259,10 +264,11 @@ function setImage(ele) {
 	document.querySelectorAll('.img').forEach(img => img.classList.remove('active'))
 	var parent = ele.parentNode
 	parent.classList.add('active')
-	const index = Array.prototype.indexOf.call(parent.parentNode.children, parent) + 1
+	const index = Array.prototype.indexOf.call(parent.parentNode.children, parent)
 	const number = document.getElementById('number')
-	number.innerText = index
+	number.innerText = index + 1
 	window.scrollTo({ top: 0, behavior: 'smooth' })
+	checkImageIdx(index)
 }
 function selectImage(num) {
 	let idx = parseInt(document.getElementById('number').innerText) + num - 1
@@ -270,6 +276,17 @@ function selectImage(num) {
 	if (idx < 0 || idx >= total) return
 	const ele = document.querySelector('.grid').children[idx].children[0]
 	setImage(ele)
+	checkImageIdx(idx)
+}
+function checkImageIdx(idx) {
+	let prev = document.getElementById('prev')
+	let next = document.getElementById('next')
+	const total = parseInt(document.getElementById('total').innerText)
+	prev.classList.remove('disabled')
+	next.classList.remove('disabled')
+	if (idx === 0) prev.classList.add('disabled')
+	if (idx === total - 1) next.classList.add('disabled')
+	console.log(idx, total)
 }
 /* #endregion */
 /* #region Add Image */
@@ -281,16 +298,32 @@ function addImage(ele) {
 	ele.parentNode.insertBefore(div, ele)
 	const total = document.getElementById('total')
 	total.innerText = parseInt(total.innerText) + 1
+	let next = document.getElementById('next')
+	next.classList.remove('disabled')
 }
 /* #endregion */
 /* #region Full Screen */
 function fullScreen() {
 	const display = document.getElementById('display')
 	const overlay = document.getElementById('overlay')
-	overlay.addEventListener('click', e => (overlay.style.display = 'none'), { once: true })
+	overlay.addEventListener(
+		'click',
+		e => {
+			overlay.classList.add('show')
+			setTimeout(() => {
+				overlay.classList.remove('show')
+				overlay.style.display = 'none'
+			}, 500)
+		},
+		{ once: true }
+	)
 	overlay.children[0].src = display.src
 	overlay.children[0].alt = display.alt
 	overlay.style.display = 'flex'
+	overlay.classList.add('show')
+	setTimeout(() => {
+		overlay.classList.remove('show')
+	}, 0)
 }
 /* #endregion */
 /* #region Rotate Image */

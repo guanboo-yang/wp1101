@@ -27,8 +27,21 @@
 
 ```
  hw2/
+├──  screenshots/
+│  ├──  desktop_light.png
+│  └──  mobile_dark.png
 ├──  README.md
 ├──  index.html
 ├──  main.js
 └──  styles.css
 ```
+
+### Screenshot
+
+- Light mode on Desktop: 
+
+  <img src="./screenshots/desktop_light.png" style="width:100vw;" />
+
+- Dark mode on Mobile: 
+
+  <img src="./screenshots/mobile_dark.png" style="height:70vh;" />

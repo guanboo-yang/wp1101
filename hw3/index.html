@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✏️</text></svg>">
+	<title>TODO APP in pure JS</title>
+	<link rel="stylesheet" type="text/css" media="screen" href="styles.css" />
+</head>
+
+<body>
+	<div id="root" class="todo-app__root">
+		<header class="todo-app__header">
+			<h1 class="todo-app__title" style="user-select: none">todos</h1>
+		</header>
+		<section class="todo-app__main">
+			<input type="text" class="todo-app__input" id="todo-input" onkeypress="addTodo(event, this)" placeholder="✏️ What needs to be done?" spellcheck="false" />
+			<ul class="todo-app__list" id="todo-list"></ul>
+		</section>
+		<footer class="todo-app__footer hide" id="todo-footer">
+			<div class="todo-app__total btn rounded" id="todo-total"></div>
+			<div class="todo-app__view-divs btn-group" id="todo-btns">
+				<button class="btn ripple active" onclick="todoAll(this)">All</button>
+				<button class="btn ripple" onclick="todoActive(this)">Active</button>
+				<button class="btn ripple" onclick="todoCompleted(this)">Completed</button>
+			</div>
+			<div class="todo-app__clean">
+				<button class="btn ripple rounded hide" id="todo-clean" onclick="todoClearCompleted()">Clear completed</button>
+			</div>
+		</footer>
+	</div>
+	<script src="main.js"></script>
+</body>
+
+</html>

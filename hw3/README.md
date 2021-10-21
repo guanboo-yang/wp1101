@@ -21,6 +21,7 @@
 - [x] show, hide, remove animation
 - [x] press / to focus on input, press ESC to unfocus, with placeholder changing
 - [x] hover effect, click effect
+- [x] error when trying to add empty todos
 
 ### Directory Struecture
 

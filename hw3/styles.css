@@ -7,16 +7,16 @@
 html,
 body {
 	height: 100%;
-	font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font: 14px Poppins, 'Helvetica Neue', Helvetica, Arial, sans-serif;
 	background: rgb(245, 245, 245);
 	letter-spacing: 1.5px;
 	overflow: hidden;
 }
 input,
 input::placeholder {
-	font: 20px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font: 20px Poppins, 'Helvetica Neue', Helvetica, Arial, sans-serif;
 	letter-spacing: 1.5px;
-	font-weight: 300 !important;
+	font-weight: 300;
 	transition: opacity 0.1s;
 }
 input.fade::placeholder {
@@ -49,6 +49,7 @@ input[type='checkbox'] {
 	font-size: 100px;
 	font-weight: 100;
 	text-align: center;
+	font-family: 'Helvetica Neue';
 	color: rgba(175, 47, 47, 0.15);
 	margin: 0;
 	padding: 0;
@@ -62,7 +63,7 @@ input[type='checkbox'] {
 	color: inherit;
 	background: rgba(254, 254, 254);
 	font-size: 24px;
-	font-weight: 200;
+	font-weight: 500;
 	line-height: 1.4em;
 	width: 100%;
 	background: rgb(254, 254, 254);
@@ -80,7 +81,7 @@ input[type='checkbox'] {
 }
 .todo-app__input:hover,
 .todo-app__input:focus {
-	background: #eeeeeea0;
+	background: #eeeeee50;
 }
 .todo-app__main {
 	background: rgb(254, 254, 254);
@@ -128,10 +129,10 @@ input[type='checkbox'] {
 	box-shadow: inset 0px 0px 10px currentColor;
 }
 .todo-app__item:hover::before {
-	opacity: 0.08;
+	opacity: 0.06;
 }
 .todo-app__item.checked::before {
-	opacity: 0.16;
+	opacity: 0.12;
 }
 .todo-app__item.checked {
 	color: #679967;
@@ -144,6 +145,7 @@ input[type='checkbox'] {
 	border-radius: 100%;
 	position: relative;
 	box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.312);
+	flex-shrink: 0;
 }
 .todo-app__checkbox label {
 	width: 20px;
@@ -162,7 +164,7 @@ input[type='checkbox'] {
 	background: #26ca299b;
 }
 .todo-app__item-detail {
-	font-weight: 300;
+	font-weight: 500;
 	overflow-wrap: break-word;
 	width: 90%;
 	transition: opacity 0.3s;
@@ -247,7 +249,7 @@ input[type='checkbox'] {
 .todo-item-input:focus {
 	outline: none;
 }
-.todo-app__item-x {
+/* .todo-app__item-x {
 	display: inline;
 	position: absolute;
 	height: 0;
@@ -268,8 +270,76 @@ input[type='checkbox'] {
 	width: 30px;
 	height: 30px;
 	right: 15px;
-	/* background: #ff0000a0; */
+	background: #ff0000a0;
+} */
+/* #region Custom Delete */
+.delete-wrapper {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 40px;
+	width: 40px;
+	margin: 6px 20px;
+	flex-shrink: 0;
 }
+.delete {
+	position: relative;
+	height: 0;
+	width: 0;
+	cursor: pointer;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	transition: 0.2s;
+	border-radius: 50vh;
+}
+.todo-app__item:hover .delete {
+	height: 24px;
+	width: 24px;
+	border: 1px solid red;
+}
+.todo-app__item:hover .delete:hover {
+	height: 30px;
+	width: 30px;
+	background: red;
+}
+.delete::before {
+	content: '';
+	position: absolute;
+	width: 0;
+	height: 1px;
+	background: red;
+	transition: 0.2s;
+	transform: rotate(45deg);
+}
+.todo-app__item:hover .delete::before {
+	width: 12px;
+}
+.todo-app__item:hover .delete:hover::before {
+	width: 16px;
+	height: 2px;
+	background: white;
+	transform: rotate(225deg);
+}
+.delete::after {
+	content: '';
+	position: absolute;
+	width: 0;
+	height: 1px;
+	background: red;
+	transition: 0.2s;
+	transform: rotate(-45deg);
+}
+.todo-app__item:hover .delete::after {
+	width: 12px;
+}
+.todo-app__item:hover .delete:hover::after {
+	width: 16px;
+	height: 2px;
+	background: white;
+	transform: rotate(135deg);
+}
+/* #endregion */
 /* #endregion */
 /* #region Button */
 .btn {
@@ -313,10 +383,14 @@ input[type='checkbox'] {
 }
 .btn:hover::before,
 .btn:focus-visible::before {
-	opacity: 0.1;
+	opacity: 0.06;
 }
 .btn.active::before {
-	opacity: 0.2;
+	opacity: 0.12;
+}
+.btn.disabled::before {
+	opacity: 0;
+	cursor: default;
 }
 .btn-group {
 	display: flex;
@@ -368,6 +442,7 @@ input[type='checkbox'] {
 	z-index: 3;
 }
 /* #endregion */
+/* #region Error */
 #error-message {
 	height: 0;
 	color: red;
@@ -386,3 +461,4 @@ input[type='checkbox'] {
 	padding: 10px;
 	border: 1.5px solid red;
 }
+/* #endregion */

@@ -1,11 +1,12 @@
 /* #region Constant */
-const ul = document.getElementById('todo-list')
-const todoTotal = document.getElementById('todo-total')
-const todoClean = document.getElementById('todo-clean')
-const todoInput = document.getElementById('todo-input')
-const todoFooter = document.getElementById('todo-footer')
-const errorMessage = document.getElementById('error-message')
-const btns = document.getElementById('todo-btns').querySelectorAll('.btn')
+const getById = id => document.getElementById(id)
+const ul = getById('todo-list')
+const todoTotal = getById('todo-total')
+const todoClean = getById('todo-clean')
+const todoInput = getById('todo-input')
+const todoFooter = getById('todo-footer')
+const errorMessage = getById('error-message')
+const btns = getById('todo-btns').querySelectorAll('.btn')
 let todoId = 0
 let listStatus = 'all'
 // let todoList = []
@@ -49,8 +50,11 @@ function parseTodo(id, val) {
 			<label for="${id}" onclick="checkTodo(this)"></label>
 		</div>
 		<h1 class="todo-app__item-detail">${val}</h1>
-		<img src="./img/x.png" alt="x" class="todo-app__item-x" onclick="deleteTodo(this, ${id})">
-	`
+		<div class="delete-wrapper" onclick="deleteTodo(this, ${id})">
+			<div class="delete"></div>
+		</div>
+		`
+	// <img src="./img/x.png" alt="x" class="todo-app__item-x" onclick="deleteTodo(this, ${id})">
 	li.addEventListener('click', e => rippleHandler(e, li))
 	return li
 }
@@ -147,7 +151,7 @@ function countTodos() {
 	ul.childNodes.forEach(list => {
 		if (!list.classList.contains('checked')) active += 1
 	})
-	todoTotal.innerHTML = `${active} left`
+	todoTotal.innerHTML = `<span style="font-weight: 700;">${active}</span>&nbsp;left`
 	if (ul.childNodes.length == active) todoClean.classList.add('hide')
 	else todoClean.classList.remove('hide')
 	if (total === 0) todoFooter.classList.add('hide')
@@ -162,12 +166,13 @@ function countTodos() {
 function addRipple() {
 	const rippleParents = document.querySelectorAll('.ripple')
 	rippleParents.forEach(rippleParent => {
-		if (rippleParent.addEvent !== 1) rippleParent.addEventListener('click', e => rippleHandler(e, rippleParent))
+		if (rippleParent.addEvent !== 1) rippleParent.addEventListener('click', e => rippleHandler(e))
 		rippleParent.addEvent = 1
 	})
 }
-const rippleHandler = (e, rippleParent) => {
+const rippleHandler = e => {
 	// e.preventDefault()
+	e.stopPropagation()
 	const parent = e.target.closest('.ripple')
 	const rect = parent.getBoundingClientRect()
 	let x = e.clientX - rect.left
@@ -176,22 +181,20 @@ const rippleHandler = (e, rippleParent) => {
 	const container = document.createElement('span')
 	ripple.classList.add('ripple_animation')
 	container.classList.add('ripple_container')
-	ripple.style.left = `${x}px`
-	ripple.style.top = `${y}px`
 	container.appendChild(ripple)
-	rippleParent.appendChild(container)
-	let fromWidth = Math.max(rect.width, rect.height) / 8
-	let toWidth = 200 + Math.max(rect.width, rect.height) * 2
+	parent.appendChild(container)
+	let fromWidth = 40 + Math.max(rect.width, rect.height) / 6
+	let toWidth = 200 + Math.max(rect.width, rect.height)
 	ripple.animate(
 		[
-			{ opacity: '0.3', width: `${fromWidth}px`, height: `${fromWidth}px` },
-			{ opacity: '0', width: `${toWidth}px`, height: `${toWidth}px` },
+			{ opacity: '0.15', left: `${x}px`, top: `${y}px`, width: `${fromWidth}px`, height: `${fromWidth}px` },
+			{ opacity: '0', left: `${rect.width / 2}px`, top: `${rect.height / 2}px`, width: `${toWidth}px`, height: `${toWidth}px` },
 		],
-		{ duration: 600 }
+		{ duration: 400 }
 	)
 	setTimeout(() => {
 		container.remove()
-	}, 600)
+	}, 400)
 }
 addRipple()
 /* #endregion */

@@ -11,12 +11,14 @@
 </head>
 
 <body>
+	<noscript>You need to enable JavaScript to run this app.</noscript>
 	<div id="root" class="todo-app__root">
 		<header class="todo-app__header">
 			<h1 class="todo-app__title" style="user-select: none">todos</h1>
 		</header>
 		<section class="todo-app__main">
-			<input type="text" class="todo-app__input" id="todo-input" onkeypress="addTodo(event, this)" placeholder="✏️ What needs to be done?" spellcheck="false" />
+			<input type="text" class="todo-app__input" id="todo-input" onkeyup="addTodo(event, this)" placeholder="✏️ What needs to be done?" spellcheck="false" autocomplete="off" />
+			<div id="error-message">todo should not be empty or spaces</div>
 			<ul class="todo-app__list" id="todo-list"></ul>
 		</section>
 		<footer class="todo-app__footer hide" id="todo-footer">

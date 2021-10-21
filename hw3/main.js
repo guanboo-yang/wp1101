@@ -4,6 +4,7 @@ const todoTotal = document.getElementById('todo-total')
 const todoClean = document.getElementById('todo-clean')
 const todoInput = document.getElementById('todo-input')
 const todoFooter = document.getElementById('todo-footer')
+const errorMessage = document.getElementById('error-message')
 const btns = document.getElementById('todo-btns').querySelectorAll('.btn')
 let todoId = 0
 let listStatus = 'all'
@@ -15,31 +16,33 @@ window.addEventListener('keydown', e => {
 		if (e.key === '/') {
 			e.preventDefault()
 			todoInput.focus()
+		} else {
+			changePlaceholder('👆 Press / to focus')
 		}
 	} else if (e.key === 'Escape') {
-		todoInput.disabled = true
-		todoInput.disabled = false
+		todoInput.blur()
 	}
 })
 todoInput.addEventListener('focus', () => {
-	todoInput.classList.add('fade')
-	setTimeout(() => {
-		todoInput.placeholder = '✏️ What needs to be done?'
-		todoInput.classList.remove('fade')
-	}, 100)
+	changePlaceholder('✏️ What needs to be done?')
 })
 todoInput.addEventListener('blur', () => {
+	changePlaceholder('👆 Press / to focus')
+	errorMessage.classList.remove('show')
+})
+function changePlaceholder(str) {
+	if (todoInput.placeholder === str) return
 	todoInput.classList.add('fade')
 	setTimeout(() => {
-		todoInput.placeholder = '👆 Press / to focus'
+		todoInput.placeholder = str
 		todoInput.classList.remove('fade')
 	}, 100)
-})
+}
 /* #endregion */
 /* #region Add Delete Check Todo */
 function parseTodo(id, val) {
 	let li = document.createElement('li')
-	li.classList += 'todo-app__item'
+	li.classList += 'todo-app__item ripple'
 	li.innerHTML = `
 		<div class="todo-app__checkbox">
 			<input type="checkbox" id="${id}" />
@@ -48,27 +51,33 @@ function parseTodo(id, val) {
 		<h1 class="todo-app__item-detail">${val}</h1>
 		<img src="./img/x.png" alt="x" class="todo-app__item-x" onclick="deleteTodo(this, ${id})">
 	`
+	li.addEventListener('click', e => rippleHandler(e, li))
 	return li
 }
 function addTodo(event, ele) {
-	if (!ele.value) return
-	if (!event) event = window.event
-	if (event.key == 'Enter') {
-		// todoList.push({ _id: todoId, val: ele.value, checked: false })
-		let li = parseTodo(todoId, ele.value)
-		ul.appendChild(li)
-		if (listStatus !== 'completed') {
-			setTimeout(() => {
-				li.classList.add('show')
-			}, 300)
-			setTimeout(() => {
-				ul.scrollTo({ top: ul.scrollHeight, behavior: 'smooth' })
-			}, 600)
-		}
-		todoId++
-		countTodos()
-		ele.value = ''
+	if (ele.value && ele.value.trim()) {
+		errorMessage.classList.remove('show')
 	}
+	if (event.key !== 'Enter') return
+	if (!ele.value || !ele.value.trim()) {
+		errorMessage.classList.add('show')
+		return
+	}
+	// todoList.push({ _id: todoId, val: ele.value, checked: false })
+	let li = parseTodo(todoId, ele.value)
+	// ele.blur()
+	ul.appendChild(li)
+	if (listStatus !== 'completed') {
+		setTimeout(() => {
+			li.classList.add('show')
+		}, 0)
+		setTimeout(() => {
+			ul.scrollTo({ top: ul.scrollHeight, behavior: 'smooth' })
+		}, 300)
+	}
+	todoId++
+	countTodos()
+	ele.value = ''
 }
 function deleteTodo(node, id) {
 	// console.log(id)
@@ -131,7 +140,6 @@ function todoClearCompleted() {
 		}, 300)
 	})
 }
-
 countTodos()
 function countTodos() {
 	let total = ul.childNodes.length
@@ -145,6 +153,10 @@ function countTodos() {
 	if (total === 0) todoFooter.classList.add('hide')
 	else todoFooter.classList.remove('hide')
 }
+// function todoCheckAll() {
+// 	ul.childNodes.forEach(list => {})
+// 	countTodos()
+// }
 /* #endregion */
 /* #region Ripple */
 function addRipple() {
@@ -168,6 +180,15 @@ const rippleHandler = (e, rippleParent) => {
 	ripple.style.top = `${y}px`
 	container.appendChild(ripple)
 	rippleParent.appendChild(container)
+	let fromWidth = Math.max(rect.width, rect.height) / 8
+	let toWidth = 200 + Math.max(rect.width, rect.height) * 2
+	ripple.animate(
+		[
+			{ opacity: '0.3', width: `${fromWidth}px`, height: `${fromWidth}px` },
+			{ opacity: '0', width: `${toWidth}px`, height: `${toWidth}px` },
+		],
+		{ duration: 600 }
+	)
 	setTimeout(() => {
 		container.remove()
 	}, 600)

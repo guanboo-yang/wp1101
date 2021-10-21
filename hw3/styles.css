@@ -1,5 +1,7 @@
 /* #region General */
 * {
+	margin: 0;
+	padding: 0;
 	box-sizing: border-box;
 }
 html,
@@ -76,6 +78,10 @@ input[type='checkbox'] {
 	font-weight: 100;
 	opacity: 0.6;
 }
+.todo-app__input:hover,
+.todo-app__input:focus {
+	background: #eeeeeea0;
+}
 .todo-app__main {
 	background: rgb(254, 254, 254);
 }
@@ -109,13 +115,26 @@ input[type='checkbox'] {
 	border-top: 0;
 	transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
 }
-.todo-app__item:hover {
-	box-shadow: inset 0 0 15px #bbbbbbf0;
+.todo-app__item::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	left: 0;
+	opacity: 0;
+	background-color: currentColor;
+	transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+	box-shadow: inset 0px 0px 10px currentColor;
 }
-.todo-app__input:hover,
-.todo-app__input:focus,
+.todo-app__item:hover::before {
+	opacity: 0.08;
+}
+.todo-app__item.checked::before {
+	opacity: 0.16;
+}
 .todo-app__item.checked {
-	background: #eeeeeea0;
+	color: #679967;
 }
 .todo-app__checkbox {
 	width: 30px;
@@ -200,7 +219,8 @@ input[type='checkbox'] {
 	width: 177px;
 }
 .todo-app__clean .hide {
-	display: none;
+	opacity: 0;
+	cursor: default;
 }
 .todo-app__clean button {
 	/* border: none;
@@ -228,7 +248,11 @@ input[type='checkbox'] {
 	outline: none;
 }
 .todo-app__item-x {
-	display: none;
+	display: inline;
+	position: absolute;
+	height: 0;
+	width: 0;
+	right: 30px;
 	cursor: pointer;
 	transition: all 0.2s ease;
 	border-radius: 50vh;
@@ -236,15 +260,15 @@ input[type='checkbox'] {
 .todo-app__item:hover .todo-app__item-x {
 	display: inline;
 	position: absolute;
-	max-width: 20px;
-	max-height: 20px;
+	width: 20px;
+	height: 20px;
 	right: 20px;
 }
 .todo-app__item:hover .todo-app__item-x:hover {
-	max-width: 25px;
-	max-height: 25px;
-	right: 17.5px;
-	background: #ff0000a0;
+	width: 30px;
+	height: 30px;
+	right: 15px;
+	/* background: #ff0000a0; */
 }
 /* #endregion */
 /* #region Button */
@@ -342,18 +366,23 @@ input[type='checkbox'] {
 	border-radius: 50vh;
 	overflow: hidden;
 	z-index: 3;
-	animation: ripple-animation 0.6s linear;
-}
-@keyframes ripple-animation {
-	from {
-		opacity: 0.3;
-		width: 30px;
-		height: 30px;
-	}
-	to {
-		opacity: 0;
-		width: 600px;
-		height: 600px;
-	}
 }
 /* #endregion */
+#error-message {
+	height: 0;
+	color: red;
+	border-left: 1.5px solid red;
+	border-right: 1.5px solid red;
+	background: rgb(255, 240, 240);
+	padding: 0 10px;
+	font-weight: 400;
+	overflow: hidden;
+	display: flex;
+	align-items: center;
+	transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+}
+#error-message.show {
+	height: 2em;
+	padding: 10px;
+	border: 1.5px solid red;
+}

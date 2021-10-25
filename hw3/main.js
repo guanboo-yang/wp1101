@@ -6,10 +6,12 @@ const todoClean = getById('todo-clean')
 const todoInput = getById('todo-input')
 const todoFooter = getById('todo-footer')
 const errorMessage = getById('error-message')
+const undoWrapper = getById('undo-wrapper')
 const btns = getById('todo-btns').querySelectorAll('.btn')
 let todoId = 0
 let listStatus = 'all'
-// let todoList = []
+let todoList = []
+let lastAction = []
 /* #endregion */
 /* #region Placeholder */
 window.addEventListener('keydown', e => {
@@ -41,15 +43,16 @@ function changePlaceholder(str) {
 }
 /* #endregion */
 /* #region Add Delete Check Todo */
-function parseTodo(id, val) {
+function parseTodo({ _id: id, val, checked }) {
 	let li = document.createElement('li')
 	li.classList += 'todo-app__item ripple'
+	if (checked) li.classList += ' checked'
 	li.innerHTML = `
 		<div class="todo-app__checkbox">
-			<input type="checkbox" id="${id}" />
-			<label for="${id}" onclick="checkTodo(this)"></label>
+			<input type="checkbox" id="${id}" ${checked ? 'checked' : ''} />
+			<label for="${id}" onclick="checkTodo(this, ${id})"></label>
 		</div>
-		<h1 class="todo-app__item-detail">${val}</h1>
+		<h1 class="todo-app__item-detail ${checked ? 'checked' : ''}">${val}</h1>
 		<div class="delete-wrapper" onclick="deleteTodo(this, ${id})">
 			<div class="delete"></div>
 		</div>
@@ -67,8 +70,10 @@ function addTodo(event, ele) {
 		errorMessage.classList.add('show')
 		return
 	}
-	// todoList.push({ _id: todoId, val: ele.value, checked: false })
-	let li = parseTodo(todoId, ele.value)
+	let todo = { _id: todoId, val: ele.value, checked: false }
+	// lastAction.push({ action: 'add', todos: [todo] })
+	todoList.push(todo)
+	let li = parseTodo(todo)
 	// ele.blur()
 	ul.appendChild(li)
 	if (listStatus !== 'completed') {
@@ -85,15 +90,18 @@ function addTodo(event, ele) {
 }
 function deleteTodo(node, id) {
 	// console.log(id)
-	// todoList = todoList.filter(t => t._id !== id)
+	lastAction.push({ action: 'delete', todos: todoList.filter(t => t._id === id) })
+	todoList = todoList.filter(t => t._id !== id)
 	let li = node.parentNode
 	li.classList.remove('show')
 	setTimeout(() => {
 		li.remove()
 		countTodos()
 	}, 300)
+	checkAction()
 }
-function checkTodo(node) {
+function checkTodo(node, id) {
+	todoList = todoList.map(t => (t._id === id ? { ...t, checked: !t.checked } : t))
 	let li = node.parentNode.parentNode
 	let h1 = li.querySelector('h1')
 	li.classList.toggle('checked')
@@ -136,6 +144,8 @@ function todoCompleted(ele) {
 	listStatus = 'completed'
 }
 function todoClearCompleted() {
+	lastAction.push({ action: 'delete', todos: todoList.filter(t => t.checked === true) })
+	todoList = todoList.filter(t => t.checked !== true)
 	ul.querySelectorAll('.checked').forEach(list => {
 		list.classList.remove('show')
 		setTimeout(() => {
@@ -143,6 +153,7 @@ function todoClearCompleted() {
 			countTodos()
 		}, 300)
 	})
+	checkAction()
 }
 countTodos()
 function countTodos() {
@@ -175,8 +186,8 @@ const rippleHandler = e => {
 	e.stopPropagation()
 	const parent = e.target.closest('.ripple')
 	const rect = parent.getBoundingClientRect()
-	let x = e.clientX - rect.left
-	let y = e.clientY - rect.top
+	const x = e.clientX - rect.left
+	const y = e.clientY - rect.top
 	const ripple = document.createElement('span')
 	const container = document.createElement('span')
 	ripple.classList.add('ripple_animation')
@@ -197,4 +208,40 @@ const rippleHandler = e => {
 	}, 400)
 }
 addRipple()
+/* #endregion */
+/* #region Undo */
+function undo() {
+	let action = lastAction.pop()
+	if (!action) return
+	action.todos.forEach(todo => {
+		todoList.push(todo)
+		let li = parseTodo(todo)
+		ul.appendChild(li)
+		// todoState === 'all' || (todoState === 'active') === todo.complete
+		if (listStatus === 'all' || (listStatus === 'completed') === todo.checked) {
+			setTimeout(() => {
+				li.classList.add('show')
+			}, 0)
+			setTimeout(() => {
+				ul.scrollTo({ top: ul.scrollHeight, behavior: 'smooth' })
+			}, 300)
+		}
+		countTodos()
+	})
+	checkAction()
+}
+let undoTimeout
+function checkAction() {
+	clearTimeout(undoTimeout)
+	if (lastAction.length) {
+		undoWrapper.classList.remove('hide')
+		undoTimeout = setTimeout(() => {
+			undoWrapper.classList.add('hide')
+			lastAction = []
+		}, 8000)
+	} else {
+		undoWrapper.classList.add('hide')
+	}
+}
+
 /* #endregion */

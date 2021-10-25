@@ -22,6 +22,7 @@
 - [x] press / to focus on input, press ESC to unfocus, with placeholder changing
 - [x] hover effect, click effect
 - [x] error when trying to add empty todos
+- [x] undo button (8s timeout)
 
 ### Directory Struecture
 

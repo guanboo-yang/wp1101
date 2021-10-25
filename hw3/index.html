@@ -22,6 +22,9 @@
 		<section class="todo-app__main">
 			<input type="text" class="todo-app__input" id="todo-input" onkeyup="addTodo(event, this)" placeholder="✏️ What needs to be done?" spellcheck="false" autocomplete="off" />
 			<div id="error-message">todo should not be empty or spaces</div>
+			<div class="undo-wrapper hide" id="undo-wrapper">
+				<button class="btn ripple rounded" onclick="undo()">undo</button>
+			</div>
 			<ul class="todo-app__list" id="todo-list"></ul>
 		</section>
 		<footer class="todo-app__footer hide" id="todo-footer">

@@ -106,13 +106,13 @@ input[type='checkbox'] {
 	position: relative;
 	width: 100%;
 	/* min-height: 5em; */
-	overflow: hidden;
 	height: 0;
 	display: flex;
 	flex-direction: row;
 	justify-content: center;
 	align-items: center;
 	background: white;
+	overflow: hidden;
 	border-top: 0;
 	transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
 }
@@ -165,8 +165,11 @@ input[type='checkbox'] {
 }
 .todo-app__item-detail {
 	font-weight: 500;
-	overflow-wrap: break-word;
-	width: 90%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	/* overflow-wrap: break-word; */
+	width: 900px;
 	transition: opacity 0.3s;
 }
 .todo-app__item-detail.checked {
@@ -461,4 +464,17 @@ input[type='checkbox'] {
 	padding: 10px;
 	border: 1.5px solid red;
 }
+/* #endregion */
+/* #region Undo */
+.undo-wrapper {
+	border: 1px solid rgba(0, 0, 0, 0.089);
+	overflow: hidden;
+	transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+	height: 3em;
+}
+.undo-wrapper.hide {
+	height: 0;
+	border: none;
+}
+
 /* #endregion */

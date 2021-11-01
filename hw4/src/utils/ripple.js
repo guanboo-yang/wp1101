@@ -6,7 +6,7 @@ export const addRipple = () => {
 }
 export const rippleHandler = e => {
 	// e.preventDefault()
-	e.stopPropagation()
+	// e.stopPropagation()
 	const parent = e.target.closest('.ripple')
 	console.log(parent)
 	const rect = parent.getBoundingClientRect()

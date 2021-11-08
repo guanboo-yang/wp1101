@@ -1,0 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap');
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+html,
+body {
+	min-height: 100vh;
+	font-family: Comfortaa, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+body {
+	position: relative;
+	background: lightgrey;
+	color: #000000d0;
+	/* background-image: url('./img/bg.jpeg'); */
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: bottom;
+	transition: 0.5s;
+	z-index: -2;
+}
+body.dark {
+	background: #000;
+	color: whitesmoke;
+}
+body::before {
+	z-index: -1;
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: linear-gradient(#ffffff50, #00000000);
+}
+#root {
+	min-height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+code {
+	font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+input,
+input::placeholder {
+	font: 20px Poppins, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	letter-spacing: 1.5px;
+	font-weight: 300;
+	transition: opacity 0.1s;
+}
+input.fade::placeholder {
+	opacity: 0;
+}
+button {
+	font: inherit;
+}
+input[type='checkbox'] {
+	visibility: hidden;
+}

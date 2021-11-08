@@ -1,0 +1,93 @@
+.header {
+	color: #ffffff60;
+	margin-bottom: 0.3em;
+	font-size: 4em;
+	font-weight: 600;
+}
+.page {
+	scroll-padding-top: 80px;
+	position: absolute;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+.page-enter {
+	opacity: 0;
+	transform: translateX(400px);
+}
+.page-enter-active {
+	opacity: 1;
+	transform: translateX(0);
+	transition: all 0.3s;
+}
+.page-exit {
+	opacity: 1;
+	transform: translateX(0);
+}
+.page-exit-active {
+	opacity: 0;
+	transform: translateX(-400px);
+	transition: all 0.3s;
+}
+.calculator {
+	background: #00000020;
+	/* color: white; */
+	width: min(100vw, 350px);
+	border-radius: 10px;
+	overflow: hidden;
+}
+.panel {
+	display: flex;
+}
+.panel .left {
+	width: 100%;
+	transition: width 0.5s;
+}
+.panel.expand .left {
+	width: 80%;
+}
+.panel .main {
+	width: 100%;
+	display: grid;
+	grid-template-columns: repeat(4, 25%);
+	grid-auto-rows: 1fr;
+	height: 300px;
+	overflow: hidden;
+	transition: height 0.5s;
+}
+.panel.expand .main {
+	height: 250px;
+}
+.panel .upper {
+	width: 100%;
+	display: grid;
+	height: 0;
+	grid-template-columns: repeat(4, 25%);
+	grid-auto-rows: 1fr;
+	overflow: hidden;
+	transition: height 0.5s, opacity 0.5s;
+	opacity: 0;
+}
+.panel.expand .upper {
+	opacity: 1;
+	height: 50px;
+}
+.panel .right {
+	width: 0;
+	display: grid;
+	overflow: hidden;
+	grid-template-columns: 100%;
+	grid-auto-rows: 1fr;
+	transition: width 0.5s, opacity 0.5s;
+	opacity: 0;
+}
+.panel.expand .right {
+	opacity: 1;
+	width: 20%;
+}
+.container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}

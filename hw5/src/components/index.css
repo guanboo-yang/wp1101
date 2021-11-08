@@ -1,0 +1,60 @@
+h1 {
+	font-size: 4em;
+}
+
+.page > h1 {
+	margin: 0 20px 10px 20px;
+	text-align: center;
+	opacity: 0.7;
+}
+
+sup {
+	font-size: 70% !important;
+	padding-bottom: 18px;
+}
+
+.display {
+	grid-column: 1 / -1;
+	padding: 10px;
+	border-bottom: 2px solid currentColor;
+}
+
+.equation {
+	overflow-x: scroll;
+	white-space: nowrap;
+}
+
+.equation::-webkit-scrollbar {
+	display: none;
+}
+
+/* .result { */
+/* padding-left: 5px; */
+/* position: sticky; */
+/* } */
+
+.ripple {
+	position: relative;
+}
+.ripple_container {
+	color: currentColor;
+	border-radius: inherit;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	left: 0;
+	top: 0;
+	overflow: hidden;
+	z-index: 2;
+	pointer-events: none;
+	contain: strict;
+}
+.ripple_animation {
+	position: absolute;
+	background: currentColor;
+	transform: translate(-50%, -50%);
+	pointer-events: none;
+	border-radius: 50vh;
+	overflow: hidden;
+	z-index: 3;
+}

@@ -1,0 +1,29 @@
+.converter-form {
+	background: #00000020;
+	font-size: 1.4em;
+	border-radius: 8px;
+	padding: 10px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+.converter-input {
+	background: inherit;
+	user-select: text;
+	outline: none;
+	font-weight: inherit;
+	border: 2px solid currentColor;
+	color: currentColor;
+	padding: 0 8px;
+	margin: 10px;
+	border-radius: 5px;
+	height: 2em;
+	width: min(40vh, 200px);
+}
+.converter-input.short {
+	width: 50px;
+}
+.converter-input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}

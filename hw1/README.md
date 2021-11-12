@@ -1,4 +1,4 @@
-# WP1101 HW1 Gallery
+# wp1101 HW1 Digital Photo Album
 
 - [Web Programming Site](https://wp.ee.ntu.edu.tw/)
 - [HW1 File](https://ceiba.ntu.edu.tw/course/fdb723/hw/hw1.pdf)

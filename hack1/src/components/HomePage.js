@@ -49,7 +49,7 @@ const HomePage = ({ startGameOnClick, mineNumOnChange, boardSizeOnChange, mineNu
 					<div className='controlWrapper'>
 						{error && (
 							<div className='error' style={{ color: '#880000' }}>
-								ERROR: Mines number and board size are valid
+								ERROR: Mines number and board size are invalid!
 							</div>
 						)}
 						<div className='controlPanel'>

@@ -70,6 +70,7 @@ const Board = ({ boardSize, mineNum, backToHome }) => {
 		/* Reveal the cell */
 		/* Useful Hint: The function in reveal.js may be useful. You should consider if the cell you want to reveal is a location of mines or not. */
 		/* Reminder: Also remember to handle the condition that after you reveal this cell then you win the game. */
+		if (board[x][y].flagged) return
 		mineLocations.forEach(location => {
 			if (location[0] == x && location[1] == y) {
 				setGameOver(true)

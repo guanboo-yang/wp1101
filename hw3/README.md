@@ -1,7 +1,7 @@
 # wp1101 HW3 TODO APP in pure JS
 
 - [Web Programming Site](https://wp.ee.ntu.edu.tw/)
-- [HW2 File](https://ceiba.ntu.edu.tw/course/fdb723/hw/hw3.pdf)
+- [HW3 File](https://ceiba.ntu.edu.tw/course/fdb723/hw/hw3.pdf)
 
 ### Basic Features
 

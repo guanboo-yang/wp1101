@@ -1,0 +1,11 @@
+{
+	"name": "hw6",
+	"version": "1.0.0",
+	"author": "GuanBo Yang <andrew3459004@gmail.com> (https://guanboo-yang.github.io/)",
+	"license": "MIT",
+	"scripts": {
+		"start": "cd frontend && yarn start",
+		"server": "cd backend && yarn server"
+	},
+	"dependencies": {}
+}

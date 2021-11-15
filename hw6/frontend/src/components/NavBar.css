@@ -1,0 +1,77 @@
+.appbar {
+	/* background-color: #00000020; */
+	position: fixed;
+	padding: 10px 20px;
+	z-index: 1;
+	top: 0;
+	left: 0;
+	right: 0;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	user-select: none;
+	/* backdrop-filter: blur(3px); */
+	transition: all 0.5s ease;
+}
+.appbar.float {
+	background-color: #00000050;
+	box-shadow: 0 0 20px black;
+}
+header {
+	font-size: 2em;
+	font-weight: 700;
+}
+header i {
+	font-size: 1.5em;
+	margin-right: 8px;
+}
+.spacer {
+	flex: 1;
+}
+@media (max-width: 768px) {
+	.bottombar {
+		color: whitesmoke;
+		background-color: #00000050;
+		position: fixed;
+		height: 60px;
+		z-index: 1;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		transition: all 0.5s ease;
+	}
+	.bottombar .btn-group {
+		border-radius: 0;
+		/* width: 100%; */
+		max-width: 400px;
+	}
+	.bottombar .btn.nav {
+		flex-direction: column;
+		justify-content: center;
+		flex-grow: 1;
+		height: 60px;
+		max-width: 200px;
+		margin: 0;
+		padding: 0 24px;
+		font-size: 1em;
+		font-weight: 700;
+		border-radius: 0;
+		box-shadow: none;
+	}
+	.bottombar .btn.nav.active i {
+		margin-right: 0;
+		height: 25px;
+		transition: all 0.5s;
+		overflow: hidden;
+	}
+	.bottombar .btn.nav:not(.active) i {
+		margin-right: 0;
+		height: 0;
+		transition: all 0.5s;
+		overflow: hidden;
+	}
+}

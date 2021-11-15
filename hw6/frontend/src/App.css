@@ -1,0 +1,205 @@
+.App {
+	padding-top: 70px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	/* justify-content: center; */
+	min-height: calc(100vh - 70px);
+	background: royalblue;
+	transition: all 0.5s;
+}
+
+.App.guess {
+	background: indigo;
+}
+
+.App.err {
+	background: maroon;
+}
+
+.App.win {
+	background: forestgreen;
+}
+
+h1 {
+	font-size: min(4em, 12vw);
+	font-weight: 700;
+	margin: 0.2em 0;
+	line-height: 1em;
+}
+
+h2 {
+	font-size: min(1.4em, 4vw);
+	font-weight: 500;
+	margin: 0.1em 0 1em 0;
+}
+
+.msg {
+	height: 30px;
+	font-size: min(1.2em, 4vw);
+	font-weight: 600;
+	opacity: 1;
+	transition: opacity 0.1s;
+}
+
+.msg.hide {
+	opacity: 0;
+}
+
+.btn {
+	-webkit-tap-highlight-color: transparent;
+	color: var(--color);
+	/* background: inherit; */
+	position: relative;
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
+	height: 36px;
+	padding: 0 10px;
+	margin: 3px;
+	font-size: 1rem;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.1em;
+	border: none;
+	border-radius: 50vh;
+	cursor: pointer;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	/* border-radius: 3px; */
+	/* box-shadow: 2px 2px 10px #00000040; */
+	transition: all 0.2s ease-in-out;
+}
+
+.btn:hover {
+	color: var(--bg-color);
+	background: var(--color);
+}
+
+.nav.btn {
+	height: 54px;
+	padding: 0 20px;
+	margin: 0 8px;
+}
+
+.btn.rounded {
+	width: 36px;
+	padding: 0;
+}
+
+.btn-group {
+	border-radius: 50vh;
+}
+
+.btn-group > .btn {
+	box-shadow: none;
+	border-radius: 0;
+}
+
+.btn-group > .btn:first-child {
+	border-top-left-radius: inherit;
+	border-bottom-left-radius: inherit;
+}
+
+.btn-group > .btn:last-child {
+	border-top-right-radius: inherit;
+	border-bottom-right-radius: inherit;
+}
+
+.btn-group > .btn:not(:last-child) {
+	margin-right: 0;
+}
+
+.game {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: black;
+	border: 3px solid white;
+	border-radius: 50vh;
+	transition: 0.5s;
+	/* box-shadow: 0 0 10px 5px white; */
+	overflow: hidden;
+}
+
+.game.start {
+	padding-left: 20px;
+}
+
+.game .input {
+	position: relative;
+	width: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	transition: all 0.4s ease-in-out;
+}
+
+.game.start .input {
+	width: 200px;
+	height: 50px;
+}
+
+.game .input input {
+	position: absolute;
+	background: black;
+	caret-color: white;
+	color: white;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	border: none;
+	outline: none;
+	font-size: 18px;
+	font-family: Poppins;
+	font-weight: 600;
+}
+
+.clear {
+	position: relative;
+	right: 15px;
+	width: 0;
+	height: 0;
+	cursor: pointer;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.game.start .clear {
+	width: 15px;
+	height: 15px;
+}
+
+.clear::before {
+	position: absolute;
+	content: '';
+	width: 2px;
+	height: 15px;
+	background: #999;
+	transform: rotate(45deg);
+}
+
+.clear::after {
+	position: absolute;
+	content: '';
+	width: 2px;
+	height: 15px;
+	background: #999;
+	transform: rotate(-45deg);
+}
+
+@media (max-width: 768px) {
+	.App {
+		padding-bottom: 70px;
+		min-height: 100vh;
+	}
+	.btn {
+		padding: 0 10px;
+		letter-spacing: 0.05em;
+	}
+}

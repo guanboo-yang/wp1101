@@ -1,0 +1,21 @@
+{
+	"name": "backend",
+	"version": "1.0.0",
+	"main": "index.js",
+	"author": "GuanBo Yang <andrew3459004@gmail.com> (https://guanboo-yang.github.io/)",
+	"license": "MIT",
+	"scripts": {
+		"server": "nodemon server.js --ext js --exec babel-node"
+	},
+	"dependencies": {
+		"cors": "^2.8.5",
+		"express": "^4.17.1",
+		"nodemon": "^2.0.15"
+	},
+	"devDependencies": {
+		"@babel/cli": "^7.16.0",
+		"@babel/core": "^7.16.0",
+		"@babel/node": "^7.16.0",
+		"@babel/preset-env": "^7.16.0"
+	}
+}

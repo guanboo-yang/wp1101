@@ -1,0 +1,92 @@
+.card {
+	font-weight: 500;
+	width: min(90vw, 500px);
+	margin: 0;
+	text-align: justify;
+}
+
+.card b {
+	color: gold;
+}
+
+.board {
+	margin-top: 1em;
+	border: 1px solid white;
+}
+
+.cell {
+	-webkit-tap-highlight-color: transparent;
+	background: #00000010;
+	/* opacity: 0.1; */
+	position: relative;
+	width: min(11vw, 60px);
+	height: min(11vw, 60px);
+	justify-content: 'center';
+	align-items: 'center';
+	display: 'flex';
+	font-size: 20px;
+	font-weight: bold;
+	cursor: pointer;
+	border: 1px solid white;
+	transition: all 0.2s;
+}
+
+.cell::after {
+	content: '';
+	position: absolute;
+	height: 75%;
+	width: 75%;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	border-radius: 50vh;
+}
+
+.cell.white::after {
+	background: whitesmoke;
+}
+
+.cell.black::after {
+	background: black;
+}
+
+.cell.faint::after {
+	background: black;
+	opacity: 0.3;
+}
+
+.cell:hover {
+	cursor: pointer;
+	background: #00000040;
+}
+
+/* .cell.white:hover,
+.cell.black:hover {
+	background: #ff000060;
+} */
+
+.score {
+	width: min(90vw, 500px);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.score span {
+	height: 30px;
+	padding: 10px 0;
+	font-size: min(1.4em, 5vw);
+	font-weight: 600;
+	opacity: 1;
+	transition: opacity 0.1s;
+}
+
+.score span.black {
+	font-size: min(1.8em, 6vw);
+	color: black;
+}
+
+.score span.white {
+	font-size: min(1.8em, 6vw);
+	color: white;
+}

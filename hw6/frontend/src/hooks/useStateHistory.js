@@ -39,7 +39,7 @@ const useStateHistory = (defaultValue, { capacity = 10 } = {}) => {
 		setValue(historyRef.current[pointerRef.current])
 	}, [])
 
-	return [value, set, { back, clear }]
+	return [value, set, { back, clear, forward }]
 }
 
 export default useStateHistory

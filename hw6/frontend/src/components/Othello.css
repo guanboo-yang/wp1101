@@ -55,6 +55,16 @@
 	opacity: 0.3;
 }
 
+.dark .cell.white::after,
+.dark .cell.black::after,
+.dark .cell.faint::after {
+	border: 2px solid white;
+}
+
+.dark .cell.faint::after {
+	opacity: 0.5;
+}
+
 .cell:hover {
 	cursor: pointer;
 	background: #00000040;
@@ -89,4 +99,8 @@
 .score span.white {
 	font-size: min(1.8em, 6vw);
 	color: white;
+}
+
+.dark .score span.black {
+	color: darkgrey;
 }

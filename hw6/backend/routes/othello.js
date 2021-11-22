@@ -29,9 +29,7 @@ router.get('/move', (req, res) => {
 	} else {
 		do {
 			let vm = getValidMoves(ret.board, -color)
-			console.log(vm)
 			if (vm.length <= 0) {
-				console.log('2')
 				res.send({ ...ret, msg: 'Game Over!', ...countScore(ret.board) })
 				return
 			}

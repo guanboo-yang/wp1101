@@ -22,6 +22,10 @@
 	background: forestgreen;
 }
 
+.App.dark {
+	background: rgb(0, 0, 0);
+}
+
 h1 {
 	font-size: min(4em, 12vw);
 	font-weight: 700;
@@ -79,15 +83,22 @@ h2 {
 	background: var(--color);
 }
 
-.nav.btn {
+.btn.nav {
 	height: 54px;
 	padding: 0 20px;
 	margin: 0 8px;
 }
 
-.btn.rounded {
-	width: 36px;
+.btn.nav i {
+	margin-right: 10px;
+	font-size: 24px;
+}
+
+.btn.icon {
+	height: 40px;
+	width: 40px;
 	padding: 0;
+	font-size: 20px;
 }
 
 .btn-group {
@@ -140,8 +151,9 @@ h2 {
 }
 
 .game.start .input {
-	width: 200px;
-	height: 50px;
+	width: 180px;
+	height: 20px;
+	margin-bottom: 3px;
 }
 
 .game .input input {
@@ -197,6 +209,7 @@ h2 {
 	.App {
 		padding-bottom: 70px;
 		min-height: 100vh;
+		min-height: calc(100vh - 140px);
 	}
 	.btn {
 		padding: 0 10px;

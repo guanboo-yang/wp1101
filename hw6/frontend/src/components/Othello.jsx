@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { startGame, move } from '../axios/othello'
-import useStateHistory from '../hooks/useStateHistory'
+import { useStateHistory } from '../hooks'
 import Cell from './Cell'
 import './Othello.css'
 
@@ -112,6 +112,10 @@ const Othello = ({ setStatus }) => {
 		cB()
 		cW()
 		const retBoard = await startGame()
+		if (retBoard === 'Error: Server not connected') {
+			console.log(retBoard)
+			return
+		}
 		updateBoard(
 			showValidMoves(retBoard, [
 				[2, 3],
@@ -130,12 +134,14 @@ const Othello = ({ setStatus }) => {
 		if (gameOver) return
 		const { board: retBoard, validMoves, msg: retMsg, black: retB, white: retW } = await move(board, -1, row, col)
 		// console.log(retBoard, validMoves, msg)
-		console.log(retB, retW)
+		// console.log(retB, retW)
 		if (retMsg === 'Game Over!') {
 			msg.current.innerText = retMsg
 			updateBoard(showValidMoves(retBoard, []), retB, retW)
+			console.log(retW, retB)
 			if (retB > retW) msg.current.innerText += ' Black Win!'
-			else msg.current.innerText += ' White Win!'
+			else if (retB < retW) msg.current.innerText += ' White Win!'
+			else msg.current.innerText += " It's a Draw"
 			setGameOver(true)
 			return
 		} else if (retMsg) {
@@ -163,7 +169,6 @@ const Othello = ({ setStatus }) => {
 				</>
 			) : hasStarted ? (
 				<>
-					<h1></h1>
 					<div className='game btn-group'>
 						<div className='btn' onClick={() => setHasStarted(false)}>
 							Quit

@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 const instance = axios.create({ baseURL: 'http://localhost:4000/api/guess' })
+// const instance = axios.create({ baseURL: 'http://IP_ADDRESS:4000/api/guess' })
 
 export const startGame = async () => {
 	try {

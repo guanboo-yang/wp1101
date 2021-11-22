@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 const instance = axios.create({ baseURL: 'http://localhost:4000/api/othello' })
+// const instance = axios.create({ baseURL: 'http://IP_ADDRESS:4000/api/othello' })
 
 export const startGame = async () => {
 	try {

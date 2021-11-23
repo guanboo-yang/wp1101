@@ -17,6 +17,7 @@ router.get('/move', (req, res) => {
 	ret = move(tempBoard, color, row, col)
 	if (ret.msg === 'Invalid Move') {
 		res.status(406).send({ msg: 'Error: Not a legal move' })
+		return
 	}
 	if (ret.validMoves.length <= 0) {
 		let vm = getValidMoves(ret.board, color)

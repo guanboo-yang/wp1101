@@ -6,6 +6,7 @@
 	text-align: center;
 	/* justify-content: center; */
 	min-height: calc(100vh - 70px);
+	min-height: -webkit-fill-available;
 	background: royalblue;
 	transition: all 0.5s;
 }
@@ -210,6 +211,7 @@ h2 {
 		padding-bottom: 70px;
 		min-height: 100vh;
 		min-height: calc(100vh - 140px);
+		min-height: -webkit-fill-available;
 	}
 	.btn {
 		padding: 0 10px;

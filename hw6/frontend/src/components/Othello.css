@@ -11,7 +11,7 @@
 
 .board {
 	margin-top: 1em;
-	border: 1px solid white;
+	border: 1px solid #ffffff80;
 }
 
 .cell {
@@ -27,7 +27,7 @@
 	font-size: 20px;
 	font-weight: bold;
 	cursor: pointer;
-	border: 1px solid white;
+	border: 1px solid #ffffff80;
 	transition: all 0.2s;
 }
 
@@ -44,19 +44,30 @@
 
 .cell.white::after {
 	background: whitesmoke;
+	background: radial-gradient(circle, #fff 0%, #bbb 80%);
+	box-shadow: 0 0 6px black;
 }
 
 .cell.black::after {
 	background: black;
+	background: radial-gradient(circle, #555 0%, #000 80%);
+	box-shadow: 0 0 6px black;
 }
 
 .cell.faint::after {
 	background: black;
+	background: radial-gradient(circle, #555 0%, #000 80%);
 	opacity: 0.3;
 }
 
-.dark .cell.white::after,
-.dark .cell.black::after,
+.dark .cell.white::after {
+	border: 2px solid white;
+	background: whitesmoke;
+}
+.dark .cell.black::after {
+	border: 2px solid white;
+	background: black;
+}
 .dark .cell.faint::after {
 	border: 2px solid white;
 }
@@ -102,5 +113,6 @@
 }
 
 .dark .score span.black {
-	color: darkgrey;
+	/* color: darkgrey; */
+	text-shadow: 1px 1px 0 white, -1px 1px 0 white, 1px -1px 0 white, -1px -1px 0 white, 0 0 10px white;
 }

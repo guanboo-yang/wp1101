@@ -107,7 +107,20 @@ const Body = () => {
 		func(event.target.value)
 	}
 
+	const rgx = new RegExp(/^[A-Z][a-z]*$/)
+
 	const handleAdd = async () => {
+		console.log(rgx.test(name))
+		if (!rgx.test(name)) {
+			addErrorMessage(`Validation failed: name: Path \`name\` (${name}) should be capitalized (ex: John).`)
+			console.error('[Error 409]: Validation Failed')
+			return
+		}
+		if (!rgx.test(subject)) {
+			addErrorMessage(`Validation failed: subject: Path \`subject\` (${subject}) should be capitalized (ex: Math).`)
+			console.error('[Error 409]: Validation Failed')
+			return
+		}
 		const {
 			data: { message, card },
 		} = await axios.post('/api/create-card', {
@@ -115,8 +128,10 @@ const Body = () => {
 			subject,
 			score,
 		})
-		if (!card) addErrorMessage(message)
-		else {
+		if (!card) {
+			addErrorMessage(message)
+			console.error('[Error 409]: Validation Failed')
+		} else {
 			addCardMessage(message)
 			setActive(false)
 		}

@@ -7,19 +7,20 @@ const connect = (req, res) => {
 const createCard = async (req, res) => {
 	const { name, subject, score } = req.body
 	try {
-		Score.updateMany({ name, subject }, { score }, { upsert: true }).then(({ matchedCount, modifiedCount, upsertedCount }) => {
+		await Score.updateMany({ name, subject }, { score }).then(({ matchedCount, modifiedCount, upsertedCount }) => {
 			if (upsertedCount) res.status(201).send({ message: `Added (${name}, ${subject}, ${score})`, card: 'newscore' })
 			else if (modifiedCount) res.status(201).send({ message: `Updated (${name}, ${subject}, ${score})`, card: 'newscore' })
 			else if (matchedCount) res.status(201).send({ message: `Existed (${name}, ${subject}, ${score})`, card: 'newscore' })
 		})
 	} catch (err) {
-		res.status(409).json({ message: err.message })
+		res.send({ message: err.message })
 	}
 }
 
 const queryCards = async (req, res) => {
 	const { type, queryString } = req.query
-	const table = await Score.find({ [type]: queryString }, { _id: 0 })
+	// const table = await Score.find({ [type]: queryString }, { _id: 0 })
+	const table = await Score.where(type).equals(queryString)
 	const messages = []
 	table.forEach(({ name, subject, score }) => {
 		messages.push(`${name} & ${subject}: ${score}`)
@@ -29,7 +30,7 @@ const queryCards = async (req, res) => {
 }
 
 const deleteDB = async (req, res) => {
-	await Score.remove({})
+	await Score.deleteMany({})
 	res.send({ message: 'Database cleared' })
 }
 

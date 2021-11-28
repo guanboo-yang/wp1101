@@ -55,13 +55,21 @@ const StyledFormControl = styled(FormControl)`
 
 const ContentPaper = styled(Paper)`
 	height: 100%;
-	padding: 1em;
+	padding: 0 1em;
 	overflow: auto;
 	scroll-behavior: smooth;
 	* {
 		font-family: 'Fira Code' !important;
 		letter-spacing: 0 !important;
 	}
+`
+
+const ContentHeader = styled(Typography)`
+	text-align: center;
+	padding: 10px 0 0 0;
+	top: 0;
+	position: sticky;
+	background: inherit;
 `
 
 const a11yProps = index => {
@@ -107,20 +115,7 @@ const Body = () => {
 		func(event.target.value)
 	}
 
-	const rgx = new RegExp(/^[A-Z][a-z]*$/)
-
 	const handleAdd = async () => {
-		console.log(rgx.test(name))
-		if (!rgx.test(name)) {
-			addErrorMessage(`Validation failed: name: Path \`name\` (${name}) should be capitalized (ex: John).`)
-			console.error('[Error 409]: Validation Failed')
-			return
-		}
-		if (!rgx.test(subject)) {
-			addErrorMessage(`Validation failed: subject: Path \`subject\` (${subject}) should be capitalized (ex: Math).`)
-			console.error('[Error 409]: Validation Failed')
-			return
-		}
 		const {
 			data: { message, card },
 		} = await axios.post('/api/create-card', {
@@ -130,7 +125,7 @@ const Body = () => {
 		})
 		if (!card) {
 			addErrorMessage(message)
-			console.error('[Error 409]: Validation Failed')
+			console.error('[Error 406]: Validation Failed')
 		} else {
 			addCardMessage(message)
 			setActive(false)
@@ -240,15 +235,15 @@ const Body = () => {
 				</Row>
 			</TabPanel>
 			<TabWrapper>
-				<ContentPaper ref={content} style={{ width: '45%' }}>
-					<Typography variant='h6' style={{ textAlign: 'center', paddingBottom: '10px' }}>
-						{'-<< CONSOLE >>-'}
-					</Typography>
-					{messages.map((m, i) => (
-						<Typography variant='body2' key={m + i} style={{ color: m.color }}>
-							{m.message}
-						</Typography>
-					))}
+				<ContentPaper style={{ width: '45%' }}>
+					<ContentHeader variant='h6'>{'-<< CONSOLE >>-'}</ContentHeader>
+					<Box ref={content}>
+						{messages.map((m, i) => (
+							<Typography variant='body2' key={m + i} style={{ color: m.color }}>
+								{m.message}
+							</Typography>
+						))}
+					</Box>
 				</ContentPaper>
 				<ScoreTable table={table} requestSort={requestSort} active={active} setActive={setActive} handleAdd={handleAdd} />
 			</TabWrapper>

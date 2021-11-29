@@ -5,7 +5,7 @@
 
 ### Get Started
 
-To get started, you need to `yarn` in`backend/` and `frontend/` and `yarn start` and `yarn server`
+To get started, you need to `yarn install:all` then `yarn start` and `yarn server` in different terminal tabs.
 
 ### Screenshot
 

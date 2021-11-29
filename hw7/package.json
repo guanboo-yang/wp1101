@@ -4,7 +4,8 @@
 	"main": "index.js",
 	"license": "MIT",
 	"scripts": {
-		"start": "cd frontend && yarn start",
-		"server": "cd backend && yarn server"
+		"install:all": "for dir in */; do yarn --cwd \"${dir}\"; done",
+		"start": "yarn --cwd frontend start",
+		"server": "yarn --cwd backend server"
 	}
 }

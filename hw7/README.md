@@ -10,6 +10,7 @@ To get started, you need to `yarn install:all` then `yarn start` and `yarn serve
 ### Screenshot
 
 ![screen shot](Screenshot.png)
+
 ### Basic Features
 
 - [x] **Clear** to clear database and console

@@ -17,7 +17,7 @@ const StyledPaper = styled(Paper)`
 	padding: 2em;
 `
 
-function App() {
+const App = () => {
 	return (
 		<Wrapper>
 			<StyledPaper elevation={3}>

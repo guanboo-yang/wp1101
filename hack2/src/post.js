@@ -30,7 +30,7 @@ function Post(props) {
 				// console.log(res)
 			})
 			.catch(err => {
-				console.log(err)
+				console.error(err)
 			})
 		setTimeout(() => {
 			props.navigate(-1)

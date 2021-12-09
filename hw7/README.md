@@ -24,4 +24,4 @@ To get started, you need to `yarn install:all` then `yarn start` and `yarn serve
 - [x] table for **Query**
 - [x] sorting in table
 - [x] UI improvement: not much (console, table, tabs, fixed height)
-- [x] UX improvement: MUI UI experience is already wonderful
+- [x] UX improvement: MUI UX experience is already wonderful

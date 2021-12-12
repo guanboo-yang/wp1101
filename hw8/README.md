@@ -10,7 +10,9 @@
 
 ### Screenshot
 
-![screen shot](Screenshot.png)
+<div style="text-align: center">
+	<img src="Screenshot.png" alt="Screenshot" style="width:500px">
+</div>
 
 ### Basic Features
 

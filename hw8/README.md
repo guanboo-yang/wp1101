@@ -6,7 +6,7 @@
 ### Get Started
 
 - To get started, you need to `yarn install:all` then `yarn start` and `yarn server` in different terminal tabs.
-- To have a fast setup, you can uncomment the $29$-th line in `backend/server.js` to initialize the sample data!
+- To have a fast setup, you can uncomment the 29<sup>th</sup> line in `backend/server.js` to initialize the sample data!
 
 ### Screenshot
 

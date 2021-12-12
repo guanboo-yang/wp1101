@@ -1,12 +1,14 @@
 import './App.css'
 import { useState, useEffect, useRef } from 'react'
 import { Button, Input, Avatar, message, Tooltip } from 'antd'
+import { HeartFilled } from '@ant-design/icons'
 import Toolbar from './components/Toolbar'
 import useChat from './hooks/useChat'
 import useStorage from './hooks/useStorage'
+import Message from './components/Message'
 
 const App = () => {
-	const { status, messages, sendMessage, clearMessages, logoutMessage, loginMessages } = useChat()
+	const { status, messages, sendMessage, clearMessages, logoutMessage, loginMessages, loveMessage, deleteMessage } = useChat()
 	// const [username, setUsername] = useState('')
 	const [username, setUsername, removeName] = useStorage('name', undefined, window.sessionStorage)
 	const [login, setLogin, removeLogin] = useStorage('login', false, window.sessionStorage)
@@ -53,32 +55,6 @@ const App = () => {
 		return minutes
 	}
 
-	// check if a string only contains emoji
-	const isEmoji = str => {
-		const reg = /^[\p{Extended_Pictographic} ]+$/u
-		// const reg = /^[\p{Emoji_Presentation} ]+$/u
-		// const reg = /^[\p{Emoji} ]+$/u
-		return reg.test(str)
-	}
-
-	// parse date to locale string
-	const parseDate = date => {
-		const options = {
-			year: 'numeric',
-			month: 'short',
-			day: 'numeric',
-			hour12: true,
-		}
-		return new Date(date).toLocaleTimeString('en-US', options)
-	}
-
-	// handle double click
-	const handleDoubleClick = (e, _id) => {
-		e.preventDefault()
-		console.log('double click')
-		// console.log(e.target)
-	}
-
 	return (
 		<div className='App'>
 			{login ? (
@@ -90,41 +66,17 @@ const App = () => {
 						{messages.length === 0 ? (
 							<p style={{ color: '#ccc', textAlign: 'center' }}> No messages... </p>
 						) : (
-							messages.map(({ name, body, createdAt, _id }, i) => (
+							messages.map((message, i) => (
 								<div className='App-wrapper' key={i}>
-									{name === username ? (
-										<div
-											className={`App-message right${i === 0 || messages[i - 1].name !== name || getTimeDifference(messages[i - 1].createdAt, createdAt) > 1 ? ' first' : ''}${
-												i === messages.length - 1 || messages[i + 1].name !== name || getTimeDifference(createdAt, messages[i + 1].createdAt) > 1 ? ' last' : ''
-											} ${isEmoji(body) ? 'emoji' : 'text'}`}
-											onDoubleClick={e => handleDoubleClick(e, _id)}>
-											{body}
-											<Toolbar />
-											<div className='time right'>{parseDate(createdAt)}</div>
-										</div>
-									) : (
-										<>
-											<div className='name'>{i === 0 || messages[i - 1].name !== name || getTimeDifference(messages[i - 1].createdAt, createdAt) > 1 ? name : null}</div>
-											{/* <Tooltip placement='right' title={parseDate(createdAt)}> */}
-											<div
-												className={`App-message left${i === 0 || messages[i - 1].name !== name || getTimeDifference(messages[i - 1].createdAt, createdAt) > 1 ? ' first' : ''}${
-													i === messages.length - 1 || messages[i + 1].name !== name || getTimeDifference(createdAt, messages[i + 1].createdAt) > 1 ? ' last' : ''
-												} ${isEmoji(body) ? 'emoji' : 'text'}`}
-												onDoubleClick={handleDoubleClick}>
-												{i === messages.length - 1 || messages[i + 1].name !== name || getTimeDifference(createdAt, messages[i + 1].createdAt) > 1 ? (
-													<Tooltip placement='top' title={name}>
-														<Avatar size={27} style={{ backgroundColor: '#ebebeb' }} src={`//joeschmoe.io/api/v1/${name.toLowerCase()}`} alt={name}>
-															{name}
-														</Avatar>
-													</Tooltip>
-												) : null}
-												{body}
-												<Toolbar />
-												<div className='time left'>{parseDate(createdAt)}</div>
-											</div>
-											{/* </Tooltip> */}
-										</>
-									)}
+									<Message
+										username={username}
+										direction={message.name === username ? 'right' : 'left'}
+										message={message}
+										first={i === 0 || messages[i - 1].name !== message.name || getTimeDifference(messages[i - 1].createdAt, message.createdAt) > 1}
+										last={i === messages.length - 1 || messages[i + 1].name !== message.name || getTimeDifference(message.createdAt, messages[i + 1].createdAt) > 1}
+										loveMessage={loveMessage}
+										deleteMessage={deleteMessage}
+									/>
 								</div>
 							))
 						)}

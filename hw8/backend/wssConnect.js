@@ -24,6 +24,17 @@ const initData = ws => {
 		})
 }
 
+const saveData = async (wss, ws, payload) => {
+	const { name, body } = payload
+	const message = new Message({ name, body })
+	try {
+		await message.save()
+		broadcastMessage(['output', [message]], wss, ws, { type: 'success', msg: 'Message sent.' }, {})
+	} catch (e) {
+		console.error('Message DB save error: ' + e)
+	}
+}
+
 /**
  * Broadcast message to all clients
  * @param {Array} data - [task, payload]
@@ -38,4 +49,4 @@ const broadcastMessage = (data, wss, ws, status, broadCastStatus) => {
 	})
 }
 
-export { sendData, sendStatus, sendMessage, initData, broadcastMessage }
+export { sendData, sendStatus, sendMessage, initData, saveData, broadcastMessage }

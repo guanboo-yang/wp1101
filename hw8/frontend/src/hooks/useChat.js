@@ -9,23 +9,43 @@ const useChat = () => {
 	client.onmessage = byteString => {
 		const { data } = byteString
 		const [task, payload] = JSON.parse(data)
-		console.log(payload)
+		// console.log(payload)
 		switch (task) {
 			case 'init': {
 				setMessages(() => payload)
 				break
 			}
 			case 'output': {
+				// console.log(payload)
+				// let temp = []
+				// for (let i = 0; i < messages.length; i++) {
+				// 	temp.push(messages[i])
+				// }
+				// temp.push(payload[0])
+				// console.log(temp)
+				// setMessages(() => temp)
 				setMessages(() => [...messages, ...payload])
 				break
 			}
 			case 'status': {
+				// console.log(payload)
 				setStatus(payload)
 				break
 			}
 			case 'cleared': {
 				setMessages(() => [])
-				console.log('clear')
+				break
+			}
+			case 'love': {
+				console.log('love')
+				// filter element with _id in messages and change to payload
+				console.log(payload._id, messages)
+				setMessages(() => messages.map(message => (message._id === payload._id ? payload : message)))
+				break
+			}
+			case 'delete': {
+				console.log('delete')
+				setMessages(() => messages.filter(message => message._id !== payload._id))
 				break
 			}
 			default:
@@ -34,6 +54,7 @@ const useChat = () => {
 	}
 
 	const sendData = async data => {
+		console.log(data)
 		await client.send(JSON.stringify(data))
 	}
 
@@ -53,6 +74,14 @@ const useChat = () => {
 		sendData(['logout', payload])
 	}
 
+	const loveMessage = payload => {
+		sendData(['love', payload])
+	}
+
+	const deleteMessage = payload => {
+		sendData(['delete', payload])
+	}
+
 	return {
 		status,
 		messages,
@@ -60,6 +89,8 @@ const useChat = () => {
 		sendMessage,
 		clearMessages,
 		logoutMessage,
+		loveMessage,
+		deleteMessage,
 	}
 }
 export default useChat

@@ -4,7 +4,8 @@ import mongoose from 'mongoose'
 import express from 'express'
 import Message from './model'
 import http from 'http'
-import { sendMessage, initData, broadcastMessage } from './wssConnect'
+import { dataInit } from './setup'
+import { sendMessage, initData, saveData, broadcastMessage } from './wssConnect'
 // import cors from 'cors'
 
 dotenv.config()
@@ -12,6 +13,7 @@ import WebSocket from 'ws'
 const PORT = process.env.PORT || 4000
 /* define your own port or use 4000 as default port */
 const MONGODB_URL = process.env.MONGODB_URL || 'mongodb://127.0.0.1:27017'
+// define your own mongodb url
 const db = mongoose.connection
 const app = express()
 const server = http.createServer(app)
@@ -24,24 +26,16 @@ mongoose
 	.catch(err => console.error(err.message))
 
 db.once('open', () => {
+	dataInit()
 	console.log('MongoDB connected!')
 	wss.on('connection', ws => {
-		// Define WebSocket connection logic
 		initData(ws)
 		ws.onmessage = async byteString => {
 			const { data } = byteString
 			const [task, payload] = JSON.parse(data)
 			switch (task) {
 				case 'input': {
-					const { name, body } = payload
-					const message = new Message({ name, body })
-					try {
-						await message.save((e, o) => {
-							broadcastMessage(['output', [{ _id: o.id, ...payload }]], wss, ws, { type: 'success', msg: 'Message sent.' }, {})
-						})
-					} catch (e) {
-						console.error('Message DB save error: ' + e)
-					}
+					saveData(wss, ws, payload)
 					break
 				}
 				case 'clear': {
@@ -61,11 +55,39 @@ db.once('open', () => {
 					broadcastMessage(null, wss, ws, { type: 'info', msg: 'Goodbye~' }, { type: 'info', msg: `${name} leave the room` })
 					break
 				}
+				case 'love': {
+					const { name, _id } = payload
+					// console.log(`${name} love ${_id}`)
+					try {
+						const msg = await Message.findOne({ _id })
+						if (msg.love.includes(name)) {
+							msg.love = msg.love.filter(n => n !== name)
+						} else {
+							msg.love.push(name)
+						}
+						msg.save()
+						broadcastMessage(['love', msg], wss, ws, {}, {})
+					} catch (err) {
+						console.log(err)
+					}
+					break
+				}
+				case 'delete': {
+					const { _id } = payload
+					// console.log(`${_id} deleted`)
+					try {
+						Message.deleteOne({ _id }, () => {
+							broadcastMessage(['delete', { _id }], wss, ws, {}, {})
+						})
+					} catch (err) {
+						console.log(err)
+					}
+					break
+				}
 				default:
 					break
 			}
 		}
-		// close ws
 		ws.on('close', () => console.log('close'))
 	})
 	server.listen(PORT, () => console.log(`Listening on http://localhost:${PORT}`))

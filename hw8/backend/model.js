@@ -18,6 +18,10 @@ const MessageSchema = new Schema({
 		type: Schema.Types.ObjectId,
 		ref: 'Message',
 	},
+	love: {
+		type: [String],
+		default: [],
+	},
 })
 // Creating a table within database with the defined schema
 const Message = mongoose.model('Message', MessageSchema)

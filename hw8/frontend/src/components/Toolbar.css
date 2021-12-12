@@ -1,3 +1,23 @@
-.Toolbar {
+.App-wrapper .Toolbar {
+	color: grey;
 	position: absolute;
+	font-size: 16px;
+	top: -4px;
+	opacity: 0;
+	white-space: nowrap;
+	transition: opacity 0.2s ease-in-out 100ms;
+}
+
+.App-wrapper .Toolbar.left {
+	right: -2px;
+	transform: translateX(100%);
+}
+
+.App-wrapper .Toolbar.right {
+	left: -2px;
+	transform: translateX(-100%);
+}
+
+.App-wrapper:hover .Toolbar {
+	opacity: 1;
 }

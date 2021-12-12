@@ -1,8 +1,6 @@
 import './App.css'
 import { useState, useEffect, useRef } from 'react'
-import { Button, Input, Avatar, message, Tooltip } from 'antd'
-import { HeartFilled } from '@ant-design/icons'
-import Toolbar from './components/Toolbar'
+import { Button, Input, message } from 'antd'
 import useChat from './hooks/useChat'
 import useStorage from './hooks/useStorage'
 import Message from './components/Message'
@@ -40,11 +38,11 @@ const App = () => {
 	useEffect(() => {
 		// messagesRef.current.scrollTop = messagesRef.current.scrollHeight
 		messagesRef.current?.scrollTo({ top: messagesRef.current.scrollHeight, behavior: 'smooth' })
-	}, [messages])
+	}, [messages.length])
 
 	const handleLogout = () => {
 		logoutMessage({ name: username })
-		removeName()
+		// removeName()
 		removeLogin()
 	}
 

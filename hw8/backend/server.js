@@ -46,13 +46,13 @@ db.once('open', () => {
 				}
 				case 'login': {
 					const { name } = payload
-					broadcastMessage(null, wss, ws, { type: 'info', msg: 'Welcome!' }, { type: 'info', msg: `${name} enter the room` })
+					broadcastMessage(null, wss, ws, { type: 'info', msg: 'Welcome!' }, { type: 'info', msg: `${name} entered the room` })
 					break
 				}
 				case 'logout': {
 					const { name } = payload
-					console.log(`${name} logout`)
-					broadcastMessage(null, wss, ws, { type: 'info', msg: 'Goodbye~' }, { type: 'info', msg: `${name} leave the room` })
+					// console.log(`${name} logout`)
+					broadcastMessage(null, wss, ws, { type: 'info', msg: 'Goodbye~' }, { type: 'info', msg: `${name} left the room` })
 					break
 				}
 				case 'love': {
@@ -88,7 +88,9 @@ db.once('open', () => {
 					break
 			}
 		}
-		ws.on('close', () => console.log('close'))
+		ws.on('close', () => {
+			// console.log('close')
+		})
 	})
 	server.listen(PORT, () => console.log(`Listening on http://localhost:${PORT}`))
 })

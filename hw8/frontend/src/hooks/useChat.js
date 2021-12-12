@@ -16,14 +16,6 @@ const useChat = () => {
 				break
 			}
 			case 'output': {
-				// console.log(payload)
-				// let temp = []
-				// for (let i = 0; i < messages.length; i++) {
-				// 	temp.push(messages[i])
-				// }
-				// temp.push(payload[0])
-				// console.log(temp)
-				// setMessages(() => temp)
 				setMessages(() => [...messages, ...payload])
 				break
 			}
@@ -54,7 +46,6 @@ const useChat = () => {
 	}
 
 	const sendData = async data => {
-		console.log(data)
 		await client.send(JSON.stringify(data))
 	}
 

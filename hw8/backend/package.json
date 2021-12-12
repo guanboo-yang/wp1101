@@ -5,7 +5,7 @@
 	"author": "GuanBo Yang <andrew3459004@gmail.com> (https://guanboo-yang.github.io/)",
 	"license": "MIT",
 	"scripts": {
-		"server": "nodemon server.js --ext js --exec babel-node"
+		"server": "nodemon --trace-warnings server.js --ext js --exec babel-node"
 	},
 	"dependencies": {
 		"express": "^4.17.1",

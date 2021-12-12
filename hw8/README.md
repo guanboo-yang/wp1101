@@ -10,9 +10,9 @@
 
 ### Screenshot
 
-<div style="text-align: center">
+<p align="center">
 	<img src="Screenshot.png" alt="Screenshot" style="width:500px">
-</div>
+</p>
 
 ### Basic Features
 

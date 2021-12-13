@@ -26,7 +26,7 @@ mongoose
 	.catch(err => console.error(err.message))
 
 db.once('open', () => {
-	dataInit()
+	// dataInit()
 	console.log('MongoDB connected!')
 	wss.on('connection', ws => {
 		initData(ws)

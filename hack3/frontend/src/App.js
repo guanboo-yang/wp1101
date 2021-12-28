@@ -1,25 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+// mui
+import CssBaseline from "@mui/material/CssBaseline";
+// components
+import Bar from "./components/Bar";
+// containers
+import Dashboard from "./containers/Dashboard";
+import CreateTaskModal from "./containers/CreateTaskModal";
 
-function App() {
+export default function App() {
+  // CreateTaskModal control
+  const [openCreateTaskModal, setOpenCreateTaskModal] = useState(false);
+  const handleOpenCreateTaskModal = () => {
+    setOpenCreateTaskModal(true);
+  };
+  const handleCloseCreateTaskModal = () => {
+    setOpenCreateTaskModal(false);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <CssBaseline />
+      <div style={{ backgroundColor: "#f5f5f5", height: "100vh" }}>
+        <Bar handleOpenCreateTaskModal={handleOpenCreateTaskModal} />
+        <Dashboard />
+        <CreateTaskModal
+          open={openCreateTaskModal}
+          handleCloseCreateTaskModal={handleCloseCreateTaskModal}
+        />
+      </div>
     </div>
   );
 }
-
-export default App;

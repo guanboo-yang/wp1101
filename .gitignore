@@ -141,3 +141,7 @@ ehthumbs.db
 .Spotlight-V100
 .Trashes
 *.swp
+
+*test*
+*.txt
+lock

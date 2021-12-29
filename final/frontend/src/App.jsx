@@ -1,6 +1,7 @@
 import './App.css'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { Appbar, Chat, NotFound, Playground } from './components'
+import { Appbar, NotFound } from './components'
+import { Chat, Playground } from './containers'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { Toolbar, Box } from '@mui/material'
 import { useDarkMode } from './hooks'

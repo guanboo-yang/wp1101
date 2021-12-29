@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react'
 
 import { Tab, Tabs, AppBar, Toolbar, Typography, IconButton, Avatar, Menu, MenuItem } from '@mui/material'
 import { NavLink, useLocation } from 'react-router-dom'
-import { useStorage } from '../../hooks'
+import { useStorage } from '../hooks'
 import { useTheme, useScrollTrigger } from '@mui/material'
-import { useUser } from '../../hooks/useUser'
+import { useUser } from '../hooks/useUser'
 import RocketIcon from '@mui/icons-material/Rocket'
 
 const Appbar = ({ setDarkMode, darkMode, links }) => {

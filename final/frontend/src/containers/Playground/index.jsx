@@ -15,7 +15,7 @@ const Playground = () => {
 	// draw on canvas
 	useEffect(() => {
 		drawSquare()
-	}, [])
+	}, []) // eslint-disable-line react-hooks/exhaustive-deps
 
 	return (
 		<div align='center'>

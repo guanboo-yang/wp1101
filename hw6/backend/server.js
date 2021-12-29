@@ -22,8 +22,4 @@ app.listen(PORT, () => {
 
 // const http = require('http')
 // const server = http.createServer(app)
-// server.listen(4000, '127.0.0.1', () => {
-// 	server.close(() => {
-// 		server.listen(4000, 'IP_ADDRESS')
-// 	})
-// })
+// server.listen(4000, 'IP_ADDRESS')

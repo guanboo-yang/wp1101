@@ -57,7 +57,7 @@
 .cell.faint::after {
 	background: black;
 	background: radial-gradient(circle, #555 0%, #000 80%);
-	opacity: 0.3;
+	opacity: 0.2;
 }
 
 .dark .cell.white::after {
@@ -73,7 +73,7 @@
 }
 
 .dark .cell.faint::after {
-	opacity: 0.5;
+	opacity: 0.4;
 }
 
 .cell:hover {

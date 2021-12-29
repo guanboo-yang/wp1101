@@ -9,15 +9,16 @@ const Home = ({ setStatus, setGame }) => {
 		<>
 			<h1>Home Page</h1>
 			<h2>
-				Press{' '}
-				<span className='btn' onClick={() => setGame('guess')}>
-					guess
-				</span>{' '}
-				or{' '}
-				<span className='btn' onClick={() => setGame('othello')}>
-					othello
-				</span>{' '}
-				to start game
+				{'Press '}
+				<div className='game btn-group'>
+					<span className='btn' onClick={() => setGame('guess')}>
+						guess
+					</span>
+					<span className='btn' onClick={() => setGame('othello')}>
+						othello
+					</span>
+				</div>
+				{' to Start!'}
 			</h2>
 		</>
 	)

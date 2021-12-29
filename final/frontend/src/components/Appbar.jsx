@@ -5,14 +5,16 @@ import { NavLink, useLocation } from 'react-router-dom'
 import { useStorage } from '../hooks'
 import { useTheme, useScrollTrigger } from '@mui/material'
 import { useUser } from '../hooks/useUser'
+import Settings from './Settings'
 import RocketIcon from '@mui/icons-material/Rocket'
 
-const Appbar = ({ setDarkMode, darkMode, links }) => {
-	const { user } = useUser()
+const Appbar = ({ links }) => {
+	const { user, setDarkMode, darkMode } = useUser()
 	const [auth, setAuth] = useState(false)
 	// const [drawer, setDrawer] = useState(false)
 	const [tabValue, setTabValue] = useStorage('tabvalue', 0, window.sessionStorage)
 	const [userMenuAnchorEl, setUserMenuAnchorEl] = useState(null)
+	const [openSettings, setOpenSettings] = useState(false)
 	const theme = useTheme()
 	const location = useLocation()
 
@@ -102,7 +104,7 @@ const Appbar = ({ setDarkMode, darkMode, links }) => {
 						{auth ? (
 							<div>
 								<MenuItem onClick={handleLogout}>Logout</MenuItem>
-								<MenuItem>Setting⌘S</MenuItem>
+								<MenuItem onClick={() => setOpenSettings(true)}>Setting⌘S</MenuItem>
 								<MenuItem onClick={() => setDarkMode(!darkMode)}>Change Mode</MenuItem>
 							</div>
 						) : (
@@ -115,6 +117,7 @@ const Appbar = ({ setDarkMode, darkMode, links }) => {
 					</Menu>
 				</Toolbar>
 			</AppBar>
+			<Settings open={openSettings} setOpen={setOpenSettings} />
 		</>
 	)
 }

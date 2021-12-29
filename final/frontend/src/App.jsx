@@ -4,15 +4,15 @@ import { Appbar, NotFound } from './components'
 import { Chat, Playground } from './containers'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { Toolbar, Box } from '@mui/material'
-import { useDarkMode } from './hooks'
+import { useUser } from './hooks/useUser'
 
 const App = () => {
-	const [darkMode, setDarkMode] = useDarkMode()
-
 	const links = [
 		{ name: 'Playground', path: '/', element: <Playground /> },
 		{ name: 'Chat', path: '/chat', element: <Chat /> },
 	]
+
+	const { darkMode } = useUser()
 
 	const theme = createTheme({
 		typography: {
@@ -41,7 +41,7 @@ const App = () => {
 		<ThemeProvider theme={theme}>
 			<div className='App' style={{ color: theme.palette.secondary.main, background: theme.palette.primary.main }}>
 				<Router>
-					<Appbar setDarkMode={setDarkMode} darkMode={darkMode} links={links} />
+					<Appbar links={links} />
 					<Toolbar />
 					<Box component='main' sx={{ p: 3 }}>
 						<Routes>

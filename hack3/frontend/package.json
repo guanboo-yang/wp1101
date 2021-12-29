@@ -15,7 +15,6 @@
     "@testing-library/user-event": "^13.5.0",
     "apollo-link-ws": "^1.0.20",
     "graphql": "^16.2.0",
-    "moment": "^2.29.1",
     "react": "^17.0.2",
     "react-apollo": "^3.1.5",
     "react-beautiful-dnd": "^13.1.0",
@@ -48,5 +47,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "moment": "^2.29.1"
   }
 }

@@ -8,7 +8,8 @@ const Playground = () => {
 	// draw square
 	const drawSquare = () => {
 		ctx = canvasRef.current.getContext('2d')
-		ctx.fillStyle = '#1b5678'
+		ctx.fillStyle = '#123456'
+		// ctx.fillStyle = '#1b5678'
 		ctx.fillRect(0, 0, 500, 500)
 	}
 
@@ -18,14 +19,17 @@ const Playground = () => {
 	}, []) // eslint-disable-line react-hooks/exhaustive-deps
 
 	return (
-		<div align='center'>
-			<h1>Playground</h1>
-			<canvas //
-				ref={canvasRef}
-				width='500'
-				height='500'
-			/>
-		</div>
+		<>
+			<div align='center'>
+				<h1>Playground</h1>
+				<canvas //
+					ref={canvasRef}
+					width='500'
+					height='500'
+					style={{ border: '4px solid white', borderRadius: '8px' }}
+				/>
+			</div>
+		</>
 	)
 }
 

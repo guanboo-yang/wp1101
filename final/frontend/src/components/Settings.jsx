@@ -1,4 +1,4 @@
-import { Box, Button, Modal, Typography } from '@mui/material'
+import { Box, Button, Chip, Modal, Typography } from '@mui/material'
 import { useUser } from '../hooks/useUser'
 import { useEffect, useCallback } from 'react'
 
@@ -52,6 +52,11 @@ const Settings = ({ open, setOpen }) => {
 						Color Mode:
 						<Button sx={{ ml: 2 }} variant='contained' size='small' color='secondary' onClick={() => setDarkMode(!darkMode)}>
 							{darkMode ? 'Dark' : 'Light'}
+						</Button>
+					</Typography>
+					<Typography sx={{ mt: 2 }} variant='body1' color='secondary' noWrap align='center'>
+						<Button variant='contained' size='small' color='secondary' onClick={handleClose}>
+							Close
 						</Button>
 					</Typography>
 				</Box>

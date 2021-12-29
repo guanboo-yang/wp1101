@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { Tab, Tabs, AppBar, Toolbar, Typography, IconButton, Avatar, Menu, MenuItem } from '@mui/material'
+import { Tab, Tabs, AppBar, Toolbar, Typography, IconButton, Avatar, Menu, MenuItem, Chip } from '@mui/material'
 import { NavLink, useLocation } from 'react-router-dom'
 import { useStorage } from '../hooks'
 import { useTheme, useScrollTrigger } from '@mui/material'
@@ -104,7 +104,10 @@ const Appbar = ({ links }) => {
 						{auth ? (
 							<div>
 								<MenuItem onClick={handleLogout}>Logout</MenuItem>
-								<MenuItem onClick={() => setOpenSettings(true)}>Setting⌘S</MenuItem>
+								<MenuItem onClick={() => setOpenSettings(true)}>
+									Setting
+									<Chip sx={{ ml: 1 }} label='?' size='small' />
+								</MenuItem>
 								<MenuItem onClick={() => setDarkMode(!darkMode)}>Change Mode</MenuItem>
 							</div>
 						) : (

@@ -1,29 +1,34 @@
 import React from 'react'
-import { Grid, Paper } from '@mui/material'
+import { Grid, Paper, Chip } from '@mui/material'
 import { styled } from '@mui/system'
 import { sampleChat as messages } from './sampleChat'
+import { useUser } from '../../hooks/useUser'
 
 const Item = styled(Paper)(({ theme }) => ({
 	padding: theme.spacing(2),
+	backgroundColor: theme.palette.primary.main,
 	textAlign: 'center',
+	height: '70vh',
 }))
 
 const Chat = () => {
-	console.log(messages)
+	const { user } = useUser()
 	return (
-		<Grid container spacing={3} justifyContent='center'>
-			<Grid item xs={5}>
-				<Item variant='outlined'>
-					<h1>Chat</h1>
-					{messages.map((message, index) => (
-						<div key={index}>
-							<h3>{message.name}</h3>
-							<p>{message.body}</p>
-						</div>
-					))}
-				</Item>
+		<div align='center'>
+			<h1>Chat</h1>
+			<Grid container spacing={3} justifyContent='center'>
+				<Grid item xs={5}>
+					<Item variant='none'>
+						{messages.map((message, index) => (
+							<Paper variant='none' key={index} sx={{ my: 1, backgroundColor: 'inherit' }} align={user === message.name ? 'right' : 'left'}>
+								{user !== message.name && <Chip label={message.name} size='small' color='secondary' sx={{ mr: 1 }} />}
+								{message.body}
+							</Paper>
+						))}
+					</Item>
+				</Grid>
 			</Grid>
-		</Grid>
+		</div>
 	)
 }
 

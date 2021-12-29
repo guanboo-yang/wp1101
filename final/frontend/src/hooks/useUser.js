@@ -9,7 +9,7 @@ const UserContext = createContext({
 })
 
 const UserProvider = ({ children }) => {
-	const [user, setUser] = useState('tristan')
+	const [user, setUser] = useState('Tristan')
 	const [darkMode, setDarkMode] = useDarkMode()
 
 	return (

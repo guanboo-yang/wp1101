@@ -1,25 +1,21 @@
 import './App.css'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import NotFound from './components/NotFound'
-import Appbar from './components/Appbar'
-import Chat from './components/Chat'
-import Calender from './components/Calender'
+import { Appbar, Chat, NotFound, Playground } from './components'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { Toolbar, Box } from '@mui/material'
-import useDarkMode from './hooks/useDarkMode'
+import { useDarkMode } from './hooks'
 
 const App = () => {
 	const [darkMode, setDarkMode] = useDarkMode()
 
 	const links = [
-		{ name: 'Home', path: '/', element: <h1>Home</h1> },
+		{ name: 'Playground', path: '/', element: <Playground /> },
 		{ name: 'Chat', path: '/chat', element: <Chat /> },
-		{ name: 'Calender', path: '/calender', element: <Calender /> },
 	]
 
 	const theme = createTheme({
 		typography: {
-			fontFamily: '"Lato", "Roboto", "Helvetica", "Arial", sans-serif',
+			fontFamily: '"Bungee", "Roboto", "Helvetica", "Arial", sans-serif',
 			fontSize: 14,
 			fontWeightLight: 400,
 			fontWeightRegular: 500,
@@ -30,20 +26,12 @@ const App = () => {
 			mode: darkMode ? 'dark' : 'light',
 			...(darkMode
 				? {
-						primary: {
-							main: '#000000',
-						},
-						secondary: {
-							main: '#ffffff',
-						},
+						primary: { main: '#123456' },
+						secondary: { main: '#ffffff' },
 				  }
 				: {
-						primary: {
-							main: '#ffffff',
-						},
-						secondary: {
-							main: '#123456',
-						},
+						primary: { main: '#ffffff' },
+						secondary: { main: '#123456' },
 				  }),
 		},
 	})

@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react'
 
 import { Tab, Tabs, AppBar, Toolbar, Typography, IconButton, Avatar, Menu, MenuItem } from '@mui/material'
 import { NavLink, useLocation } from 'react-router-dom'
-import useStorage from '../hooks/useStorage'
+import { useStorage } from '../../hooks'
 import { useTheme, useScrollTrigger } from '@mui/material'
-import { useUser } from '../hooks/useUser'
+import { useUser } from '../../hooks/useUser'
+import RocketIcon from '@mui/icons-material/Rocket'
 
 const Appbar = ({ setDarkMode, darkMode, links }) => {
 	const { user } = useUser()
@@ -28,6 +29,14 @@ const Appbar = ({ setDarkMode, darkMode, links }) => {
 
 	const trigger = useScrollTrigger({ disableHysteresis: true, threshold: 0 })
 
+	const handleLogin = () => {
+		setAuth(true)
+	}
+
+	const handleLogout = () => {
+		setAuth(false)
+	}
+
 	const handleOpenUserMenu = event => {
 		setUserMenuAnchorEl(event.currentTarget)
 	}
@@ -44,8 +53,10 @@ const Appbar = ({ setDarkMode, darkMode, links }) => {
 				position='fixed'
 				sx={{ /* zIndex: theme => theme.zIndex.drawer + 1, */ backgroundColor: theme.palette.primary.main }}>
 				<Toolbar>
-					<Typography variant='h6' color='secondary' noWrap>
-						Chat App
+					{/* rocket */}
+					<RocketIcon sx={{ mr: 1 }} />
+					<Typography variant='h5' color='secondary' noWrap>
+						Astro Party
 					</Typography>
 					<Tabs //
 						value={tabValue}
@@ -60,18 +71,26 @@ const Appbar = ({ setDarkMode, darkMode, links }) => {
 								component={NavLink}
 								to={path}
 								value={path}
+								sx={{ fontSize: theme => theme.typography.body1.fontSize }}
 							/>
 						))}
 					</Tabs>
+					<Typography variant='h5' color='secondary' noWrap>
+						{user}
+					</Typography>
 					<IconButton //
-						color='inherit'
 						disableRipple
 						onClick={handleOpenUserMenu}
 						// onMouseOver={handleOpenUserMenu}
 					>
-						<Avatar
-							color='secondary'
-							sx={{ background: theme.palette.primary.main, border: `2px solid ${theme.palette.secondary.main}`, width: 35, height: 35, color: theme.palette.secondary.main }}
+						<Avatar //
+							sx={{
+								color: theme.palette.secondary.main,
+								background: theme.palette.primary.main,
+								border: `2px solid ${theme.palette.secondary.main}`,
+								width: 35,
+								height: 35,
+							}}
 							src={auth ? `//joeschmoe.io/api/v1/${user}` : ''}></Avatar>
 						{/* src={auth ? `https://i.imgur.com/Uo5wIGM.png` : ''}></Avatar> */}
 					</IconButton>
@@ -82,13 +101,13 @@ const Appbar = ({ setDarkMode, darkMode, links }) => {
 						MenuListProps={{ onMouseLeave: handleCloseUserMenu }}>
 						{auth ? (
 							<div>
-								<MenuItem onClick={() => setAuth(false)}>Logout</MenuItem>
-								<MenuItem>Setting</MenuItem>
+								<MenuItem onClick={handleLogout}>Logout</MenuItem>
+								<MenuItem>Setting⌘S</MenuItem>
 								<MenuItem onClick={() => setDarkMode(!darkMode)}>Change Mode</MenuItem>
 							</div>
 						) : (
 							<div>
-								<MenuItem onClick={() => setAuth(true)}>Login</MenuItem>
+								<MenuItem onClick={handleLogin}>Login</MenuItem>
 								<MenuItem>Sign Up</MenuItem>
 								<MenuItem onClick={() => setDarkMode(!darkMode)}>Change Mode</MenuItem>
 							</div>

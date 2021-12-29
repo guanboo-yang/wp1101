@@ -15,6 +15,12 @@ const Chat = () => {
 			<Grid item xs={5}>
 				<Item variant='outlined'>
 					<h1>Chat</h1>
+					{messages.map((message, index) => (
+						<div key={index}>
+							<h3>{message.name}</h3>
+							<p>{message.body}</p>
+						</div>
+					))}
 				</Item>
 			</Grid>
 		</Grid>

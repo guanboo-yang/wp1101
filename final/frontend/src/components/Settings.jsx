@@ -1,6 +1,6 @@
-import { Box, Button, Chip, Modal, Typography } from '@mui/material'
+import { Box, Button, Modal, Typography } from '@mui/material'
 import { useUser } from '../hooks/useUser'
-import { useEffect, useCallback } from 'react'
+import { useEventListener } from '../hooks'
 
 const style = {
 	color: 'secondary.main',
@@ -19,27 +19,18 @@ const style = {
 }
 
 const Settings = ({ open, setOpen }) => {
-	const handleOpen = () => setOpen(true)
 	const handleClose = () => setOpen(false)
+	const handleToggle = () => setOpen(!open)
 	const { darkMode, setDarkMode } = useUser()
 
-	const handleKeyPress = useCallback(e => {
+	useEventListener('keydown', e => {
 		if (e.key === '?' && e.shiftKey) {
-			handleOpen()
+			handleToggle()
 		}
 		if (e.key === 'Esc') {
 			handleClose()
 		}
-	}, []) // eslint-disable-line react-hooks/exhaustive-deps
-
-	useEffect(() => {
-		window.addEventListener('keydown', handleKeyPress)
-		return () => window.removeEventListener('keydown', handleKeyPress)
-	}, [handleKeyPress])
-
-	useEffect(() => {
-		console.log(open)
-	}, [open])
+	})
 
 	return (
 		<>

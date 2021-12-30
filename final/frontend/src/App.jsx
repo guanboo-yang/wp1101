@@ -1,10 +1,15 @@
 import './App.css'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { Appbar, NotFound } from './components'
-import { Chat, Playground } from './containers'
+import { Chat, Playground, Login } from './containers'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { Toolbar, Box } from '@mui/material'
 import { useUser } from './hooks/useUser'
+
+const RequireAuth = ({ children }) => {
+	const { auth } = useUser()
+	return auth ? children : <Navigate to='/login' />
+}
 
 const App = () => {
 	const links = [
@@ -25,6 +30,7 @@ const App = () => {
 		},
 		palette: {
 			mode: darkMode ? 'dark' : 'light',
+			background: { paper: 'none' },
 			...(darkMode
 				? {
 						primary: { main: '#123456' },
@@ -43,11 +49,12 @@ const App = () => {
 				<Router>
 					<Appbar links={links} />
 					<Toolbar />
-					<Box component='main' sx={{ p: 3 }}>
+					<Box component='main'>
 						<Routes>
 							{links.map(({ name, path, element }) => (
-								<Route key={name} path={path} element={element} />
+								<Route key={name} path={path} element={<RequireAuth>{element}</RequireAuth>} />
 							))}
+							<Route path='/login' element={<Login />} />
 							<Route path='*' element={<NotFound />} />
 						</Routes>
 					</Box>

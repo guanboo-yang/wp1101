@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
-
 import { Tab, Tabs, AppBar, Toolbar, Typography, IconButton, Avatar, Menu, MenuItem, Chip } from '@mui/material'
-import { NavLink, useLocation } from 'react-router-dom'
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { useStorage } from '../hooks'
 import { useTheme, useScrollTrigger } from '@mui/material'
 import { useUser } from '../hooks/useUser'
@@ -9,14 +8,14 @@ import Settings from './Settings'
 import RocketIcon from '@mui/icons-material/Rocket'
 
 const Appbar = ({ links }) => {
-	const { user, setDarkMode, darkMode } = useUser()
-	const [auth, setAuth] = useState(false)
+	const { user, auth, darkMode, setDarkMode, logout, setUser } = useUser()
 	// const [drawer, setDrawer] = useState(false)
 	const [tabValue, setTabValue] = useStorage('tabvalue', 0, window.sessionStorage)
 	const [userMenuAnchorEl, setUserMenuAnchorEl] = useState(null)
 	const [openSettings, setOpenSettings] = useState(false)
 	const theme = useTheme()
 	const location = useLocation()
+	const navigate = useNavigate()
 
 	// console.log(theme)
 	// console.log(location)
@@ -29,14 +28,12 @@ const Appbar = ({ links }) => {
 		}
 	}, [location, links, setTabValue])
 
-	const trigger = useScrollTrigger({ disableHysteresis: true, threshold: 0 })
-
-	const handleLogin = () => {
-		setAuth(true)
-	}
+	const trigger = useScrollTrigger({ disableHysteresis: true, threshold: 10 })
 
 	const handleLogout = () => {
-		setAuth(false)
+		logout()
+			.then(() => setUser(null))
+			.then(() => navigate('/login'))
 	}
 
 	const handleOpenUserMenu = event => {
@@ -60,42 +57,49 @@ const Appbar = ({ links }) => {
 					<Typography variant='h5' color='secondary' noWrap>
 						Astro Party
 					</Typography>
-					<Tabs //
-						value={tabValue}
-						aria-label='nav-tab'
-						textColor='secondary'
-						indicatorColor='secondary'
-						style={{ margin: '0 auto' }}>
-						{links.map(({ name, path }) => (
-							<Tab //
-								key={name}
-								label={name}
-								component={NavLink}
-								to={path}
-								value={path}
-								sx={{ fontSize: theme => theme.typography.body1.fontSize }}
-							/>
-						))}
-					</Tabs>
-					<Typography variant='h5' color='secondary' noWrap>
-						{user}
-					</Typography>
-					<IconButton //
-						disableRipple
-						onClick={handleOpenUserMenu}
-						// onMouseOver={handleOpenUserMenu}
-					>
-						<Avatar //
-							sx={{
-								color: theme.palette.secondary.main,
-								background: theme.palette.primary.main,
-								border: `2px solid ${theme.palette.secondary.main}`,
-								width: 35,
-								height: 35,
-							}}
-							src={auth ? `//joeschmoe.io/api/v1/${user}` : ''}></Avatar>
-						{/* src={auth ? `https://i.imgur.com/Uo5wIGM.png` : ''}></Avatar> */}
-					</IconButton>
+					{auth && (
+						<Tabs //
+							value={tabValue}
+							aria-label='nav-tab'
+							textColor='secondary'
+							indicatorColor='secondary'
+							style={{ margin: '0 0 0 auto' }}>
+							{links.map(
+								({ name, path }) =>
+									name !== 'Login' && (
+										<Tab //
+											key={name}
+											label={name}
+											component={NavLink}
+											to={path}
+											value={path}
+											sx={{ fontSize: theme => theme.typography.body1.fontSize }}
+										/>
+									)
+							)}
+						</Tabs>
+					)}
+					<Toolbar disableGutters style={{ margin: '0 0 0 auto' }}>
+						<Typography variant='h5' color='secondary'>
+							{auth && user}
+						</Typography>
+						<IconButton //
+							disableRipple
+							onClick={handleOpenUserMenu}
+							// onMouseOver={handleOpenUserMenu}
+						>
+							<Avatar //
+								sx={{
+									color: theme.palette.secondary.main,
+									background: theme.palette.primary.main,
+									border: `2px solid ${theme.palette.secondary.main}`,
+									width: 35,
+									height: 35,
+								}}
+								src={auth ? `//joeschmoe.io/api/v1/${user}` : ''}></Avatar>
+							{/* src={auth ? `https://i.imgur.com/Uo5wIGM.png` : ''}></Avatar> */}
+						</IconButton>
+					</Toolbar>
 					<Menu //
 						anchorEl={userMenuAnchorEl}
 						open={Boolean(userMenuAnchorEl)}
@@ -106,14 +110,15 @@ const Appbar = ({ links }) => {
 								<MenuItem onClick={handleLogout}>Logout</MenuItem>
 								<MenuItem onClick={() => setOpenSettings(true)}>
 									Setting
-									<Chip sx={{ ml: 1 }} label='?' size='small' />
+									<Chip sx={{ ml: 1 }} label='⇧?' size='small' />
 								</MenuItem>
-								<MenuItem onClick={() => setDarkMode(!darkMode)}>Change Mode</MenuItem>
+								<MenuItem onClick={() => setDarkMode(!darkMode)}>
+									Change Mode
+									<Chip sx={{ ml: 1 }} label='⇧D' size='small' />
+								</MenuItem>
 							</div>
 						) : (
 							<div>
-								<MenuItem onClick={handleLogin}>Login</MenuItem>
-								<MenuItem>Sign Up</MenuItem>
 								<MenuItem onClick={() => setDarkMode(!darkMode)}>Change Mode</MenuItem>
 							</div>
 						)}

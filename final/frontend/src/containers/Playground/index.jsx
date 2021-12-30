@@ -24,9 +24,7 @@ const Playground = () => {
 				<h1>Playground</h1>
 				<canvas //
 					ref={canvasRef}
-					width='500'
-					height='500'
-					style={{ border: '4px solid white', borderRadius: '8px' }}
+					style={{ width: 'min(500px, 90vw)', height: 'min(500px, 90vw)', border: '4px solid white', borderRadius: '8px' }}
 				/>
 			</div>
 		</>

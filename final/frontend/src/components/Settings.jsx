@@ -27,6 +27,9 @@ const Settings = ({ open, setOpen }) => {
 		if (e.key === '?' && e.shiftKey) {
 			handleToggle()
 		}
+		if (e.key === 'D' && e.shiftKey) {
+			setDarkMode(!darkMode)
+		}
 		if (e.key === 'Esc') {
 			handleClose()
 		}

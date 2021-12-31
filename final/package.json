@@ -7,5 +7,6 @@
 		"install:all": "for dir in */; do yarn --cwd \"${dir}\"; done",
 		"start": "yarn --cwd frontend start",
 		"server": "yarn --cwd backend server"
-	}
+	},
+	"devDependencies": {}
 }

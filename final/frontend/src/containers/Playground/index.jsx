@@ -1,6 +1,10 @@
 import { useRef, useEffect } from 'react'
+import {useEventListener} from '../../hooks/index'
+import Logic from '../../hooks/Logic'
 
 const Playground = () => {
+	const {sendData} = Logic()
+
 	// draw canvas
 	const canvasRef = useRef(null)
 	let ctx
@@ -13,9 +17,22 @@ const Playground = () => {
 		ctx.fillRect(0, 0, 500, 500)
 	}
 
+	useEventListener('keydown', e => {
+		if (e.key === 'ArrowRight') {
+			const payload = {task: 'right'}
+			sendData(payload)
+		}else if (e.keyCode === 32){
+			sendData(['shoot'])
+		}
+	})
+
+
 	// draw on canvas
 	useEffect(() => {
 		drawSquare()
+		
+
+
 	}, []) // eslint-disable-line react-hooks/exhaustive-deps
 
 	return (

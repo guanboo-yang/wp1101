@@ -1,6 +1,6 @@
 import './App.css'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
-import { Appbar, NotFound } from './components'
+import { Appbar, NotFound, PreGame } from './components'
 import { Chat, Playground, Login } from './containers'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { Toolbar, Box } from '@mui/material'
@@ -13,7 +13,7 @@ const RequireAuth = ({ children }) => {
 
 const App = () => {
 	const links = [
-		{ name: 'Playground', path: '/', element: <Playground /> },
+		{ name: 'Playground', path: '/', element: <PreGame /> },
 		{ name: 'Chat', path: '/chat', element: <Chat /> },
 	]
 

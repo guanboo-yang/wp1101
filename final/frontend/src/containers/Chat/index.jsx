@@ -16,8 +16,8 @@ const Chat = () => {
 	return (
 		<div align='center'>
 			<h1>Chat</h1>
-			<Grid container spacing={3} justifyContent='center'>
-				<Grid item xs={5}>
+			<Grid container justifyContent='center' spacing={3}>
+				<Grid item xs={12} sm={9} md={6} lg={5}>
 					<Item variant='none'>
 						{messages.map((message, index) => (
 							<Paper variant='none' key={index} sx={{ my: 1, backgroundColor: 'inherit' }} align={user === message.name ? 'right' : 'left'}>

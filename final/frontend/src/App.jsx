@@ -7,8 +7,8 @@ import { Toolbar, Box } from '@mui/material'
 import { useUser } from './hooks/useUser'
 
 const RequireAuth = ({ children }) => {
-	const { auth } = useUser()
-	return auth ? children : <Navigate to='/login' />
+	const { profile } = useUser()
+	return profile ? children : <Navigate to='/login' />
 }
 
 const App = () => {
@@ -30,15 +30,16 @@ const App = () => {
 		},
 		palette: {
 			mode: darkMode ? 'dark' : 'light',
-			background: { paper: 'none' },
 			...(darkMode
 				? {
 						primary: { main: '#123456' },
 						secondary: { main: '#ffffff' },
+						background: { paper: '#123456e9' },
 				  }
 				: {
 						primary: { main: '#ffffff' },
 						secondary: { main: '#123456' },
+						background: { paper: '#ffffffe9' },
 				  }),
 		},
 	})

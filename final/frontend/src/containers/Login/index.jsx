@@ -1,18 +1,25 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useUser } from '../../hooks/useUser'
 import { useNavigate } from 'react-router-dom'
-import { Button, IconButton, InputAdornment, TextField } from '@mui/material'
-import { Visibility, VisibilityOff } from '@mui/icons-material'
+import { Button } from '@mui/material'
+import Input from './Input'
+import { GoogleLogin } from 'react-google-login'
+import { Google } from '@mui/icons-material'
 
 const Login = () => {
-	const { setUser, login } = useUser()
+	const { setProfile } = useUser()
 	const navigate = useNavigate()
+	const [signup, setSignup] = useState(false)
 
-	const handleLogin = () => {
-		if (values.name && values.password) {
-			login()
-				.then(() => setUser(values.name))
-				.then(() => navigate('/'))
+	useEffect(() => {
+		setValues(values => ({ ...values, showPassword: false }))
+	}, [signup])
+
+	const handleSubmit = () => {
+		if (signup) {
+			// handle signup
+		} else {
+			// handle login
 		}
 	}
 
@@ -26,8 +33,9 @@ const Login = () => {
 	}
 
 	const [values, setValues] = useState({
-		name: null,
-		password: null,
+		name: undefined,
+		email: undefined,
+		password: undefined,
 		showPassword: false,
 	})
 
@@ -42,46 +50,65 @@ const Login = () => {
 		})
 	}
 
-	const handleMouseDownPassword = event => {
-		event.preventDefault()
+	const onGoogleSuccess = async res => {
+		const result = res?.profileObj
+		const token = res?.tokenObj?.id_token
+		try {
+			setProfile({ ...result, token })
+			navigate('/')
+		} catch (err) {
+			console.log(err)
+		}
+	}
+
+	const onGoogleFailure = res => {
+		console.log(res)
 	}
 
 	return (
 		<div align='center' style={style}>
 			<h1>Login</h1>
-			<TextField //
-				label='Username'
-				value={values.name}
-				onChange={handleChange('name')}
-				required
-				variant='standard'
-				// margin='dense'
-				type='text'
-				fullWidth
-				color='secondary'
-			/>
-			<TextField //
-				label='Password'
-				value={values.password}
-				onChange={handleChange('password')}
-				required
-				variant='standard'
-				margin='dense'
-				type={values.showPassword ? 'text' : 'password'}
-				fullWidth
-				color='secondary'
-				InputProps={{
-					endAdornment: (
-						<InputAdornment position='end'>
-							<IconButton aria-label='toggle password visibility' onClick={handleClickShowPassword} onMouseDown={handleMouseDownPassword} edge='end'>
-								{values.showPassword ? <VisibilityOff /> : <Visibility />}
-							</IconButton>
-						</InputAdornment>
-					),
-				}}
-			/>
-			<Button variant='contained' color='secondary' onClick={handleLogin} fullWidth sx={{ my: 2 }}>
-				Login
+			<form onSubmit={handleSubmit}>
+				<Input //
+					name='email'
+					label='Email'
+					handlechange={handleChange('email')}
+					type='email'
+					autoFocus
+					value={values.email}
+				/>
+				<Input //
+					name='password'
+					label='Password'
+					handlechange={handleChange('password')}
+					type={values.showPassword ? 'text' : 'password'}
+					handleShowPassword={handleClickShowPassword}
+				/>
+				{signup ? (
+					<Button type='submit' color='secondary' variant='contained' onClick={handleSubmit} fullWidth sx={{ my: 1 }}>
+						Signup
+					</Button>
+				) : (
+					<>
+						<Button type='submit' variant='contained' color='secondary' onClick={handleSubmit} fullWidth sx={{ my: 1 }}>
+							Login
+						</Button>
+						<GoogleLogin //
+							clientId='202508058751-40ie9aunidgnnafl0pdqselm2bb0r6bq.apps.googleusercontent.com'
+							render={renderProps => (
+								<Button color='secondary' variant='contained' onClick={renderProps.onClick} fullWidth sx={{ mt: 0.5 }} disabled={renderProps.disabled} startIcon={<Google />}>
+									Login with Google
+								</Button>
+							)}
+							onSuccess={onGoogleSuccess}
+							onFailure={onGoogleFailure}
+							cookiePolicy='single_host_origin'
+						/>
+					</>
+				)}
+			</form>
+			<Button variant='text' color='secondary' onClick={() => setSignup(!signup)} sx={{ fontSize: theme => theme.typography.caption.fontSize }}>
+				{signup ? 'Already have an account? Log in!' : "Don't have an account? Sign up!"}
 			</Button>
 		</div>
 	)

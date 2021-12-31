@@ -3,41 +3,31 @@ import { useDarkMode, useStorage } from '.'
 
 const UserContext = createContext({
 	user: null,
-	auth: false,
+	profile: null,
 	darkMode: false,
 	setUser: () => {},
-	login: () => {},
+	setProfile: () => {},
 	logout: () => {},
 	setDarkMode: () => {},
 })
 
 const UserProvider = ({ children }) => {
 	const [user, setUser] = useStorage('user', null, window.localStorage)
-	const [auth, setAuth] = useStorage('auth', false, window.localStorage)
+	const [profile, setProfile] = useStorage('profile', null, window.localStorage)
 	const [darkMode, setDarkMode] = useDarkMode()
 
-	const login = () => {
-		return new Promise(resolve => {
-			setAuth(true)
-			resolve()
-		})
-	}
-
 	const logout = () => {
-		return new Promise(resolve => {
-			setAuth(false)
-			resolve()
-		})
+		setProfile(undefined)
 	}
 
 	return (
 		<UserContext.Provider //
 			value={{
 				user,
-				auth,
+				profile,
 				darkMode,
 				setUser,
-				login,
+				setProfile,
 				logout,
 				setDarkMode,
 			}}>

@@ -10,6 +10,10 @@ const LoginPage = () => {
 	const { setLogin, showStatus, setUserName, setFriends, setChatID } = useStatus()
 	const bodyRef = useRef(null)
 	const [loginPage, { error, data }] = useMutation(LOGIN)
+	const options = [
+		{ label: 'login', value: 'login' },
+		{ label: 'register', value: 'register' },
+	]
 
 	useEffect(() => {
 		// != undefined
@@ -38,33 +42,20 @@ const LoginPage = () => {
 
 	const onFinish = async values => {
 		try {
-			await loginPage({
-				variables: {
-					username: values.username,
-					password: values.password,
-					status: values['Account Status'],
-				},
-			})
+			await loginPage({ variables: values })
 		} catch (error) {
 			showStatus({ type: 'error', msg: error.message })
 		}
 	}
 
-	const onFinishFailed = errorInfo => {
-		console.log('Failed:', errorInfo)
+	const onFinishFailed = error => {
+		showStatus({ type: 'error', msg: error })
 	}
 
 	return (
 		<div className='login-page'>
-			<Card hoverable style={{ width: 430 }} cover={<UserOutlined style={{ fontSize: '235px', borderBottom: '1px solid black' }} />}>
-				<Form
-					name='basic'
-					labelCol={{ span: 7 }}
-					wrapperCol={{ span: 14 }}
-					initialValues={{ remember: true }}
-					onFinish={onFinish}
-					onFinishFailed={onFinishFailed}
-					autoComplete='off'>
+			<Card style={{ width: 350, borderRadius: 20 }} cover={<UserOutlined style={{ fontSize: '100px', borderBottom: '2px solid black', padding: 20 }} />}>
+				<Form name='basic' initialValues={{ remember: true }} onFinish={onFinish} onFinishFailed={onFinishFailed} autoComplete='off'>
 					<Form.Item label='Username' name='username' rules={[{ required: true, message: 'Please input your username!' }]}>
 						<Input
 							onKeyDown={e => {
@@ -77,14 +68,11 @@ const LoginPage = () => {
 					<Form.Item label='Password' name='password' rules={[{ required: true, message: 'Please input your password!' }]}>
 						<Input.Password ref={bodyRef} />
 					</Form.Item>
-					<Form.Item name='Account Status' label='Acc Status' rules={[{ required: true }]}>
-						<Radio.Group>
-							<Radio value='create'>Create</Radio>
-							<Radio value='login'>Login</Radio>
-						</Radio.Group>
+					<Form.Item name='status' label='Status' rules={[{ required: true }]}>
+						<Radio.Group options={options} optionType='button' buttonStyle='solid' value='register' />
 					</Form.Item>
-					<Form.Item wrapperCol={{ offset: 0, span: 32 }}>
-						<Button type='primary' htmlType='login' style={{ width: 370, marginRight: 25 }}>
+					<Form.Item>
+						<Button type='primary' block htmlType='login'>
 							Submit
 						</Button>
 					</Form.Item>

@@ -69,7 +69,7 @@ function ChatRoom() {
 				</div>
 				<div className='App-messages' ref={messageRef}>
 					{messages.length === 0 ? (
-						<p style={{ color: '#333' }}> No messages...</p>
+						<p style={{ fontSize: 16, textAlign: 'center' }}> No messages...</p>
 					) : (
 						messages.map(({ name, body }, i) =>
 							name === userName ? (

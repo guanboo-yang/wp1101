@@ -7,7 +7,7 @@ function App() {
 	const { login } = useStatus()
 
 	return (
-		<div className='wrap' style={{ backgroundColor: 'rgba(120, 120, 120, .5)' }}>
+		<div className='wrap' style={{ backgroundColor: '#123456' }}>
 			<Header />
 			{login ? <ChatRoom /> : <LoginPage />}
 		</div>

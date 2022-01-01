@@ -1,52 +1,55 @@
 .App {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  width: 500px;
-  margin: auto;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	height: 100vh;
+	width: 400px;
+	margin: auto;
 }
 
 .App-title {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+	display: flex;
+	/* space between */
+	margin-top: 20px;
+	margin-bottom: -10px;
+	width: 100%;
+	align-items: center;
+	justify-content: space-between;
 }
 
 .App-title h1 {
-  margin: 0;
-  margin-right: 20px;
-  font-size: 3em;
-  color: white;
+	margin: 0;
+	margin-right: 20px;
+	font-size: 2.4em;
+	color: white;
 }
 
 .App-messages {
-  width: 100%;
-  height: 300px;
-  background: #eeeeee52;
-  border-radius: 10px;
-  margin: 20px;
-  padding: 20px;
-  overflow: auto;
+	width: 100%;
+	height: 300px;
+	background: white;
+	border-radius: 3px;
+	margin: 20px;
+	padding: 20px;
+	overflow: auto;
 }
 
-.App-message img{
-  width: 40px;
-  border-radius: 50%;
-  background-color: #333;
+.App-message img {
+	width: 40px;
+	border-radius: 50%;
+	background-color: #333;
 }
 
-.App-message.host img{
-  margin-left: 10px;
+.App-message.host img {
+	margin-left: 10px;
 }
 
-.App-message.client img{
-  margin-right: 10px;
+.App-message.client img {
+	margin-right: 10px;
 }
 
-
-.App-message.host{
-  text-align: right;
-  margin-left: 20px;
+.App-message.host {
+	text-align: right;
+	margin-left: 20px;
 }

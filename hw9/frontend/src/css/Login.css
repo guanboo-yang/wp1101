@@ -1,7 +1,16 @@
-.login-page{
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.login-page {
+	width: 100%;
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.ant-menu-item:hover,
+.ant-menu-item-selected {
+	background-color: inherit !important;
+}
+
+.ant-menu-item-selected .anticon {
+	color: inherit !important;
 }

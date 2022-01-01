@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import { useStatus } from '../hook/useStatus'
 import { MAKE_FRIEND, FRIEND_SUBSCRIPTION } from '../graphql'
 import { useMutation, useSubscription } from '@apollo/client'
-const { SubMenu } = Menu
 
 function Header() {
 	const { login, userName, friends, chatID, setChatID, setFriends, setCurrentID, setCurrentFriend, showStatus } = useStatus()
@@ -41,12 +40,9 @@ function Header() {
 	const makeFriend = async () => {
 		setFriendName('')
 		if (!login) {
-			showStatus({ type: 'error', msg: `Please Login First` })
+			showStatus({ type: 'error', msg: `Please login first` })
 		} else if (friendName === '') {
-			showStatus({
-				type: 'error',
-				msg: `Please Input Your Friend's name`,
-			})
+			showStatus({ type: 'error', msg: `Please input your friend's name` })
 		} else {
 			if (friends.includes(friendName)) {
 				showStatus({
@@ -77,40 +73,39 @@ function Header() {
 	}
 
 	const toRoom = e => {
-		setCurrentID(chatID[e.key - 10])
-		setCurrentFriend(friends[e.key - 10])
+		setCurrentID(chatID[e.key])
+		setCurrentFriend(friends[e.key])
 	}
 
 	return (
 		<Menu mode='horizontal' style={{ position: 'absolute', width: '100%', fontSize: '18px' }} key={-2} theme='dark'>
 			<Menu.Item
-				disabled={true}
-				key={0}
+				key={-1}
 				style={{
 					fontWeight: 'bold',
 					borderRight: '1px solid black',
-					color: 'black',
+					color: 'white',
 				}}>
-				{!userName ? 'Your' : userName}'s Chat Room
+				{!userName ? 'Your' : `${userName}'s`} Chat Room
 			</Menu.Item>
-			<SubMenu key='SubMenu' icon={<CommentOutlined />} title='Open Chat Room'>
+			<Menu.SubMenu key='SubMenu' title='Open Chat Room' icon={<CommentOutlined style={{ fontSize: '20px' }} />}>
 				{friends.map((name, i) => {
 					return (
-						<Menu.Item key={i + 10} onClick={e => toRoom(e)}>
+						<Menu.Item key={i} onClick={e => toRoom(e)}>
 							{name}
 						</Menu.Item>
 					)
 				})}
-			</SubMenu>
-
-			<Menu.SubMenu title='Find Your Friends' key={2} icon={<UsergroupAddOutlined />}>
+			</Menu.SubMenu>
+			<Menu.Item key={-2} icon={<UsergroupAddOutlined style={{ fontSize: '20px' }} />}>
 				<Input.Search
+					style={{ paddingTop: 7, width: 200 }}
 					disabled={buttonDisabled}
-					placeholder="Your Friend's name?"
+					placeholder='Find Your Friends'
 					value={friendName}
 					onChange={e => setFriendName(e.target.value)}
 					onSearch={makeFriend}></Input.Search>
-			</Menu.SubMenu>
+			</Menu.Item>
 		</Menu>
 	)
 }

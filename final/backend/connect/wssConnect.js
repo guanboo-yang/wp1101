@@ -1,6 +1,5 @@
 const sendData = (data, ws) => {
-    ws.send(JSON.stringify(data))
+	ws.send(JSON.stringify(data))
 }
 
-
-module.exports = {sendData}
+export default { sendData }

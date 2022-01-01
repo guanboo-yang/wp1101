@@ -1,8 +1,6 @@
-const sendData = require('../connect/wssConnect')
-const {User, ChatRoom, Message} = require('../models/schemas')
+import sendData from '../connect/wssConnect'
+import { User, ChatRoom, Message } from '../models/schemas'
 
-const userLogin = async (datas, ws) => {
-    
-}
+const userLogin = async (datas, ws) => {}
 
-module.exports = {userLogin}
+export default { userLogin }

@@ -1,6 +1,6 @@
 import './App.css'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
-import { Appbar, NotFound, PreGame } from './components'
+import { Appbar, NotFound } from './components'
 import { Chat, Playground, Login } from './containers'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { Toolbar, Box } from '@mui/material'
@@ -13,7 +13,7 @@ const RequireAuth = ({ children }) => {
 
 const App = () => {
 	const links = [
-		{ name: 'Playground', path: '/', element: <PreGame /> },
+		{ name: 'Playground', path: '/', element: <Playground /> },
 		{ name: 'Chat', path: '/chat', element: <Chat /> },
 	]
 
@@ -32,13 +32,13 @@ const App = () => {
 			mode: darkMode ? 'dark' : 'light',
 			...(darkMode
 				? {
-						primary: { main: '#123456' },
+						primary: { main: '#1f5469' },
 						secondary: { main: '#ffffff' },
-						background: { paper: '#123456e9' },
+						background: { paper: '#1f5469e9' },
 				  }
 				: {
-						primary: { main: '#ffffff' },
-						secondary: { main: '#123456' },
+						primary: { main: '#ffffff', dark: '#91d2c2' },
+						secondary: { main: '#1f5469' },
 						background: { paper: '#ffffffe9' },
 				  }),
 		},
@@ -50,7 +50,7 @@ const App = () => {
 				<Router>
 					<Appbar links={links} />
 					<Toolbar />
-					<Box component='main'>
+					<Box component='main' sx={{ py: 3 }}>
 						<Routes>
 							{links.map(({ name, path, element }) => (
 								<Route key={name} path={path} element={<RequireAuth>{element}</RequireAuth>} />
@@ -58,6 +58,10 @@ const App = () => {
 							<Route path='/login' element={<Login />} />
 							<Route path='*' element={<NotFound />} />
 						</Routes>
+					</Box>
+					{/* hide on md and above */}
+					<Box display={{ xs: 'block', md: 'none' }}>
+						<Toolbar />
 					</Box>
 				</Router>
 			</div>

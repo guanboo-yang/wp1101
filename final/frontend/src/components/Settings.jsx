@@ -55,7 +55,6 @@ const Settings = ({ open, setOpen }) => {
 					</Typography>
 				</Box>
 			</Modal>
-			{open ? 'true' : 'false'}
 		</>
 	)
 }

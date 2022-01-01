@@ -1,41 +1,26 @@
-.PreGame > h1 {
-    margin-top: 30px;
-    margin-bottom: 50px;
-}
-
-.PreGame .container {
-    display: flex;
-}
-
-.PreGame .players {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
 .PreGame .player {
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    background-color: #fff;
-    position: relative;
+	width: 90px;
+	height: 90px;
+	border-radius: 50vh;
+	background-color: #fff;
 }
 
 .PreGame .player img {
-    border-radius: 50%;
+	border-radius: 50%;
 }
 
-.PreGame .player + .player {
-    margin-left: 30px;
+.PreGame .a {
+	position: relative;
 }
 
-.PreGame .player + .player::before {
-    content: '';
-    position: absolute;
-    width: 30px;
-    height: 5px;
-    left: 0;
-    top: 50%;
-    background-color: inherit;
-    transform: translate(-100%, -50%);
+.PreGame .a + .a::before {
+	content: '';
+	position: absolute;
+	width: calc(calc(750px - 360px) / 4);
+	height: 5px;
+	left: 0;
+	top: 50%;
+	background-color: inherit;
+	background-color: white;
+	transform: translate(-100%, -50%);
 }

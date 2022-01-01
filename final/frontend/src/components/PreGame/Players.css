@@ -1,0 +1,3 @@
+.MuiStep-root.Mui-completed + .MuiStep-root.Mui-completed .MuiStepConnector-line {
+	background-color: currentColor;
+}

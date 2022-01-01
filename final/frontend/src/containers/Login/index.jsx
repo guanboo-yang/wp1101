@@ -16,6 +16,7 @@ const Login = () => {
 	}, [signup])
 
 	const handleSubmit = () => {
+		console.log(values)
 		if (signup) {
 			// handle signup
 		} else {
@@ -40,8 +41,8 @@ const Login = () => {
 		showPassword: false,
 	})
 
-	const handleChange = prop => event => {
-		setValues({ ...values, [prop]: event.target.value })
+	const handleChange = e => {
+		setValues({ ...values, [e.target.name]: e.target.value })
 	}
 
 	const handleClickShowPassword = () => {
@@ -74,7 +75,7 @@ const Login = () => {
 					<Input //
 						name='name'
 						label='Name'
-						onChange={handleChange('name')}
+						onChange={handleChange}
 						type='text'
 						autoFocus
 					/>
@@ -82,14 +83,14 @@ const Login = () => {
 				<Input //
 					name='email'
 					label='Email'
-					handlechange={handleChange('email')}
+					handlechange={handleChange}
 					type='email'
 					autoFocus
 				/>
 				<Input //
 					name='password'
 					label='Password'
-					handlechange={handleChange('password')}
+					handlechange={handleChange}
 					type={values.showPassword ? 'text' : 'password'}
 					handleShowPassword={handleClickShowPassword}
 				/>
@@ -97,7 +98,7 @@ const Login = () => {
 					<Input //
 						name='confirmPassword'
 						label='Confirm Password'
-						handlechange={handleChange('confirmPassword')}
+						handlechange={handleChange}
 						type={values.showPassword ? 'text' : 'password'}
 						handleShowPassword={handleClickShowPassword}
 					/>

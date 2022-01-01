@@ -78,7 +78,7 @@ function Header() {
 	}
 
 	return (
-		<Menu mode='horizontal' style={{ position: 'absolute', width: '100%', fontSize: '18px' }} key={-2} theme='dark'>
+		<Menu mode='horizontal' style={{ position: 'absolute', width: '100%', fontSize: '18px', padding: 7 }} key={-2} theme='dark'>
 			<Menu.Item
 				key={-1}
 				style={{
@@ -99,7 +99,8 @@ function Header() {
 			</Menu.SubMenu>
 			<Menu.Item key={-2} icon={<UsergroupAddOutlined style={{ fontSize: '20px' }} />}>
 				<Input.Search
-					style={{ paddingTop: 7, width: 200 }}
+					enterButton='Find'
+					style={{ paddingTop: 7, width: 230 }}
 					disabled={buttonDisabled}
 					placeholder='Find Your Friends'
 					value={friendName}

@@ -1,6 +1,6 @@
 import { Form, Input, Button, Card, Radio } from 'antd'
 import '../css/Login.css'
-import { UserOutlined } from '@ant-design/icons'
+import { LockOutlined, UserOutlined } from '@ant-design/icons'
 import { useEffect, useRef } from 'react'
 import { useStatus } from '../hook/useStatus'
 import { useMutation } from '@apollo/react-hooks'
@@ -16,12 +16,8 @@ const LoginPage = () => {
 	]
 
 	useEffect(() => {
-		// != undefined
 		if (error) {
-			showStatus({
-				type: 'error',
-				msg: error.message,
-			})
+			showStatus({ type: 'error', msg: error.message })
 		} else {
 			if (data) {
 				const name = data['createUser'].username
@@ -54,10 +50,11 @@ const LoginPage = () => {
 
 	return (
 		<div className='login-page'>
-			<Card style={{ width: 350, borderRadius: 20 }} cover={<UserOutlined style={{ fontSize: '100px', borderBottom: '2px solid black', padding: 20 }} />}>
+			<Card style={{ width: 350, borderRadius: 20 }} cover={<UserOutlined style={{ fontSize: '100px', borderBottom: '7px solid #123456', padding: 20 }} />}>
 				<Form name='basic' initialValues={{ remember: true }} onFinish={onFinish} onFinishFailed={onFinishFailed} autoComplete='off'>
 					<Form.Item label='Username' name='username' rules={[{ required: true, message: 'Please input your username!' }]}>
 						<Input
+							prefix={<UserOutlined />}
 							onKeyDown={e => {
 								if (e.key === 'Enter') {
 									bodyRef.current.focus()
@@ -66,7 +63,7 @@ const LoginPage = () => {
 						/>
 					</Form.Item>
 					<Form.Item label='Password' name='password' rules={[{ required: true, message: 'Please input your password!' }]}>
-						<Input.Password ref={bodyRef} />
+						<Input.Password prefix={<LockOutlined />} ref={bodyRef} />
 					</Form.Item>
 					<Form.Item name='status' label='Status' rules={[{ required: true }]}>
 						<Radio.Group options={options} optionType='button' buttonStyle='solid' value='register' />

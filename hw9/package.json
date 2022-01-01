@@ -1,0 +1,12 @@
+{
+	"name": "hw9",
+	"version": "1.0.0",
+	"main": "index.js",
+	"license": "MIT",
+	"scripts": {
+		"install:all": "for dir in */; do yarn --cwd \"${dir}\"; done",
+		"start": "yarn --cwd frontend start",
+		"server": "yarn --cwd backend server"
+	},
+	"dependencies": {}
+}

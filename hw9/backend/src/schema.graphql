@@ -1,0 +1,77 @@
+type Mutation {
+	createChatBox(name1: String, name2: String): ChatBox
+	createUser(data: CreateUserInput!): User!
+	createFriend(data: CreateFriendInput!): ChatBox!
+	createMessage(data: CreateMessageInput!): Message!
+	InitMessages(id: String!): [Message]!
+	deleteMessages(id: String!, name: String!, friend: String!): [Message]
+}
+
+type Query {
+	users(query: String): [User!]!
+	rooms(id: String!): [ChatBox!]!
+	friends(name: String!): [User!]!
+}
+
+type Subscription {
+	message(name: String!): MessageSubscriptionPayLoad!
+	friend(name: String!): FriendSubscriptionPayLoad!
+}
+
+type ChatBox {
+	id: ID!
+	user: [User!]
+	messages: [Message!]
+}
+
+type Message {
+	id: ID!
+	name: String!
+	body: String!
+}
+
+type User {
+	id: ID!
+	username: String!
+	password: String!
+	chatRoom: [ChatBox!]!
+}
+
+type Friend {
+	id: String!
+	name: String!
+}
+
+input CreateUserInput {
+	username: String!
+	password: String!
+	status: String!
+}
+
+input CreateFriendInput {
+	username: String!
+	friend: String!
+}
+
+input CreateMessageInput {
+	name: String!
+	body: String!
+	id: String!
+}
+
+type MessageSubscriptionPayLoad {
+	mutation: MutationType!
+	user: String
+	data: Message
+}
+
+type FriendSubscriptionPayLoad {
+	mutation: MutationType!
+	data: Friend!
+}
+
+enum MutationType {
+	CREATED
+	UPDATED
+	DELETED
+}

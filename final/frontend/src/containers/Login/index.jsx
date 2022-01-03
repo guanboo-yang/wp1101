@@ -5,6 +5,7 @@ import { Button } from '@mui/material'
 import Input from './Input'
 import { GoogleLogin } from 'react-google-login'
 import { Google } from '@mui/icons-material'
+const GOOGLE_CLIENT_ID = '202508058751-40ie9aunidgnnafl0pdqselm2bb0r6bq.apps.googleusercontent.com'
 
 const Login = () => {
 	const { setProfile } = useUser()
@@ -113,7 +114,7 @@ const Login = () => {
 							Login
 						</Button>
 						<GoogleLogin //
-							clientId='202508058751-40ie9aunidgnnafl0pdqselm2bb0r6bq.apps.googleusercontent.com'
+							clientId={GOOGLE_CLIENT_ID}
 							render={renderProps => (
 								<Button color='secondary' variant='contained' onClick={renderProps.onClick} fullWidth sx={{ mt: 0.5 }} disabled={renderProps.disabled} startIcon={<Google />}>
 									Login with Google

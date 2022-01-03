@@ -1,7 +1,5 @@
-import { useState } from 'react'
 import { Box, Typography, Button, Grid, List, ListItem, ListItemButton, IconButton, ListItemAvatar, Avatar, ListItemText } from '@mui/material'
 import { Add } from '@mui/icons-material'
-import '../../css/PreGame.css'
 import { useUser } from '../../hooks/useUser'
 import Players from './Players'
 import { TOTAL_PLAYERS } from '../../constants'
@@ -34,10 +32,9 @@ const SettingButton = ({ label, text, ...props }) => (
 )
 
 const PreGame = ({ setStart }) => {
-	const { user } = useUser()
-	const [players, setPlayers] = useState([user, null, null, null])
-	const [completed, setCompleted] = useState({ 0: true })
-	const [activeStep, setActiveStep] = useState(0)
+	const { preGameState } = useUser()
+	const { players, completed, activeStep, setPlayers, setCompleted, setActiveStep } = preGameState
+
 	const friends = [
 		{ name: 'Mary', online: true },
 		{ name: 'Sandy', online: false },
@@ -83,29 +80,33 @@ const PreGame = ({ setStart }) => {
 	return (
 		<div align='center' className='PreGame'>
 			<h1>invite your friend</h1>
-			<Grid container display='flex' backgroundColor='primary.dark' sx={{ width: 'min(100%, 750px)' }}>
-				<Grid item xs={12} md={8} sx={{ py: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-					<Box>
-						<SettingButton label='Game Mode' text='Ship Hunter' />
-						<SettingButton label='Rounds' text='5 kills' />
-						<SettingButton label='Level' text='Random' />
-					</Box>
-					<Box width='100%'>
-						<Players players={players} activeStep={activeStep} completed={completed} handleStep={handleStep} />
-					</Box>
-					<Box>
-						<SettingButton text='leave' />
-						<SettingButton text='start' disabled={playersNum() < 2} onClick={setStart} />
-					</Box>
+			<Grid container spacing={1} alignItems='stretch' sx={{ width: 'min(100%, 750px)' }}>
+				<Grid item xs={12} md={8}>
+					<Grid container backgroundColor='primary.dark' direction='column' justifyContent='center' alignItems='center' height='100%' sx={{ py: 2 }}>
+						<Grid item>
+							<SettingButton label='Game Mode' text='Ship Hunter' />
+							<SettingButton label='Rounds' text='5 kills' />
+							<SettingButton label='Level' text='Random' />
+						</Grid>
+						<Grid item width='100%'>
+							<Players players={players} activeStep={activeStep} completed={completed} handleStep={handleStep} />
+						</Grid>
+						<Grid item>
+							<SettingButton text='leave' />
+							<SettingButton text='start' disabled={playersNum() < 2} onClick={setStart} />
+						</Grid>
+					</Grid>
 				</Grid>
-				<Grid item xs={12} md={4} sx={{ py: 2, px: 1 }}>
-					<Typography variant='h5'>friends</Typography>
-					<SettingButton text='Invite your friends!' variant='text' />
-					<List sx={{ overflow: 'auto', height: 250 }}>
-						{friends.map(({ name, online }, i) => (
-							<Friend key={i} name={name} online={online} players={players} handleAddPlayers={() => handleAddPlayers({ players, name })} />
-						))}
-					</List>
+				<Grid item xs={12} md={4}>
+					<Box backgroundColor='primary.dark' sx={{ py: 2, px: 1 }}>
+						<Typography variant='h5'>friends</Typography>
+						<SettingButton text='Invite your friends!' variant='text' />
+						<List sx={{ overflow: 'auto', height: 250 }}>
+							{friends.map(({ name, online }, i) => (
+								<Friend key={i} name={name} online={online} players={players} handleAddPlayers={() => handleAddPlayers({ players, name })} />
+							))}
+						</List>
+					</Box>
 				</Grid>
 			</Grid>
 		</div>

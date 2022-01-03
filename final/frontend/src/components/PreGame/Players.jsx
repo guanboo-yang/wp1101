@@ -12,7 +12,10 @@ const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
 	[`& .${stepConnectorClasses.line}`]: {
 		height: 8,
 		border: 0,
-		backgroundColor: theme.palette.primary.main,
+		backgroundImage: `linear-gradient(to right, ${theme.palette.secondary.main} 48%, ${theme.palette.primary.main} 52%)`,
+		backgroundSize: '200%',
+		backgroundPosition: 'right',
+		transition: 'background-position .7s ease-in-out',
 		borderRadius: 1,
 	},
 }))
@@ -37,9 +40,9 @@ const ColorlibStepIconRoot = styled('div')(({ theme, ownerState }) => ({
 			},
 			'70%': {
 				transform: 'scale(1.02)',
-				boxShadow: '0 0 0 6px #00000000',
+				boxShadow: '0 0 0 15px #00000000',
 			},
-		})} 1.6s ease-in-out infinite`,
+		})} 2s ease-in-out infinite`,
 	}),
 }))
 
@@ -49,9 +52,7 @@ const ColorLibStepIcon = ({ active, completed, index, players, handleStep }) => 
 	return (
 		<ColorlibStepIconRoot ownerState={{ completed, active }}>
 			{players[String(index)] ? (
-				<IconButton>
-					<Rocket sx={{ color: colors[index] }} fontSize='large' />
-				</IconButton>
+				<Rocket sx={{ color: colors[index] }} fontSize='large' />
 			) : (
 				<IconButton onClick={handleStep}>
 					<Add sx={{ color: colors[index] }} fontSize='large' />

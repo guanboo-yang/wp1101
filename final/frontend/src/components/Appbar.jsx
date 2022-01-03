@@ -7,6 +7,7 @@ import { useUser } from '../hooks/useUser'
 import { GoogleLogout } from 'react-google-login'
 import Settings from './Settings'
 import { Rocket } from '@mui/icons-material'
+const GOOGLE_CLIENT_ID = '202508058751-40ie9aunidgnnafl0pdqselm2bb0r6bq.apps.googleusercontent.com'
 
 const Appbar = ({ links }) => {
 	const { user, profile, darkMode, setUser, setDarkMode, logout } = useUser()
@@ -116,11 +117,7 @@ const Appbar = ({ links }) => {
 						{profile ? (
 							<div>
 								<MenuItem align='center'>{user}</MenuItem>
-								<GoogleLogout
-									clientId='202508058751-40ie9aunidgnnafl0pdqselm2bb0r6bq.apps.googleusercontent.com'
-									render={renderProps => <MenuItem onClick={renderProps.onClick}>Logout</MenuItem>}
-									onLogoutSuccess={logout}
-								/>
+								<GoogleLogout clientId={GOOGLE_CLIENT_ID} render={renderProps => <MenuItem onClick={renderProps.onClick}>Logout</MenuItem>} onLogoutSuccess={logout} />
 								<MenuItem onClick={() => setOpenSettings(true)}>
 									Setting
 									<Chip sx={{ ml: 1 }} label='?' size='small' />

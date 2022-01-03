@@ -33,14 +33,14 @@ const UserProvider = ({ children }) => {
 		setPreGameState(prev => ({ ...prev, [key]: value }))
 	}
 
-	const login = profile => {
-		setProfile(profile)
+	const login = (prof = profile) => {
+		setProfile(prof)
 		setPreGameState({
 			// TODO: [CHANGE] ask server for pre-game status
-			players: [profile.name, null, null, null],
+			players: [prof.name, null, null, null],
 			activeStep: 0,
 			gameMode: 0,
-			rounds: 3,
+			rounds: 0,
 			level: 0,
 		})
 	}

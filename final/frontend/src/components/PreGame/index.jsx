@@ -2,22 +2,26 @@ import { Box, Typography, Button, Grid, List } from '@mui/material'
 import { useUser } from '../../hooks/useUser'
 import Players from './Players'
 import Friend from './Friend'
-import { TOTAL_PLAYERS } from '../../constants'
+// TODO: [CHANGE] ask server to send all level information
+import { MODE, LEVEL } from '../../constants'
 import { swapPlayer } from '../../utils'
 
 const SettingButton = ({ label, text, ...props }) => (
-	<Button variant='contained' color='secondary' sx={{ m: 1, display: 'inline' }} {...props}>
+	<Button variant='contained' color='secondary' sx={{ m: 0.5, display: 'inline' }} {...props}>
 		<Box sx={{ fontSize: theme => theme.typography.caption }}>{label}</Box>
 		{text}
 	</Button>
 )
 
 const PreGame = ({ setStart }) => {
-	const { preGameState, setPreGameStatus } = useUser()
-	const { players, activeStep } = preGameState
+	const { preGameState, login, setPreGameStatus } = useUser()
+	const { players, activeStep, gameMode, rounds, level } = preGameState
 
 	const setActiveStep = step => setPreGameStatus('activeStep', step)
 	const setPlayers = players => setPreGameStatus('players', players)
+	const setGameMode = gameMode => setPreGameStatus('gameMode', gameMode)
+	const setRounds = rounds => setPreGameStatus('rounds', rounds)
+	const setLevel = level => setPreGameStatus('level', level)
 
 	// TODO: get friends from server
 	const friends = [
@@ -29,6 +33,10 @@ const PreGame = ({ setStart }) => {
 	]
 
 	const playersNum = () => players.filter(player => player).length
+
+	const handleLeave = () => {
+		window.confirm('Are you sure you want to leave?') && login()
+	}
 
 	const handleStep = step => () => {
 		// TODO: send request to server, if success:
@@ -50,6 +58,10 @@ const PreGame = ({ setStart }) => {
 		}
 	}
 
+	const notReadyToGo = () => {
+		return (gameMode === 2 && playersNum() < 3) || playersNum() < 2
+	}
+
 	return (
 		<div align='center' className='PreGame'>
 			<h1>invite your friend</h1>
@@ -57,9 +69,9 @@ const PreGame = ({ setStart }) => {
 				<Grid item xs={12} md={8}>
 					<Grid container backgroundColor='primary.dark' direction='column' justifyContent='center' alignItems='center' height='100%' sx={{ py: 2 }}>
 						<Grid item>
-							<SettingButton label='Game Mode' text='Ship Hunter' />
-							<SettingButton label='Rounds' text='5 kills' />
-							<SettingButton label='Level' text='Random' />
+							<SettingButton label='Game Mode' text={MODE[gameMode].name} onClick={() => setGameMode((gameMode + 1) % 3)} />
+							<SettingButton label='Rounds' text={`${MODE[gameMode].rounds[rounds]} kills`} onClick={() => setRounds((rounds + 1) % 3)} />
+							<SettingButton label='Level' text={`${LEVEL[level].name}`} onClick={() => setLevel((level + 1) % LEVEL.length)} />
 						</Grid>
 						<Grid item width='100%'>
 							<Players
@@ -73,8 +85,8 @@ const PreGame = ({ setStart }) => {
 							/>
 						</Grid>
 						<Grid item>
-							<SettingButton text='leave' />
-							<SettingButton text='start' disabled={playersNum() < 2} onClick={setStart} />
+							<SettingButton text='leave' onClick={handleLeave} />
+							<SettingButton text='start' disabled={notReadyToGo()} onClick={setStart} />
 						</Grid>
 					</Grid>
 				</Grid>

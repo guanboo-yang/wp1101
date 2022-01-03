@@ -5,7 +5,7 @@ import { useStorage } from '../hooks'
 import { useTheme, useScrollTrigger } from '@mui/material'
 import { useUser } from '../hooks/useUser'
 import { GoogleLogout } from 'react-google-login'
-import Settings from './Settings'
+import { Settings } from '.'
 import { Rocket } from '@mui/icons-material'
 const GOOGLE_CLIENT_ID = '202508058751-40ie9aunidgnnafl0pdqselm2bb0r6bq.apps.googleusercontent.com'
 

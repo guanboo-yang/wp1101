@@ -1,35 +1,52 @@
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
 
-const ChatRoomSchema = mongoose.Schema(
-    {
-        name: { type: String, required: true, unique: true },
-        users: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-        messages: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Message' }]
-    },
-    { timestamps: true }
-);
+const PlayerSchema = mongoose.Schema(
+	{
+		name: { type: String, required: true },
+		email: { type: String, required: true, unique: true },
+		password: { type: String, required: true },
+		wins: { type: Number, required: true },
+		loses: { type: Number, required: true },
+	},
+	{ timestamps: true }
+)
+
+const RoomSchema = mongoose.Schema({
+	players: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Player' }],
+	messages: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Message' }],
+	gameMode: { type: Number, default: 0 },
+	rounds: { type: Number, default: 3 },
+	level: { type: Number, default: 0 },
+})
 
 const MessageSchema = mongoose.Schema(
-    {
-        name: { type: String, required: true },
-        body: { type: String, required: true }
-    },
-    { timestamps: true }
-);
+	{
+		name: { type: String, required: true },
+		body: { type: String, required: true },
+	},
+	{ timestamps: true }
+)
 
-const UserSchema = mongoose.Schema(
-    {
-        name: { type: String, required: true },
-        password: { type: String, required: true },
-        wins: { type: Number, required: true },
-        loses: { type: Number, required: true },
-        // events: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Event' }]
-    },
-    { timestamps: true }
-);
+const GameSchema = mongoose.Schema(
+	{
+		gameMode: { type: Number, default: 0 },
+		rounds: { type: Number, default: 0 },
+		// state for each round (probably not equal to the number of rounds)
+		players: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Player' }],
+		state: [
+			{
+				winner: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Player' }],
+				kda: [{ type: Number, default: 0 }],
+			},
+		],
+		winner: { type: mongoose.Schema.Types.ObjectId, ref: 'Player' },
+	},
+	{ timestamps: true }
+)
 
-const User = mongoose.model('User', UserSchema);
-const Message = mongoose.model('Message', MessageSchema);
-const ChatRoom = mongoose.model('Event', ChatRoomSchema);
+const Player = mongoose.model('Player', PlayerSchema)
+const Message = mongoose.model('Message', MessageSchema)
+const Room = mongoose.model('Event', RoomSchema)
+const Game = mongoose.model('Game', GameSchema)
 
-export { ChatRoom, Message, User };
+export { Player, Message, Room, Game }

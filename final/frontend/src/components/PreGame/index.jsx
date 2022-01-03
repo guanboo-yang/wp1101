@@ -1,28 +1,9 @@
-import { Box, Typography, Button, Grid, List, ListItem, ListItemButton, IconButton, ListItemAvatar, Avatar, ListItemText } from '@mui/material'
-import { Add } from '@mui/icons-material'
+import { Box, Typography, Button, Grid, List } from '@mui/material'
 import { useUser } from '../../hooks/useUser'
 import Players from './Players'
+import Friend from './Friend'
 import { TOTAL_PLAYERS } from '../../constants'
-
-const Friend = ({ name, online, handleAddPlayers }) => (
-	<ListItem
-		dense
-		secondaryAction={
-			online && (
-				<IconButton color='secondary' edge='end' onClick={handleAddPlayers}>
-					<Add />
-				</IconButton>
-			)
-		}
-		disablePadding>
-		<ListItemButton>
-			<ListItemAvatar>
-				<Avatar src={`//joeschmoe.io/api/v1/${name}`} alt='' />
-			</ListItemAvatar>
-			<ListItemText primary={name} secondary={online ? 'online' : 'offline'} />
-		</ListItemButton>
-	</ListItem>
-)
+import { swapPlayer } from '../../utils'
 
 const SettingButton = ({ label, text, ...props }) => (
 	<Button variant='contained' color='secondary' sx={{ m: 1, display: 'inline' }} {...props}>
@@ -32,48 +13,40 @@ const SettingButton = ({ label, text, ...props }) => (
 )
 
 const PreGame = ({ setStart }) => {
-	const { preGameState } = useUser()
-	const { players, completed, activeStep, setPlayers, setCompleted, setActiveStep } = preGameState
+	const { preGameState, setPreGameStatus } = useUser()
+	const { players, activeStep } = preGameState
 
+	const setActiveStep = step => setPreGameStatus('activeStep', step)
+	const setPlayers = players => setPreGameStatus('players', players)
+
+	// TODO: get friends from server
 	const friends = [
 		{ name: 'Mary', online: true },
 		{ name: 'Sandy', online: false },
 		{ name: 'Henry', online: true },
 		{ name: 'Mike', online: true },
-		{ name: 'Rachel', online: false },
+		{ name: 'Rachel', online: true },
 	]
 
-	const playersNum = () => {
-		return players.filter(player => player).length
-	}
+	const playersNum = () => players.filter(player => player).length
 
 	const handleStep = step => () => {
-		setCompleted(prev => ({ ...prev, [step]: true, [activeStep]: false }))
-		setPlayers(prev => {
-			const newPlayers = [...prev]
-			newPlayers[step] = newPlayers[activeStep]
-			newPlayers[activeStep] = null
-			return newPlayers
-		})
-		setActiveStep(step)
+		// TODO: send request to server, if success:
+		swapPlayer(players, activeStep, step, setPlayers, setActiveStep)
+		// TODO: if fail:
 	}
 
 	const handleAddPlayers = ({ players, name }) => {
+		// TODO: [CHANGE] if player id is not in players:
 		if (!players.includes(name)) {
+			// TODO: [CHANGE] ask server to add player:
 			const index = players.indexOf(null)
-			const newCompleted = completed
 			if (index !== -1) {
-				setPlayers(prev => {
-					const newPlayers = [...prev]
-					newPlayers[index] = name
-					return newPlayers
-				})
-				newCompleted[index] = true
-			} else if (players.length < TOTAL_PLAYERS) {
-				newCompleted[players.length] = true
-				setPlayers(prev => [...prev, name])
+				// TODO: [CHANGE] if server response is success:
+				const newPlayers = [...players]
+				newPlayers[index] = name
+				setPlayers(newPlayers)
 			} else return
-			setCompleted(newCompleted)
 		}
 	}
 
@@ -89,7 +62,15 @@ const PreGame = ({ setStart }) => {
 							<SettingButton label='Level' text='Random' />
 						</Grid>
 						<Grid item width='100%'>
-							<Players players={players} activeStep={activeStep} completed={completed} handleStep={handleStep} />
+							<Players
+								players={players}
+								activeStep={activeStep}
+								completed={players.reduce((acc, player, index) => {
+									if (player) acc[index] = true
+									return acc
+								}, {})}
+								handleStep={handleStep}
+							/>
 						</Grid>
 						<Grid item>
 							<SettingButton text='leave' />

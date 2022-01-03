@@ -52,7 +52,9 @@ const ColorLibStepIcon = ({ active, completed, index, players, handleStep }) => 
 	return (
 		<ColorlibStepIconRoot ownerState={{ completed, active }}>
 			{players[String(index)] ? (
-				<Rocket sx={{ color: colors[index] }} fontSize='large' />
+				<IconButton onClick={handleStep}>
+					<Rocket sx={{ color: colors[index] }} fontSize='large' />
+				</IconButton>
 			) : (
 				<IconButton onClick={handleStep}>
 					<Add sx={{ color: colors[index] }} fontSize='large' />

@@ -1,42 +1,66 @@
-import { useState, createContext, useContext } from 'react'
+import { createContext, useContext } from 'react'
 import { useDarkMode, useStorage } from '.'
 
 const UserContext = createContext({
-	user: null,
 	profile: null,
 	darkMode: false,
 	preGameState: {},
-	setUser: () => {},
 	setProfile: () => {},
-	logout: () => {},
 	setDarkMode: () => {},
+	setPreGameStatus: () => {},
+	login: () => {},
+	logout: () => {},
 })
 
 const UserProvider = ({ children }) => {
-	const [user, setUser] = useStorage('user', null, window.localStorage)
-	const [profile, setProfile] = useStorage('profile', null, window.localStorage)
+	// use localStorage or sessionStorage to store user data?
+	const [profile, setProfile, removeProfile] = useStorage('profile', null, window.localStorage)
+	const [preGameState, setPreGameState, removePreGameState] = useStorage(
+		'pre-game-state',
+		{
+			// TODO: [CHANGE] let server handle this
+			players: [null, null, null, null],
+			activeStep: 0,
+			gameMode: 0,
+			rounds: 3,
+			level: 0,
+		},
+		window.localStorage
+	)
 	const [darkMode, setDarkMode] = useDarkMode()
-	// for PreGame
-	const [players, setPlayers] = useState([user, null, null, null])
-	const [completed, setCompleted] = useState({ 0: true })
-	const [activeStep, setActiveStep] = useState(0)
-	const preGameState = { players, completed, activeStep, setPlayers, setCompleted, setActiveStep }
+
+	const setPreGameStatus = (key, value) => {
+		setPreGameState(prev => ({ ...prev, [key]: value }))
+	}
+
+	const login = profile => {
+		setProfile(profile)
+		setPreGameState({
+			// TODO: [CHANGE] ask server for pre-game status
+			players: [profile.name, null, null, null],
+			activeStep: 0,
+			gameMode: 0,
+			rounds: 3,
+			level: 0,
+		})
+	}
 
 	const logout = () => {
-		setProfile(undefined)
+		removeProfile()
+		removePreGameState()
 	}
 
 	return (
 		<UserContext.Provider //
 			value={{
-				user,
 				profile,
 				darkMode,
 				preGameState,
-				setUser,
 				setProfile,
-				logout,
 				setDarkMode,
+				setPreGameStatus,
+				login,
+				logout,
 			}}>
 			{children}
 		</UserContext.Provider>

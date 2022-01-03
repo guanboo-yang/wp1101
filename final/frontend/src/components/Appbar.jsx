@@ -10,20 +10,18 @@ import { Rocket } from '@mui/icons-material'
 const GOOGLE_CLIENT_ID = '202508058751-40ie9aunidgnnafl0pdqselm2bb0r6bq.apps.googleusercontent.com'
 
 const Appbar = ({ links }) => {
-	const { user, profile, darkMode, setUser, setDarkMode, logout } = useUser()
+	const { profile, darkMode, setDarkMode, logout } = useUser()
 	const [tabValue, setTabValue] = useStorage('tabvalue', 0, window.sessionStorage)
 	const [userMenuAnchorEl, setUserMenuAnchorEl] = useState(null)
 	const [openSettings, setOpenSettings] = useState(false)
 	const theme = useTheme()
 	const location = useLocation()
 
+	const user = profile?.name || ''
+
 	// console.log(theme)
 	// console.log(location)
 	// console.log(profile)
-
-	useEffect(() => {
-		setUser(profile?.name)
-	}, [profile, setUser])
 
 	useEffect(() => {
 		if (links.find(link => link.path === location.pathname)) {
@@ -45,11 +43,15 @@ const Appbar = ({ links }) => {
 		margin: '0 0 0 auto',
 		[theme.breakpoints.down('md')]: {
 			position: 'fixed',
+			backgroundColor: theme.palette.background.paper,
 			bottom: 0,
 			left: '50%',
 			transform: 'translateX(-50%)',
+			width: '100%',
+			padding: '0 auto',
 			zIndex: theme.zIndex.appBar,
-			padding: theme.spacing(1, 0),
+			margin: '0 auto',
+			// padding: theme.spacing(1, 0),
 			// hide on scroll
 		},
 	})
@@ -69,6 +71,7 @@ const Appbar = ({ links }) => {
 					{profile && (
 						<Tabs //
 							value={tabValue}
+							centered
 							aria-label='nav-tab'
 							textColor='secondary'
 							indicatorColor='secondary'
@@ -117,7 +120,12 @@ const Appbar = ({ links }) => {
 						{profile ? (
 							<div>
 								<MenuItem align='center'>{user}</MenuItem>
-								<GoogleLogout clientId={GOOGLE_CLIENT_ID} render={renderProps => <MenuItem onClick={renderProps.onClick}>Logout</MenuItem>} onLogoutSuccess={logout} />
+								<GoogleLogout
+									clientId={GOOGLE_CLIENT_ID}
+									render={renderProps => <MenuItem onClick={renderProps.onClick}>Logout</MenuItem>}
+									onLogoutSuccess={logout}
+									onFailure={logout}
+								/>
 								<MenuItem onClick={() => setOpenSettings(true)}>
 									Setting
 									<Chip sx={{ ml: 1 }} label='?' size='small' />

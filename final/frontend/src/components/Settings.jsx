@@ -30,14 +30,11 @@ const Settings = ({ open, setOpen }) => {
 		if (e.key === 'D' && e.shiftKey) {
 			setDarkMode(!darkMode)
 		}
-		if (e.key === 'Esc') {
-			handleClose()
-		}
 	})
 
 	return (
 		<>
-			<Modal open={open} onClose={handleClose}>
+			<Modal open={open} onClose={handleClose} disableScrollLock>
 				<Box sx={style}>
 					<Typography variant='h4' color='secondary' noWrap align='center'>
 						Settings
@@ -48,6 +45,8 @@ const Settings = ({ open, setOpen }) => {
 							{darkMode ? 'Dark' : 'Light'}
 						</Button>
 					</Typography>
+					{/* // TODO: SOUND */}
+					{/* // TODO: MUSIC */}
 					<Typography sx={{ mt: 2 }} variant='body1' color='secondary' noWrap align='center'>
 						<Button variant='contained' size='small' color='secondary' onClick={handleClose}>
 							Close

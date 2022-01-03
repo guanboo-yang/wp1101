@@ -8,7 +8,7 @@ import { Google } from '@mui/icons-material'
 const GOOGLE_CLIENT_ID = '202508058751-40ie9aunidgnnafl0pdqselm2bb0r6bq.apps.googleusercontent.com'
 
 const Login = () => {
-	const { setProfile } = useUser()
+	const { login } = useUser()
 	const navigate = useNavigate()
 	const [signup, setSignup] = useState(false)
 
@@ -23,6 +23,8 @@ const Login = () => {
 		} else {
 			// handle login
 		}
+		login({ ...values, name: 'Tristan' })
+		navigate('/')
 	}
 
 	const style = {
@@ -57,7 +59,7 @@ const Login = () => {
 		const result = res?.profileObj
 		const token = res?.tokenObj?.id_token
 		try {
-			setProfile({ ...result, token })
+			login({ ...result, token })
 			navigate('/')
 		} catch (err) {
 			console.log(err)

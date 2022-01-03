@@ -50,7 +50,7 @@ const App = () => {
 				<Router>
 					<Appbar links={links} />
 					<Toolbar />
-					<Box component='main' sx={{ py: 3 }}>
+					<Box component='main'>
 						<Routes>
 							{links.map(({ name, path, element }) => (
 								<Route key={name} path={path} element={<RequireAuth>{element}</RequireAuth>} />

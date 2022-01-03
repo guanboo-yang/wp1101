@@ -35,11 +35,11 @@ const ColorlibStepIconRoot = styled('div')(({ theme, ownerState }) => ({
 	...(ownerState.active && {
 		animation: `${keyframes({
 			'0%': {
-				transform: 'scale(1)',
+				// transform: 'scale(1)',
 				boxShadow: `0 0 0 0 ${theme.palette.secondary.main}`,
 			},
 			'70%': {
-				transform: 'scale(1.02)',
+				// transform: 'scale(1.02)',
 				boxShadow: '0 0 0 15px #00000000',
 			},
 		})} 2s ease-in-out infinite`,

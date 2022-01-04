@@ -3,8 +3,6 @@ import { useUser } from '../hooks/useUser'
 import { useEventListener } from '../hooks'
 
 const style = {
-	color: 'secondary.main',
-	fontFamily: theme => theme.typography.fontFamily,
 	position: 'absolute',
 	top: '50%',
 	left: '50%',

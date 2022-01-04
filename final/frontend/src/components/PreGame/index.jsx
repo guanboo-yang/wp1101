@@ -1,10 +1,11 @@
-import { Box, Typography, Button, Grid, List } from '@mui/material'
+import { Box, Typography, Button, Grid, List, Dialog, DialogTitle, DialogActions } from '@mui/material'
 import { useUser } from '../../hooks/useUser'
 import Players from './Players'
 import Friend from './Friend'
 // TODO: [CHANGE] ask server to send all level information
 import { MODE, LEVEL } from '../../constants'
-import { swapPlayer } from '../../utils'
+import { swapPlayers } from '../../utils'
+import { useState } from 'react'
 
 const SettingButton = ({ label, text, ...props }) => (
 	<Button variant='contained' color='secondary' sx={{ m: 0.5, display: 'inline' }} {...props}>
@@ -14,14 +15,14 @@ const SettingButton = ({ label, text, ...props }) => (
 )
 
 const PreGame = ({ setStart }) => {
-	const { preGameState, login, setPreGameStatus } = useUser()
-	const { players, activeStep, gameMode, rounds, level } = preGameState
+	const { profile, preGameState, login, setPreGameState } = useUser()
+	const { players, gameMode, rounds, level } = preGameState
+	const [openDialog, setOpenDialog] = useState(false)
 
-	const setActiveStep = step => setPreGameStatus('activeStep', step)
-	const setPlayers = players => setPreGameStatus('players', players)
-	const setGameMode = gameMode => setPreGameStatus('gameMode', gameMode)
-	const setRounds = rounds => setPreGameStatus('rounds', rounds)
-	const setLevel = level => setPreGameStatus('level', level)
+	const setPlayers = players => setPreGameState(prev => ({ ...prev, players }))
+	const increaseGameMode = () => setPreGameState(prev => ({ ...prev, gameMode: (prev.gameMode + 1) % MODE.length }))
+	const increaseRounds = () => setPreGameState(prev => ({ ...prev, rounds: (prev.rounds + 1) % MODE[gameMode].rounds.length }))
+	const increaseLevel = () => setPreGameState(prev => ({ ...prev, level: (prev.level + 1) % LEVEL.length }))
 
 	// TODO: get friends from server
 	const friends = [
@@ -35,12 +36,18 @@ const PreGame = ({ setStart }) => {
 	const playersNum = () => players.filter(player => player).length
 
 	const handleLeave = () => {
-		window.confirm('Are you sure you want to leave?') && login()
+		setOpenDialog(false)
+		login()
 	}
 
 	const handleStep = step => () => {
 		// TODO: send request to server, if success:
-		swapPlayer(players, activeStep, step, setPlayers, setActiveStep)
+		swapPlayers(
+			players,
+			players.findIndex(player => player === profile.name),
+			step,
+			setPlayers
+		)
 		// TODO: if fail:
 	}
 
@@ -69,23 +76,24 @@ const PreGame = ({ setStart }) => {
 				<Grid item xs={12} md={8}>
 					<Grid container backgroundColor='primary.dark' direction='column' justifyContent='center' alignItems='center' height='100%' sx={{ py: 2 }}>
 						<Grid item>
-							<SettingButton label='Game Mode' text={MODE[gameMode].name} onClick={() => setGameMode((gameMode + 1) % 3)} />
-							<SettingButton label='Rounds' text={`${MODE[gameMode].rounds[rounds]} kills`} onClick={() => setRounds((rounds + 1) % 3)} />
-							<SettingButton label='Level' text={`${LEVEL[level].name}`} onClick={() => setLevel((level + 1) % LEVEL.length)} />
+							<SettingButton label='Game Mode' text={MODE[gameMode].name} onClick={increaseGameMode} />
+							<SettingButton label='Rounds' text={`${MODE[gameMode].rounds[rounds]} kills`} onClick={increaseRounds} />
+							<SettingButton label='Level' text={`${LEVEL[level].name}`} onClick={increaseLevel} />
 						</Grid>
 						<Grid item width='100%'>
 							<Players
 								players={players}
-								activeStep={activeStep}
+								activeStep={players.findIndex(player => player === profile.name)}
 								completed={players.reduce((acc, player, index) => {
 									if (player) acc[index] = true
 									return acc
 								}, {})}
 								handleStep={handleStep}
+								teamMode={gameMode === 2}
 							/>
 						</Grid>
 						<Grid item>
-							<SettingButton text='leave' onClick={handleLeave} />
+							<SettingButton text='leave' onClick={() => setOpenDialog(true)} />
 							<SettingButton text='start' disabled={notReadyToGo()} onClick={setStart} />
 						</Grid>
 					</Grid>
@@ -102,6 +110,13 @@ const PreGame = ({ setStart }) => {
 					</Box>
 				</Grid>
 			</Grid>
+			<Dialog open={openDialog} onClose={() => setOpenDialog(false)} PaperProps={{ style: { backgroundColor: theme => theme.palette.primary.main, border: '4px solid #fff' } }}>
+				<DialogTitle>Are you sure you want to leave?</DialogTitle>
+				<DialogActions>
+					<SettingButton text='cancel' onClick={() => setOpenDialog(false)} />
+					<SettingButton text='leave' onClick={handleLeave} autoFocus />
+				</DialogActions>
+			</Dialog>
 		</div>
 	)
 }

@@ -1,8 +1,7 @@
 // swap two elements in an array
-export const swapPlayer = (players, from, to, setPlayers, setActiveStep) => {
+export const swapPlayers = (players, from, to, setPlayers) => {
 	const temp = players[from]
 	players[from] = players[to]
 	players[to] = temp
 	setPlayers(players)
-	setActiveStep(to)
 }

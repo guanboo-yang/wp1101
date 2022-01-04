@@ -20,7 +20,6 @@ const UserProvider = ({ children }) => {
 		{
 			// TODO: [CHANGE] let server handle this
 			players: [null, null, null, null],
-			activeStep: 0,
 			gameMode: 0,
 			rounds: 3,
 			level: 0,
@@ -29,16 +28,11 @@ const UserProvider = ({ children }) => {
 	)
 	const [darkMode, setDarkMode] = useDarkMode()
 
-	const setPreGameStatus = (key, value) => {
-		setPreGameState(prev => ({ ...prev, [key]: value }))
-	}
-
 	const login = (prof = profile) => {
 		setProfile(prof)
 		setPreGameState({
 			// TODO: [CHANGE] ask server for pre-game status
 			players: [prof.name, null, null, null],
-			activeStep: 0,
 			gameMode: 0,
 			rounds: 0,
 			level: 0,
@@ -58,7 +52,7 @@ const UserProvider = ({ children }) => {
 				preGameState,
 				setProfile,
 				setDarkMode,
-				setPreGameStatus,
+				setPreGameState,
 				login,
 				logout,
 			}}>

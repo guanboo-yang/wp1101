@@ -64,7 +64,7 @@ const ColorLibStepIcon = ({ active, completed, index, players, handleStep }) => 
 	)
 }
 
-const Players = ({ players, activeStep, completed, handleStep }) => {
+const Players = ({ players, activeStep, completed, handleStep, teamMode }) => {
 	return (
 		<Stepper //
 			sx={{ pt: 3, pb: 1, overflow: 'auto' }}
@@ -73,7 +73,7 @@ const Players = ({ players, activeStep, completed, handleStep }) => {
 			activeStep={activeStep}
 			connector={<ColorlibConnector />}>
 			{[0, 1, 2, 3].map((_, i) => (
-				<Step key={i} completed={completed[i]} sx={{ p: 0 }}>
+				<Step key={i} completed={completed[i]} sx={{ p: 0 }} className={teamMode ? 'team-mode' : ''}>
 					<StepLabel StepIconComponent={props => <ColorLibStepIcon {...props} index={i} players={players} handleStep={handleStep(i)} />}>{players[i]}</StepLabel>
 				</Step>
 			))}

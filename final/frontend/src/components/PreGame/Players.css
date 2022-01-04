@@ -1,3 +1,7 @@
 .MuiStep-root.Mui-completed + .MuiStep-root.Mui-completed .MuiStepConnector-line {
 	background-position: left;
 }
+
+.team-mode:nth-child(3) .MuiStepConnector-line {
+	background-image: unset;
+}

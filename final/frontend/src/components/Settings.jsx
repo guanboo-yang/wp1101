@@ -1,6 +1,8 @@
 import { Box, Button, Modal, Typography } from '@mui/material'
 import { useUser } from '../hooks/useUser'
 import { useEventListener } from '../hooks'
+import fullscreen from 'fullscreen'
+const fs = fullscreen(document.body)
 
 const style = {
 	position: 'absolute',
@@ -41,6 +43,13 @@ const Settings = ({ open, setOpen }) => {
 						Color Mode:
 						<Button sx={{ ml: 2 }} variant='contained' size='small' color='secondary' onClick={() => setDarkMode(!darkMode)}>
 							{darkMode ? 'Dark' : 'Light'}
+						</Button>
+					</Typography>
+					{/* fullscreen */}
+					<Typography sx={{ mt: 2 }} variant='body1' color='secondary' noWrap align='center'>
+						Fullscreen:
+						<Button sx={{ ml: 2 }} variant='contained' size='small' color='secondary' onClick={() => fs.request()}>
+							Enter
 						</Button>
 					</Typography>
 					{/* // TODO: SOUND */}

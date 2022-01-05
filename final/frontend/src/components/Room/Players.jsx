@@ -1,5 +1,5 @@
 import { IconButton, Step, StepLabel, Stepper, Box } from '@mui/material'
-import { Add, Rocket } from '@mui/icons-material'
+import { Add } from '@mui/icons-material'
 import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector'
 import { styled } from '@mui/material/styles'
 import { keyframes } from '@emotion/react'

@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import PreGame from '../../components/PreGame'
+import Mode from '../../components/Mode'
+import Room from '../../components/Room'
 import Game from '../../components/Game'
 
 const Playground = () => {
@@ -9,8 +10,9 @@ const Playground = () => {
 		<>
 			{
 				{
-					0: <PreGame setStart={() => setStep(1)} />,
-					1: <Game />,
+					0: <Mode setStart={() => setStep(1)} />,
+					1: <Room setStep={step => setStep(prev => prev + step)} />,
+					2: <Game />,
 				}[step]
 			}
 		</>

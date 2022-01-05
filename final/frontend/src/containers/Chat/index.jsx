@@ -14,7 +14,7 @@ const Item = styled(Paper)(({ theme }) => ({
 const Chat = () => {
 	const { user } = useUser()
 	return (
-		<div align='center'>
+		<>
 			<h1>Chat</h1>
 			<Grid container justifyContent='center' spacing={3}>
 				<Grid item xs={12} sm={9} md={6} lg={5}>
@@ -28,7 +28,7 @@ const Chat = () => {
 					</Item>
 				</Grid>
 			</Grid>
-		</div>
+		</>
 	)
 }
 

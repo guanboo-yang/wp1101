@@ -47,7 +47,7 @@ const App = () => {
 
 	return (
 		<ThemeProvider theme={theme}>
-			<div className='App' style={{ color: theme.palette.secondary.main, background: theme.palette.primary.main }}>
+			<div className='App' style={{ color: theme.palette.secondary.main, background: theme.palette.primary.main, height: '100vh', overflow: 'auto' }}>
 				<Router>
 					<Appbar links={links} />
 					<Toolbar />

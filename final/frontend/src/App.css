@@ -5,7 +5,7 @@
 	font-size: 1rem;
 	display: flex;
 	flex-direction: column;
-	/* justify-content: center; */
+	align-items: center;
 	user-select: none;
 	min-height: 100vh;
 	transition: all 0.3s ease-in-out;
@@ -24,4 +24,14 @@ a {
 a:hover {
 	/* darker */
 	filter: invert(0.2) brightness(1.1);
+}
+
+main {
+	height: 100vh;
+	width: 100vw;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	position: relative;
 }

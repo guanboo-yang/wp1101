@@ -1,28 +1,18 @@
-import { Box, Typography, Button, Grid, List, Dialog, DialogTitle, DialogActions } from '@mui/material'
+import { Box, Typography, Grid, List, Dialog, DialogTitle, DialogActions } from '@mui/material'
 import { useUser } from '../../hooks/useUser'
 import Players from './Players'
 import Friend from './Friend'
 // TODO: [CHANGE] ask server to send all level information
-import { MODE, LEVEL } from '../../constants'
 import { swapPlayers } from '../../utils'
 import { useState } from 'react'
+import SettingButton from '../SettingButton'
 
-const SettingButton = ({ label, children, ...props }) => (
-	<Button variant='contained' color='secondary' sx={{ m: 0.5, display: 'inline' }} {...props}>
-		<Box sx={{ fontSize: theme => theme.typography.caption }}>{label}</Box>
-		{children}
-	</Button>
-)
-
-const PreGame = ({ setStart }) => {
+const Room = ({ setStep }) => {
 	const { profile, preGameState, login, setPreGameState } = useUser()
-	const { players, gameMode, rounds, level } = preGameState
+	const { players, gameMode } = preGameState
 	const [openDialog, setOpenDialog] = useState(false)
 
 	const setPlayers = players => setPreGameState(prev => ({ ...prev, players }))
-	const increaseGameMode = () => setPreGameState(prev => ({ ...prev, gameMode: (prev.gameMode + 1) % MODE.length }))
-	const increaseRounds = () => setPreGameState(prev => ({ ...prev, rounds: (prev.rounds + 1) % MODE[gameMode].rounds.length }))
-	const increaseLevel = () => setPreGameState(prev => ({ ...prev, level: (prev.level + 1) % LEVEL.length }))
 
 	// TODO: get friends from server
 	const friends = [
@@ -38,6 +28,7 @@ const PreGame = ({ setStart }) => {
 
 	const handleLeave = () => {
 		setOpenDialog(false)
+		setStep(-1)
 		login()
 	}
 
@@ -71,22 +62,11 @@ const PreGame = ({ setStart }) => {
 	}
 
 	return (
-		<div align='center' className='PreGame'>
+		<div align='center'>
 			<h1>invite your friend</h1>
-			<Grid container spacing={1} alignItems='stretch' sx={{ width: 'min(100%, 750px)' }}>
+			<Grid container spacing={1} alignItems='stretch' sx={{ width: 'min(96vw, 750px)' }}>
 				<Grid item xs={12} md={8}>
 					<Grid container backgroundColor='primary.dark' direction='column' justifyContent='center' alignItems='center' height='100%' sx={{ py: 2 }}>
-						<Grid item>
-							<SettingButton label='Game Mode' onClick={increaseGameMode}>
-								{MODE[gameMode].name}
-							</SettingButton>
-							<SettingButton label='Rounds' onClick={increaseRounds}>
-								{`${MODE[gameMode].rounds[rounds]} kills`}
-							</SettingButton>
-							<SettingButton label='Level' onClick={increaseLevel}>
-								{LEVEL[level].name}
-							</SettingButton>
-						</Grid>
 						<Grid item width='100%'>
 							<Players
 								players={players}
@@ -101,7 +81,7 @@ const PreGame = ({ setStart }) => {
 						</Grid>
 						<Grid item>
 							<SettingButton onClick={() => setOpenDialog(true)}>leave</SettingButton>
-							<SettingButton disabled={notReadyToGo()} onClick={setStart}>
+							<SettingButton disabled={notReadyToGo()} onClick={() => setStep(1)}>
 								start
 							</SettingButton>
 						</Grid>
@@ -132,4 +112,4 @@ const PreGame = ({ setStart }) => {
 	)
 }
 
-export default PreGame
+export default Room

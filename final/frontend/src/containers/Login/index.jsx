@@ -78,7 +78,7 @@ const Login = () => {
 					<Input //
 						name='name'
 						label='Name'
-						onChange={handleChange}
+						handlechange={handleChange}
 						type='text'
 						autoFocus
 					/>

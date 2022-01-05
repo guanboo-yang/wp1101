@@ -29,6 +29,7 @@ const UserProvider = ({ children }) => {
 	const [darkMode, setDarkMode] = useDarkMode()
 
 	const login = (prof = profile) => {
+		console.log('login', prof)
 		setProfile(prof)
 		setPreGameState({
 			// TODO: [CHANGE] ask server for pre-game status

@@ -7,10 +7,10 @@ import { MODE, LEVEL } from '../../constants'
 import { swapPlayers } from '../../utils'
 import { useState } from 'react'
 
-const SettingButton = ({ label, text, ...props }) => (
+const SettingButton = ({ label, children, ...props }) => (
 	<Button variant='contained' color='secondary' sx={{ m: 0.5, display: 'inline' }} {...props}>
 		<Box sx={{ fontSize: theme => theme.typography.caption }}>{label}</Box>
-		{text}
+		{children}
 	</Button>
 )
 
@@ -26,6 +26,7 @@ const PreGame = ({ setStart }) => {
 
 	// TODO: get friends from server
 	const friends = [
+		{ name: '楊冠柏', online: true, image: 'https://lh3.googleusercontent.com/a/AATXAJwLy5Aw_w-MyGVpcBsADA7x14zLhwt_RJE1Pr6E=s96-c' },
 		{ name: 'Mary', online: true },
 		{ name: 'Sandy', online: false },
 		{ name: 'Henry', online: true },
@@ -76,9 +77,15 @@ const PreGame = ({ setStart }) => {
 				<Grid item xs={12} md={8}>
 					<Grid container backgroundColor='primary.dark' direction='column' justifyContent='center' alignItems='center' height='100%' sx={{ py: 2 }}>
 						<Grid item>
-							<SettingButton label='Game Mode' text={MODE[gameMode].name} onClick={increaseGameMode} />
-							<SettingButton label='Rounds' text={`${MODE[gameMode].rounds[rounds]} kills`} onClick={increaseRounds} />
-							<SettingButton label='Level' text={`${LEVEL[level].name}`} onClick={increaseLevel} />
+							<SettingButton label='Game Mode' onClick={increaseGameMode}>
+								{MODE[gameMode].name}
+							</SettingButton>
+							<SettingButton label='Rounds' onClick={increaseRounds}>
+								{`${MODE[gameMode].rounds[rounds]} kills`}
+							</SettingButton>
+							<SettingButton label='Level' onClick={increaseLevel}>
+								{LEVEL[level].name}
+							</SettingButton>
 						</Grid>
 						<Grid item width='100%'>
 							<Players
@@ -93,8 +100,10 @@ const PreGame = ({ setStart }) => {
 							/>
 						</Grid>
 						<Grid item>
-							<SettingButton text='leave' onClick={() => setOpenDialog(true)} />
-							<SettingButton text='start' disabled={notReadyToGo()} onClick={setStart} />
+							<SettingButton onClick={() => setOpenDialog(true)}>leave</SettingButton>
+							<SettingButton disabled={notReadyToGo()} onClick={setStart}>
+								start
+							</SettingButton>
 						</Grid>
 					</Grid>
 				</Grid>
@@ -103,8 +112,8 @@ const PreGame = ({ setStart }) => {
 						<Typography variant='h5'>friends</Typography>
 						<SettingButton text='Invite your friends!' variant='text' />
 						<List sx={{ overflow: 'auto', height: 250 }}>
-							{friends.map(({ name, online }, i) => (
-								<Friend key={i} name={name} online={online} players={players} handleAddPlayers={() => handleAddPlayers({ players, name })} />
+							{friends.map(({ name, image, online }, i) => (
+								<Friend key={i} name={name} image={image} online={online} players={players} handleAddPlayers={() => handleAddPlayers({ players, name })} />
 							))}
 						</List>
 					</Box>
@@ -113,8 +122,10 @@ const PreGame = ({ setStart }) => {
 			<Dialog open={openDialog} onClose={() => setOpenDialog(false)} PaperProps={{ style: { backgroundColor: theme => theme.palette.primary.main, border: '4px solid #fff' } }}>
 				<DialogTitle>Are you sure you want to leave?</DialogTitle>
 				<DialogActions>
-					<SettingButton text='cancel' onClick={() => setOpenDialog(false)} />
-					<SettingButton text='leave' onClick={handleLeave} autoFocus />
+					<SettingButton onClick={() => setOpenDialog(false)}>cancel</SettingButton>
+					<SettingButton onClick={handleLeave} autoFocus>
+						leave
+					</SettingButton>
 				</DialogActions>
 			</Dialog>
 		</div>

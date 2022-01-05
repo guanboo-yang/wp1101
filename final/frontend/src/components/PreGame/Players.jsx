@@ -1,9 +1,10 @@
-import { IconButton, Step, StepLabel, Stepper } from '@mui/material'
+import { IconButton, Step, StepLabel, Stepper, Box } from '@mui/material'
 import { Add, Rocket } from '@mui/icons-material'
 import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector'
 import { styled } from '@mui/material/styles'
 import { keyframes } from '@emotion/react'
 import './Players.css'
+import { redShip, yellowShip, blueShip, greenShip } from '../../assets'
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
 	[`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -49,11 +50,15 @@ const ColorlibStepIconRoot = styled('div')(({ theme, ownerState }) => ({
 const ColorLibStepIcon = ({ active, completed, index, players, handleStep }) => {
 	// console.log(active, completed, index)
 	const colors = ['#FF6347', '#FFD700', '#00BFFF', '#00CED1']
+	const rocket = [redShip, yellowShip, blueShip, greenShip]
 	return (
 		<ColorlibStepIconRoot ownerState={{ completed, active }}>
 			{players[String(index)] ? (
-				<IconButton onClick={handleStep}>
-					<Rocket sx={{ color: colors[index] }} fontSize='large' />
+				<IconButton onClick={handleStep} className='ship'>
+					<Box sx={{ width: 25, height: 25, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+						<img src={rocket[index]} alt={players[String(index)]} width={25} />
+					</Box>
+					{/* <Rocket sx={{ color: colors[index] }} fontSize='large' /> */}
 				</IconButton>
 			) : (
 				<IconButton onClick={handleStep}>

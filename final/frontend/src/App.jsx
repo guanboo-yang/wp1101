@@ -35,12 +35,12 @@ const App = () => {
 				? {
 						primary: { main: '#1f5469' },
 						secondary: { main: '#ffffff' },
-						background: { paper: '#1f5469e9' },
+						background: { paper: '#1f5469e9', dark: '#26c8bc' },
 				  }
 				: {
 						primary: { main: '#ffffff', dark: '#91d2c2' },
 						secondary: { main: '#1f5469' },
-						background: { paper: '#ffffffe9' },
+						background: { paper: '#ffffffe9', dark: '#1f5469' },
 				  }),
 		},
 	})

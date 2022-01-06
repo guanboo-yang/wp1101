@@ -2,6 +2,7 @@ import { Box, Button, Modal, Typography } from '@mui/material'
 import { useUser } from '../hooks/useUser'
 import { useEventListener } from '../hooks'
 import fullscreen from 'fullscreen'
+import { useState } from 'react'
 const fs = fullscreen(document.body)
 
 const style = {
@@ -19,6 +20,7 @@ const style = {
 }
 
 const Settings = ({ open, setOpen }) => {
+	const [isFullScreen, setFullScreen] = useState(false)
 	const handleClose = () => setOpen(false)
 	const handleToggle = () => setOpen(!open)
 	const { darkMode, setDarkMode } = useUser()
@@ -30,7 +32,25 @@ const Settings = ({ open, setOpen }) => {
 		if (e.key === 'D' && e.shiftKey) {
 			setDarkMode(!darkMode)
 		}
+		if (e.key === 'f') {
+			setFullScreen(!isFullScreen)
+			if (isFullScreen) {
+				fs.release()
+			} else {
+				fs.request()
+			}
+		}
 	})
+
+	const toggleFullScreen = () => {
+		if (isFullScreen) {
+			fs.release()
+			setFullScreen(false)
+		} else {
+			fs.request()
+			setFullScreen(true)
+		}
+	}
 
 	return (
 		<>
@@ -48,8 +68,8 @@ const Settings = ({ open, setOpen }) => {
 					{/* fullscreen */}
 					<Typography sx={{ mt: 2 }} variant='body1' color='secondary' noWrap align='center'>
 						Fullscreen:
-						<Button sx={{ ml: 2 }} variant='contained' size='small' color='secondary' onClick={() => fs.request()}>
-							Enter
+						<Button sx={{ ml: 2 }} variant='contained' size='small' color='secondary' onClick={toggleFullScreen}>
+							{isFullScreen ? 'Exit' : 'Enter'}
 						</Button>
 					</Typography>
 					{/* // TODO: SOUND */}

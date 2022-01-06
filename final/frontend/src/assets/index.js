@@ -1,4 +1,4 @@
-export { default as redShip } from './red.png'
-export { default as blueShip } from './blue.png'
-export { default as greenShip } from './green.png'
-export { default as yellowShip } from './yellow.png'
+export { default as wall1 } from './wall/1.png'
+export { default as wall2 } from './wall/2.png'
+export { default as asteroid1 } from './asteroid/1.png'
+export { default as bullet } from './bullet.png'

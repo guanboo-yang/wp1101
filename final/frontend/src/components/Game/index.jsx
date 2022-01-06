@@ -1,12 +1,12 @@
 import { useRef, useEffect } from 'react'
 import { useEventListener } from '../../hooks/index'
 import { logic } from '../../utils/logic'
-import { Engine, Render, Runner, Bodies, Composite } from 'matter-js'
+import { Engine, Render, Runner, Bodies, Composite, Composites, Pairs } from 'matter-js'
+import { wall1 } from '../../assets'
 
 const Game = () => {
 	const { sendData } = logic()
 
-	// draw canvas
 	const canvasRef = useRef(null)
 	const engine = useRef(Engine.create())
 	const isPressed = useRef(false)
@@ -20,7 +20,6 @@ const Game = () => {
 		}
 	})
 
-	// draw on canvas
 	useEffect(() => {
 		const render = Render.create({
 			canvas: canvasRef.current,
@@ -34,38 +33,41 @@ const Game = () => {
 		})
 		Render.run(render)
 		Runner.run(Runner.create(), engine.current)
+		let stack = Composites.stack(20, 20, 11, 11, 0, 0, (x, y) => {
+			return Bodies.rectangle(x, y, 20, 20, {
+				isStatic: true,
+				render: {
+					sprite: {
+						texture: wall1,
+						xScale: 1,
+						yScale: 1,
+					},
+				},
+			})
+		})
 		Composite.add(engine.current.world, [
 			Bodies.rectangle(500 / 2, 10, 500, 20, { isStatic: true }),
 			Bodies.rectangle(10, 500 / 2, 20, 500, { isStatic: true }),
 			Bodies.rectangle(500 / 2, 500 - 10, 500, 20, { isStatic: true }),
 			Bodies.rectangle(500 - 10, 500 / 2, 20, 500, { isStatic: true }),
+			stack,
 		])
 		return () => {
+			Pairs.clear(engine.current.pairs)
+			Runner.stop(engine.current)
 			Render.stop(render)
-			Runner.stop(engine)
-			render.canvas.remove()
-			render.canvas = null
-			render.context = null
-			render.textures = {}
 		}
-	}, []) // eslint-disable-line react-hooks/exhaustive-deps
+	}, [])
 
 	const handleDown = () => (isPressed.current = true)
 	const handleUp = () => (isPressed.current = false)
 
 	const handleAddCircle = e => {
 		if (isPressed.current) {
-			// get mouse position relative to canvas
 			const rect = e.target.getBoundingClientRect()
 			const mouseX = e.clientX - rect.left
 			const mouseY = e.clientY - rect.top
-			const ball = Bodies.circle(mouseX, mouseY, 20 + Math.random() * 20, {
-				restitution: 0.8,
-				friction: 0.01,
-				render: {
-					fillStyle: '#00CED1',
-				},
-			})
+			const ball = Bodies.circle(mouseX, mouseY, 20)
 			Composite.add(engine.current.world, [ball])
 		}
 	}

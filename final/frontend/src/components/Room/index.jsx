@@ -1,16 +1,16 @@
-import { Box, Typography, Grid, List, Dialog, DialogTitle, DialogActions } from '@mui/material'
+import { Box, Typography, Grid, List /* Dialog, DialogTitle, DialogActions */ } from '@mui/material'
 import { useUser } from '../../hooks/useUser'
 import Players from './Players'
 import Friend from './Friend'
 // TODO: [CHANGE] ask server to send all level information
 import { swapPlayers } from '../../utils'
-import { useState } from 'react'
+// import { useState } from 'react'
 import SettingButton from '../SettingButton'
 
 const Room = ({ setStep }) => {
 	const { profile, preGameState, login, setPreGameState } = useUser()
 	const { players, gameMode } = preGameState
-	const [openDialog, setOpenDialog] = useState(false)
+	// const [openDialog, setOpenDialog] = useState(false)
 
 	const setPlayers = players => setPreGameState(prev => ({ ...prev, players }))
 
@@ -27,7 +27,7 @@ const Room = ({ setStep }) => {
 	const playersNum = () => players.filter(player => player).length
 
 	const handleLeave = () => {
-		setOpenDialog(false)
+		// setOpenDialog(false)
 		setStep(-1)
 		login()
 	}
@@ -80,7 +80,8 @@ const Room = ({ setStep }) => {
 							/>
 						</Grid>
 						<Grid item>
-							<SettingButton onClick={() => setOpenDialog(true)}>leave</SettingButton>
+							<SettingButton onClick={handleLeave}>leave</SettingButton>
+							{/* <SettingButton onClick={() => setOpenDialog(true)}>leave</SettingButton> */}
 							<SettingButton disabled={notReadyToGo()} onClick={() => setStep(1)}>
 								start
 							</SettingButton>
@@ -99,7 +100,7 @@ const Room = ({ setStep }) => {
 					</Box>
 				</Grid>
 			</Grid>
-			<Dialog open={openDialog} onClose={() => setOpenDialog(false)} PaperProps={{ style: { backgroundColor: theme => theme.palette.primary.main, border: '4px solid #fff' } }}>
+			{/* <Dialog open={openDialog} onClose={() => setOpenDialog(false)} PaperProps={{ style: { backgroundColor: theme => theme.palette.primary.main, border: '4px solid #fff' } }}>
 				<DialogTitle>Are you sure you want to leave?</DialogTitle>
 				<DialogActions>
 					<SettingButton onClick={() => setOpenDialog(false)}>cancel</SettingButton>
@@ -107,7 +108,7 @@ const Room = ({ setStep }) => {
 						leave
 					</SettingButton>
 				</DialogActions>
-			</Dialog>
+			</Dialog> */}
 		</div>
 	)
 }

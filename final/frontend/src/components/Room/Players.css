@@ -5,7 +5,3 @@
 .team-mode:nth-child(3) .MuiStepConnector-line {
 	background-image: unset;
 }
-
-.ship img {
-	image-rendering: pixelated;
-}

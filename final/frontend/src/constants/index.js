@@ -13,3 +13,8 @@ export const LEVEL = [
 	{ name: 'INTERMEDIATE' },
 	{ name: 'ADVANCED' },
 ]
+
+export const CANVAS = {
+	WIDTH: 1000,
+	HEIGHT: 1000,
+}

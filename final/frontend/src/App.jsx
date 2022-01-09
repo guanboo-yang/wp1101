@@ -47,11 +47,11 @@ const App = () => {
 
 	return (
 		<ThemeProvider theme={theme}>
-			<div className='App' style={{ color: theme.palette.secondary.main, background: theme.palette.primary.main, height: '100vh', overflow: 'auto' }}>
+			<div className='App' style={{ height: '100vh', overflow: 'auto' }}>
 				<Router>
 					<Appbar links={links} />
 					<Toolbar />
-					<Box component='main'>
+					<Box component='main' style={{ color: theme.palette.secondary.main, background: theme.palette.primary.main }}>
 						<Routes>
 							{links.map(({ name, path, element }) => (
 								<Route key={name} path={path} element={<RequireAuth>{element}</RequireAuth>} />

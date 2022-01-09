@@ -4,7 +4,7 @@ import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector
 import { styled } from '@mui/material/styles'
 import { keyframes } from '@emotion/react'
 import './Players.css'
-import { ships } from '../../assets/ship'
+import { ship } from '../../assets/ship'
 import { useEffect, useState } from 'react'
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
@@ -50,21 +50,21 @@ const ColorlibStepIconRoot = styled('div')(({ theme, ownerState }) => ({
 
 const ColorLibStepIcon = ({ active, completed, idx, players, handleStep }) => {
 	// console.log(active, completed, idx)
-	const [stateIndex, setIdx] = useState(0)
+	const [stateIndex, setIdx] = useState(1)
 	useEffect(() => {
 		const interval = setInterval(() => {
-			setIdx(prev => (prev + 1) % 3)
+			setIdx(prev => ((prev + 1) % 3) + 1)
 		}, 1000 / 20)
 		return () => clearInterval(interval)
 	}, [])
 	const colors = ['#FF3030', '#FF00FF', '#00BFFF', '#32CD32']
-	const rockets = ships
+	const rockets = ship
 	const style = {
 		position: 'absolute',
-		top: stateIndex * -22,
-		left: 0,
+		// top: stateIndex * -22,
+		// left: 0,
 		height: 88,
-		width: 34,
+		width: 204,
 		imageRendering: 'pixelated',
 	}
 	// const rockets = [red, pink, blue, green]
@@ -74,7 +74,7 @@ const ColorLibStepIcon = ({ active, completed, idx, players, handleStep }) => {
 				<IconButton onClick={handleStep} style={{ width: '80%', height: '80%' }}>
 					<Box
 						sx={{ width: 34, height: 22, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', transform: 'rotate(270deg)', overflow: 'hidden' }}>
-						<img src={rockets[idx]} alt={players[String(idx)]} width={25} style={style} />
+						<img src={rockets} alt={players[String(idx)]} width={25} style={{ ...style, top: stateIndex * -22, left: idx * -34 }} />
 					</Box>
 				</IconButton>
 			) : (

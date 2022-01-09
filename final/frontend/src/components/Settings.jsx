@@ -2,8 +2,7 @@ import { Box, Button, Modal, Typography } from '@mui/material'
 import { useUser } from '../hooks/useUser'
 import { useEventListener } from '../hooks'
 import fullscreen from 'fullscreen'
-import { useState } from 'react'
-const fs = fullscreen(document.body)
+import { useState, useEffect, useRef } from 'react'
 
 const style = {
 	position: 'absolute',
@@ -24,6 +23,18 @@ const Settings = ({ open, setOpen }) => {
 	const handleClose = () => setOpen(false)
 	const handleToggle = () => setOpen(!open)
 	const { darkMode, setDarkMode } = useUser()
+	const fsRef = useRef(null)
+
+	useEffect(() => {
+		fsRef.current = fullscreen(document.querySelector('main'))
+		fsRef.current.on('attain', () => {
+			setFullScreen(true)
+		})
+
+		fsRef.current.on('release', () => {
+			setFullScreen(false)
+		})
+	}, [])
 
 	useEventListener('keydown', e => {
 		if (e.key === '?' && e.shiftKey) {
@@ -33,22 +44,17 @@ const Settings = ({ open, setOpen }) => {
 			setDarkMode(!darkMode)
 		}
 		if (e.key === 'f') {
-			setFullScreen(!isFullScreen)
-			if (isFullScreen) {
-				fs.release()
-			} else {
-				fs.request()
-			}
+			toggleFullScreen()
 		}
 	})
 
 	const toggleFullScreen = () => {
+		handleClose()
+		setFullScreen(!isFullScreen)
 		if (isFullScreen) {
-			fs.release()
-			setFullScreen(false)
+			fsRef.current.release()
 		} else {
-			fs.request()
-			setFullScreen(true)
+			fsRef.current.request()
 		}
 	}
 

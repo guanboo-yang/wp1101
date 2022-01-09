@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Tab, Tabs, AppBar, Toolbar, Typography, IconButton, Avatar, Menu, MenuItem, Chip } from '@mui/material'
-import { NavLink, useLocation } from 'react-router-dom'
-import { useStorage } from '../hooks'
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'
+import { useEventListener, useStorage } from '../hooks'
 import { useTheme, useScrollTrigger } from '@mui/material'
 import { useUser } from '../hooks/useUser'
 import { GoogleLogout } from 'react-google-login'
@@ -16,12 +16,22 @@ const Appbar = ({ links }) => {
 	const [openSettings, setOpenSettings] = useState(false)
 	const theme = useTheme()
 	const location = useLocation()
+	const navigate = useNavigate()
 
 	const user = profile?.name || ''
 
 	// console.log(theme)
 	// console.log(location)
 	// console.log(profile)
+
+	useEventListener('keydown', e => {
+		const key = Number(e.key)
+		if (key) {
+			if (key > 0 && key <= links.length) {
+				navigate(links[key - 1].path)
+			}
+		}
+	})
 
 	useEffect(() => {
 		if (links.find(link => link.path === location.pathname)) {

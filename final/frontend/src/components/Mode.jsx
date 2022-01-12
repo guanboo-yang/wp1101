@@ -1,6 +1,6 @@
 import { Grid, TextField } from '@mui/material'
 import { useState } from 'react'
-import { LEVEL, MODE } from '../constants'
+import { LEVEL, MODE } from 'constant'
 import { useUser } from '../hooks/useUser'
 import SettingButton from './SettingButton'
 

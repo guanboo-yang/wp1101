@@ -17,26 +17,18 @@ const Room = ({ setStep }) => {
 	const setPlayers = players => setPreGameState(prev => ({ ...prev, players }))
 	// TODO: get friends from server
 	// Problem, google photo
-	
-	// const friends = [
-	// 	{ name: '楊冠柏', online: true, image: 'https://lh3.googleusercontent.com/a/AATXAJwLy5Aw_w-MyGVpcBsADA7x14zLhwt_RJE1Pr6E=s96-c' },
-	// 	{ name: 'Mary', online: true },
-	// 	{ name: 'Sandy', online: false },
-	// 	{ name: 'Henry', online: true },
-	// 	{ name: 'Mike', online: true },
-	// 	{ name: 'Rachel', online: true },
-	// ]
-    const msgs = [
-		{name: 'Tristan',body: 'Hi'},
-		{name: 'Eric', body: "What's up"},
-		{name: 'Tristan',body: 'Hi'},
-		{name: 'Eric', body: "What's up"},
-		{name: 'Tristan',body: 'Hi'},
-		{name: 'Eric', body: "What's up"},
-		{name: 'Tristan',body: 'Hi'},
-		{name: 'Eric', body: "What's up"},
-		{name: 'Tristan',body: 'Hi'},
-		{name: 'Eric', body: "What's up"},
+
+	const msgs = [
+		{ name: 'Tristan', body: 'Hi' },
+		{ name: 'Eric', body: "What's up" },
+		{ name: 'Tristan', body: 'Hi' },
+		{ name: 'Eric', body: "What's up" },
+		{ name: 'Tristan', body: 'Hi' },
+		{ name: 'Eric', body: "What's up" },
+		{ name: 'Tristan', body: 'Hi' },
+		{ name: 'Eric', body: "What's up" },
+		{ name: 'Tristan', body: 'Hi' },
+		{ name: 'Eric', body: "What's up" },
 	]
 
 	const playersNum = () => players.filter(player => player).length
@@ -85,15 +77,13 @@ const Room = ({ setStep }) => {
 						<Typography variant='h5'>Chat Room</Typography>
 						<SettingButton text='Invite your friends!' variant='text' />
 						<List sx={{ overflow: 'auto', height: 250 }}>
-							{
-								msgs.map(({name, body}, i) => {
-									return <Message name={name} body={body} key={i}/>
-								})
-							}
+							{msgs.map(({ name, body }, i) => {
+								return <Message name={name} body={body} key={i} />
+							})}
 						</List>
 					</Box>
 				</Grid>
-                <Grid item xs={12} md={6}>
+				<Grid item xs={12} md={6}>
 					<Grid container backgroundColor='primary.dark' direction='column' justifyContent='center' alignItems='center' height='100%' sx={{ py: 2 }}>
 						<Grid item width='100%'>
 							<Players

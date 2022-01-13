@@ -57,12 +57,10 @@ const ColorLibStepIcon = ({ active, completed, idx, players, handleStep }) => {
 		}, 1000 / 20)
 		return () => clearInterval(interval)
 	}, [])
-	const colors = ['#FF3030', '#FF00FF', '#00BFFF', '#32CD32']
+	const colors = ['#00BFFF', '#32CD32', '#FF00FF', '#FF3030']
 	const rockets = ship
 	const style = {
 		position: 'absolute',
-		// top: stateIndex * -22,
-		// left: 0,
 		height: 88,
 		width: 204,
 		imageRendering: 'pixelated',

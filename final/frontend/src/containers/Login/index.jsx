@@ -5,26 +5,34 @@ import { Button } from '@mui/material'
 import Input from './Input'
 import { GoogleLogin } from 'react-google-login'
 import { Google } from '@mui/icons-material'
+import { useConnection } from 'connection/connect'
+
 const GOOGLE_CLIENT_ID = '202508058751-40ie9aunidgnnafl0pdqselm2bb0r6bq.apps.googleusercontent.com'
 
 const Login = () => {
 	const { login } = useUser()
 	const navigate = useNavigate()
 	const [signup, setSignup] = useState(false)
+	const { createAccount, loginAccount, loginWithGoogle } = useConnection()
+	const [ wrongPassword, setWorngPassword ] = useState(false)
 
 	useEffect(() => {
 		setValues(values => ({ ...values, showPassword: false }))
 	}, [signup])
 
-	const handleSubmit = () => {
-		console.log(values)
-		if (signup) {
-			// handle signup
-		} else {
-			// handle login
+	const handleSignUp = (e) => {
+		e.preventDefault()
+		if (values.password !== values.confirmPassword){
+			setWorngPassword(true)
+		}else{
+			setWorngPassword(false)
+			createAccount(values)
 		}
-		login({ ...values, name: 'Tristan' })
-		navigate('/')
+	}
+
+	const handleSubmit = (e) => {
+		e.preventDefault()
+		loginAccount(values)
 	}
 
 	const style = {
@@ -58,12 +66,14 @@ const Login = () => {
 	const onGoogleSuccess = async res => {
 		const result = res?.profileObj
 		const token = res?.tokenObj?.id_token
-		try {
-			login({ ...result, token })
-			navigate('/')
-		} catch (err) {
-			console.log(err)
-		}
+		console.log(result, token);
+		loginWithGoogle(result)
+		// try {
+		// 	login({ ...result, token })
+		// 	navigate('/')
+		// } catch (err) {
+		// 	console.log(err)
+		// }
 	}
 
 	const onGoogleFailure = res => {
@@ -91,6 +101,8 @@ const Login = () => {
 					autoFocus
 				/>
 				<Input //
+					// error={true}
+					// helperText='Your email do not match!'
 					name='password'
 					label='Password'
 					handlechange={handleChange}
@@ -99,6 +111,8 @@ const Login = () => {
 				/>
 				{signup && (
 					<Input //
+						error={wrongPassword}
+						helperText={wrongPassword?"Your Password doen't match!":''}
 						name='confirmPassword'
 						label='Confirm Password'
 						handlechange={handleChange}
@@ -107,7 +121,7 @@ const Login = () => {
 					/>
 				)}
 				{signup ? (
-					<Button type='submit' color='secondary' variant='contained' onClick={handleSubmit} fullWidth sx={{ my: 1 }}>
+					<Button type='submit' color='secondary' variant='contained' onClick={handleSignUp} fullWidth sx={{ my: 1 }}>
 						Signup
 					</Button>
 				) : (

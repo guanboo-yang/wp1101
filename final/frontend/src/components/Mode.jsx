@@ -1,10 +1,12 @@
 import { Grid, TextField } from '@mui/material'
 import { useState } from 'react'
-import { LEVEL, MODE } from 'constant'
+import { LEVEL, MODE } from '../constant'
 import { useUser } from '../hooks/useUser'
 import SettingButton from './SettingButton'
+import { useConnection } from 'connection/connect'
 
 const Mode = ({ setStart }) => {
+	const { requireFriend } = useConnection()
 	const { preGameState, setPreGameState } = useUser()
 	const { gameMode, rounds, level } = preGameState
 	const [rommID, setRommID] = useState(null)
@@ -15,6 +17,7 @@ const Mode = ({ setStart }) => {
 
 	const handleCreateRoom = () => {
 		// TODO: create room with { gameMode, rounds, level }
+		requireFriend()
 		setStart()
 	}
 

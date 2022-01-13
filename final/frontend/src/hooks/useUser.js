@@ -1,10 +1,12 @@
-import { createContext, useContext } from 'react'
+import { createContext, useContext, useState } from 'react'
 import { useDarkMode, useStorage } from '.'
 
 const UserContext = createContext({
 	profile: null,
 	darkMode: false,
 	preGameState: {},
+	friends: [],
+	setFriends: () => {},
 	setProfile: () => {},
 	setDarkMode: () => {},
 	setPreGameStatus: () => {},
@@ -14,6 +16,7 @@ const UserContext = createContext({
 
 const UserProvider = ({ children }) => {
 	// use localStorage or sessionStorage to store user data?
+	const [friends, setFriends] = useState([])
 	const [profile, setProfile, removeProfile] = useStorage('profile', null, window.localStorage)
 	const [preGameState, setPreGameState, removePreGameState] = useStorage(
 		'pre-game-state',
@@ -54,6 +57,8 @@ const UserProvider = ({ children }) => {
 				setProfile,
 				setDarkMode,
 				setPreGameState,
+				friends,
+				setFriends,
 				login,
 				logout,
 			}}>

@@ -6,22 +6,37 @@ import Friend from './Friend'
 import { swapPlayers } from '../../utils'
 // import { useState } from 'react'
 import SettingButton from '../SettingButton'
+import Message from './Message'
+import { useEffect } from 'react'
 
 const Room = ({ setStep }) => {
-	const { profile, preGameState, login, setPreGameState } = useUser()
+	const { profile, preGameState, login, setPreGameState, friends } = useUser()
 	const { players, gameMode } = preGameState
 	// const [openDialog, setOpenDialog] = useState(false)
 
 	const setPlayers = players => setPreGameState(prev => ({ ...prev, players }))
-
 	// TODO: get friends from server
-	const friends = [
-		{ name: '楊冠柏', online: true, image: 'https://lh3.googleusercontent.com/a/AATXAJwLy5Aw_w-MyGVpcBsADA7x14zLhwt_RJE1Pr6E=s96-c' },
-		{ name: 'Mary', online: true },
-		{ name: 'Sandy', online: false },
-		{ name: 'Henry', online: true },
-		{ name: 'Mike', online: true },
-		{ name: 'Rachel', online: true },
+	// Problem, google photo
+	
+	// const friends = [
+	// 	{ name: '楊冠柏', online: true, image: 'https://lh3.googleusercontent.com/a/AATXAJwLy5Aw_w-MyGVpcBsADA7x14zLhwt_RJE1Pr6E=s96-c' },
+	// 	{ name: 'Mary', online: true },
+	// 	{ name: 'Sandy', online: false },
+	// 	{ name: 'Henry', online: true },
+	// 	{ name: 'Mike', online: true },
+	// 	{ name: 'Rachel', online: true },
+	// ]
+    const msgs = [
+		{name: 'Tristan',body: 'Hi'},
+		{name: 'Eric', body: "What's up"},
+		{name: 'Tristan',body: 'Hi'},
+		{name: 'Eric', body: "What's up"},
+		{name: 'Tristan',body: 'Hi'},
+		{name: 'Eric', body: "What's up"},
+		{name: 'Tristan',body: 'Hi'},
+		{name: 'Eric', body: "What's up"},
+		{name: 'Tristan',body: 'Hi'},
+		{name: 'Eric', body: "What's up"},
 	]
 
 	const playersNum = () => players.filter(player => player).length
@@ -64,8 +79,21 @@ const Room = ({ setStep }) => {
 	return (
 		<div align='center'>
 			<h1>invite your friend</h1>
-			<Grid container spacing={1} alignItems='stretch' sx={{ width: 'min(96vw, 750px)' }}>
-				<Grid item xs={12} md={8}>
+			<Grid container spacing={1} alignItems='stretch' sx={{ width: 'min(96vw, 1000px)' }}>
+				<Grid item xs={12} md={3}>
+					<Box backgroundColor='primary.dark' sx={{ py: 2, px: 1 }}>
+						<Typography variant='h5'>Chat Room</Typography>
+						<SettingButton text='Invite your friends!' variant='text' />
+						<List sx={{ overflow: 'auto', height: 250 }}>
+							{
+								msgs.map(({name, body}, i) => {
+									return <Message name={name} body={body} key={i}/>
+								})
+							}
+						</List>
+					</Box>
+				</Grid>
+                <Grid item xs={12} md={6}>
 					<Grid container backgroundColor='primary.dark' direction='column' justifyContent='center' alignItems='center' height='100%' sx={{ py: 2 }}>
 						<Grid item width='100%'>
 							<Players
@@ -88,7 +116,7 @@ const Room = ({ setStep }) => {
 						</Grid>
 					</Grid>
 				</Grid>
-				<Grid item xs={12} md={4}>
+				<Grid item xs={12} md={3}>
 					<Box backgroundColor='primary.dark' sx={{ py: 2, px: 1 }}>
 						<Typography variant='h5'>friends</Typography>
 						<SettingButton text='Invite your friends!' variant='text' />

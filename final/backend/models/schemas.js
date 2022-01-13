@@ -2,11 +2,12 @@ import mongoose from 'mongoose'
 
 const PlayerSchema = mongoose.Schema(
 	{
-		name: { type: String, required: true },
+		name: { type: String, required: true, unique: true },
+		friends: [{type: mongoose.Schema.Types.ObjectId, ref: 'Player', default: []}],
 		email: { type: String, required: true, unique: true },
-		password: { type: String, required: true },
-		wins: { type: Number, required: true },
-		loses: { type: Number, required: true },
+		password: { type: String },
+		wins: { type: Number, required: true, default: 0 },
+		loses: { type: Number, required: true, default: 0 },
 	},
 	{ timestamps: true }
 )
@@ -31,6 +32,7 @@ const GameSchema = mongoose.Schema(
 	{
 		gameMode: { type: Number, default: 0 },
 		rounds: { type: Number, default: 0 },
+		messages: { type: mongoose.Schema.Types.ObjectId, ref: 'Message' },
 		// state for each round (probably not equal to the number of rounds)
 		players: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Player' }],
 		state: [

@@ -1,5 +1,3 @@
-const sendData = (data, ws) => {
-	ws.send(JSON.stringify(data))
+export const sendData = (data, connection) => {
+	connection.send(JSON.stringify(data))
 }
-
-export default { sendData }

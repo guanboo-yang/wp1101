@@ -1,24 +1,23 @@
 import { useRef, useEffect } from 'react'
 import { useEventListener } from '../../hooks/index'
-import { logic } from '../../utils/logic'
 import { Engine, Render, Runner, Bodies, Composite, Composites, Pairs } from 'matter-js'
 import { wall1 } from '../../assets'
 
 const Game = () => {
-	const { sendData } = logic()
+	// const { sendData } = logic()
 
 	const canvasRef = useRef(null)
 	const engine = useRef(Engine.create())
 	const isPressed = useRef(false)
 
-	useEventListener('keydown', e => {
-		if (e.key === 'ArrowRight') {
-			const payload = { task: 'right' }
-			sendData(payload)
-		} else if (e.keyCode === 32) {
-			sendData(['shoot'])
-		}
-	})
+	// useEventListener('keydown', e => {
+		// if (e.key === 'ArrowRight') {
+		// 	const payload = { task: 'right' }
+		// 	sendData(payload)
+		// } else if (e.keyCode === 32) {
+		// 	sendData(['shoot'])
+		// }
+	// })
 
 	useEffect(() => {
 		const render = Render.create({

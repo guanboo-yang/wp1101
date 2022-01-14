@@ -1,9 +1,9 @@
 import mongoose from 'mongoose'
 
-const PlayerSchema = mongoose.Schema(
+const PlayerSchema = new mongoose.Schema(
 	{
 		name: { type: String, required: true },
-		friends: [{type: mongoose.Schema.Types.ObjectId, ref: 'Player', default: []}],
+		friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Player', default: [] }],
 		email: { type: String, required: true, unique: true },
 		password: { type: String },
 		wins: { type: Number, required: true, default: 0 },
@@ -12,16 +12,16 @@ const PlayerSchema = mongoose.Schema(
 	{ timestamps: true }
 )
 
-const RoomSchema = mongoose.Schema({
-	players: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Player' } ],
-	roomId: [{type: Number, required: true}],
-	messages: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Message', default: []}],
+const RoomSchema = new mongoose.Schema({
+	players: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Player' }],
+	roomId: [{ type: Number, required: true }],
+	messages: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Message', default: [] }],
 	gameMode: { type: Number, default: 0 },
 	rounds: { type: Number, default: 0 },
 	level: { type: Number, default: 0 },
 })
 
-const MessageSchema = mongoose.Schema(
+const MessageSchema = new mongoose.Schema(
 	{
 		name: { type: String, required: true },
 		body: { type: String, required: true },
@@ -29,7 +29,7 @@ const MessageSchema = mongoose.Schema(
 	{ timestamps: true }
 )
 
-const GameSchema = mongoose.Schema(
+const GameSchema = new mongoose.Schema(
 	{
 		gameMode: { type: Number, default: 0 },
 		rounds: { type: Number, default: 0 },
@@ -49,7 +49,7 @@ const GameSchema = mongoose.Schema(
 
 const Player = mongoose.model('Player', PlayerSchema)
 const Message = mongoose.model('Message', MessageSchema)
-const Room = mongoose.model('Event', RoomSchema)
+const Room = mongoose.model('Room', RoomSchema)
 const Game = mongoose.model('Game', GameSchema)
 
 export { Player, Message, Room, Game }

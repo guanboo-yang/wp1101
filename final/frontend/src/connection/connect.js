@@ -1,11 +1,13 @@
 import { useUser } from '../hooks/useUser'
 import { useNavigate } from 'react-router-dom'
+// import withSnackbar from '../components/Snackbar'
+
 let userProfile = JSON.parse(localStorage.getItem('profile'))
 
 const client = new WebSocket(userProfile ? `ws://localhost:5000?name=${userProfile.name}` : `ws://localhost:5000`, 'echo-protocol')
 
 const useConnection = () => {
-	const { login, setFriends, setRoomId, roomId, profile, setPreGameState, setInvitation, exchangeRequire, setExchangeRequire } = useUser()
+	const { login, setFriends, setRoom, room, profile, setPreGameState, setInvitation, setExchangeRequire, setStep } = useUser()
 	const navigate = useNavigate()
 
 	client.onmessage = async byteString => {
@@ -40,7 +42,7 @@ const useConnection = () => {
 				setExchangeRequire({ state: true, from, to, name })
 				break
 			case 'roomCreated':
-				setRoomId(payLoad.roomId)
+				setRoom({roomId: payLoad.roomId, isHost: true})
 				break
 			case 'updatedPosition':
 				setPlayers(payLoad)
@@ -49,7 +51,11 @@ const useConnection = () => {
 				const { roomId, index, inviter, players } = payLoad
 				setInvitation({ invite: true, roomId, index, inviter, players })
 				break
-
+			case 'gameStart':
+				setStep(2)
+				break;
+			case '':
+				break
 			default:
 				break
 		}
@@ -68,7 +74,6 @@ const useConnection = () => {
 	}
 
 	const loginWithGoogle = userDatas => {
-		console.log(userDatas)
 		sendData([
 			'googleLogin',
 			{
@@ -104,7 +109,16 @@ const useConnection = () => {
 	}
 
 	const exchangePosition = ({ from, to }, players) => {
-		sendData(['acceptExchange', { from, to, roomId, players }])
+		sendData(['acceptExchange', { from, to, roomId: room.roomId, players }])
+	}
+
+	// Game
+	const gameStart = ({roomId, players}) => {
+		sendData(['gameStart', {roomId, players}])
+	}
+
+	const gameEvent = ({roomId, evt, name}) => {
+		sendData(['gameEvent', {roomId, evt, name}])
 	}
 
 	const sendData = data => {
@@ -122,6 +136,8 @@ const useConnection = () => {
 		swapPosition,
 		acceptInvitation,
 		exchangePosition,
+    	gameStart,
+		gameEvent
 	}
 }
 

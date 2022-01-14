@@ -1,8 +1,9 @@
 import { connect, connection } from 'mongoose'
 import dotenv from 'dotenv-defaults'
 import { Player, Room } from '../models/schemas'
-import { sendData, roomBroadcast, getFriendsList } from '../util/wssConnect'
+import { sendData, getFriendsList } from '../util/wssConnect'
 import { usualLogin, googleLogin, createAccount } from '../events/login'
+import { gameStart, eventHandler } from '../events/game'
 import { createNewRoom, leaveRoom, swapRequest, acceptInvitation, acceptExchange, invite } from '../events/room'
 const WebSocketServer = require('websocket').server
 const http = require('http')
@@ -102,6 +103,11 @@ db.once('open', async () => {
                 case 'acceptExchange':
                     await acceptExchange(userDatas, datas)
 					break
+                case 'gameStart':
+                    await gameStart(userDatas, datas)
+                    break;
+                case 'gameEvent':
+                    await eventHandler(userDatas, datas)
                 default:
                     break
             }

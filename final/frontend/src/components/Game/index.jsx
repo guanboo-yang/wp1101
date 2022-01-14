@@ -7,6 +7,8 @@ import './index.css'
 import { CANVAS } from 'constant'
 import { Ship } from './Ship'
 import { state } from './Sprite'
+import { useConnection } from 'connection/connect'
+import { useUser } from 'hooks/useUser'
 
 const Game = ({ showMessage }) => {
 	// const { sendData } = logic()
@@ -16,17 +18,22 @@ const Game = ({ showMessage }) => {
 	const [next, setNext] = useState('normal')
 	const shipRef = useRef(null)
 	const animateID = useRef(null)
+	const { room, profile } = useUser()
+	const { gameEvent } = useConnection()
 	// const [ships, setShips] = useState([])
 
 	useEventListener('keydown', e => {
+		// part1 
 		if (e.key === 'Enter') {
+			gameEvent({roomId: room.roomId, evt: 'enter', name: profile.name})
 			if (doublePress) {
-				console.log('doublePress')
 			}
 			turnRef.current = true
 			setDoublePress(false)
 		}
+		// part2
 		if (e.key === ' ') {
+			gameEvent({roomId: room.roomId, evt: 'space', name: profile.name})
 			shipRef.current.shoot(next)
 			setNext('normal')
 		}
@@ -40,8 +47,9 @@ const Game = ({ showMessage }) => {
 		}
 		if (e.key === 'd') console.log(state.objects)
 	})
-
+	// send part 3
 	useEventListener('keyup', e => {
+		gameEvent({roomId: room.roomId, evt: 'leave', name: profile.name})
 		if (e.key === 'Enter') {
 			turnRef.current = false
 			setDoublePress(true)
@@ -66,7 +74,7 @@ const Game = ({ showMessage }) => {
 		let camera = { x: width / 2, y: height / 2, w: width, h: height }
 
 		const animate = () => {
-			camera = setCameraOn(camera, state.objects, 400)
+			camera = setCameraOn(camera, state.objects, 1000)
 			ctx.setTransform(1, 0, 0, 1, 0, 0)
 			ctx.clearRect(0, 0, width, height)
 			draw.line(ctx, '#fff', { x: 0, y: 0 }, { x: 0, y: CANVAS.IN.HEIGHT }, camera)

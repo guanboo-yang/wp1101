@@ -2,9 +2,21 @@ import { useState } from 'react'
 import Mode from '../../components/Mode'
 import Room from '../../components/Room'
 import Game from '../../components/Game'
+import { Dialog, DialogTitle, DialogActions } from '@mui/material'
+import SettingButton from 'components/SettingButton'
+import { useUser } from 'hooks/useUser'
+import { useConnection } from 'connection/connect'
 
 const Playground = () => {
-	const [step, setStep] = useState(0)
+	const {invitation, setInvitation, setRoom, room, step, setStep}  = useUser()
+	const {acceptInvitation} = useConnection()
+
+	const acceptInvite = () => {
+		setRoom({roomId: invitation.roomId, isHost: false})
+		setInvitation({ ...invitation, invite: false })
+		acceptInvitation(invitation)
+		setStep(1)
+	}
 
 	return (
 		<>
@@ -15,7 +27,20 @@ const Playground = () => {
 					2: <Game />,
 				}[step]
 			}
+			<Dialog
+				open={invitation.invite}
+				// onClose={() => setOpenDialog(false)}
+				PaperProps={{ style: { backgroundColor: theme => theme.palette.primary.main, border: '4px solid #fff' } }}>
+				<DialogTitle>{`${invitation.inviter} invites you to the Room ${invitation.roomId}`}</DialogTitle>
+				<DialogActions>
+					<SettingButton onClick={() => setInvitation({ ...invitation, invite: false })}>reject</SettingButton>
+					<SettingButton onClick={acceptInvite} autoFocus>
+						Accept
+					</SettingButton>
+				</DialogActions>
+			</Dialog>
 		</>
+		
 	)
 }
 

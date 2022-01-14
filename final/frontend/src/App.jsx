@@ -3,8 +3,10 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { Appbar, NotFound } from './components'
 import { Chat, Playground, Login, ScoreBoard } from './containers'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
-import { Toolbar, Box } from '@mui/material'
+import { Toolbar, Box, Dialog, DialogTitle, DialogActions } from '@mui/material'
 import { useUser } from './hooks/useUser'
+// import SettingButton from 'components/SettingButton'
+import { useConnection } from 'connection/connect'
 
 const RequireAuth = ({ children }) => {
 	const { profile } = useUser()
@@ -17,7 +19,6 @@ const App = () => {
 		{ name: 'Chat', path: '/chat', element: <Chat /> },
 		{ name: 'Scoreboard', path: '/scoreboard', element: <ScoreBoard /> },
 	]
-
 	const { darkMode } = useUser()
 
 	const theme = createTheme({

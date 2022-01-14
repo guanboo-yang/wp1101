@@ -10,9 +10,9 @@ import { useConnection } from '../../connection/connect'
 import { Dialog, DialogTitle, DialogActions } from '@mui/material'
 
 const Room = ({ setStep }) => {
-	const { profile, preGameState, login, setPreGameState, friends, roomId, invitation, setInvitation, exchangeRequire, setExchangeRequire, setRoomId } = useUser()
+	const { profile, preGameState, login, setPreGameState, friends, room, exchangeRequire, setExchangeRequire } = useUser()
 	const { players, gameMode } = preGameState
-	const { leaveRoom, swapPosition, invitePlayer, acceptInvitation, exchangePosition } = useConnection()
+	const { leaveRoom, swapPosition, invitePlayer, exchangePosition, gameStart } = useConnection()
 	const [openDialog, setOpenDialog] = useState(false)
 
 	const setPlayers = players => setPreGameState(prev => ({ ...prev, players }))
@@ -36,7 +36,7 @@ const Room = ({ setStep }) => {
 
 	const handleLeave = () => {
 		leaveRoom(
-			roomId,
+			room.roomId,
 			players.findIndex(player => player === profile.name),
 			players,
 			playersNum()
@@ -46,15 +46,9 @@ const Room = ({ setStep }) => {
 		login()
 	}
 
-	const acceptInvite = () => {
-		setRoomId(invitation.roomId)
-		setInvitation({ ...invitation, invite: false })
-		acceptInvitation(invitation)
-	}
-
 	const handleStep = step => () => {
 		swapPosition(
-			roomId,
+			room.roomId,
 			players.findIndex(player => player === profile.name),
 			step,
 			players
@@ -73,7 +67,7 @@ const Room = ({ setStep }) => {
 				console.log('The Room has been full')
 			} else {
 				const index = players.indexOf(null)
-				invitePlayer(roomId, index, name, profile.name, players)
+				invitePlayer(room.roomId, index, name, profile.name, players)
 			}
 		}
 	}
@@ -85,7 +79,7 @@ const Room = ({ setStep }) => {
 
 	return (
 		<div align='center'>
-			<h1>{`Room ${roomId}`}</h1>
+			<h1>{`Room ${room.roomId}`}</h1>
 			<Grid container spacing={1} alignItems='stretch' sx={{ width: 'min(96vw, 1000px)' }}>
 				<Grid item xs={12} md={3}>
 					<Box backgroundColor='primary.dark' sx={{ py: 2, px: 1 }}>
@@ -115,8 +109,9 @@ const Room = ({ setStep }) => {
 						<Grid item>
 							{/* <SettingButton onClick={handleLeave}>leave</SettingButton> */}
 							<SettingButton onClick={() => setOpenDialog(true)}>leave</SettingButton>
-							<SettingButton disabled={notReadyToGo()} onClick={() => setStep(1)}>
-								start
+							<SettingButton disabled={notReadyToGo() || !room.isHost} onClick={() => gameStart({roomId: room.roomId, players})}>
+								{/* {room.isHost?'Start':'Prepare'} */}
+								Start
 							</SettingButton>
 						</Grid>
 					</Grid>
@@ -139,18 +134,6 @@ const Room = ({ setStep }) => {
 					<SettingButton onClick={() => setOpenDialog(false)}>cancel</SettingButton>
 					<SettingButton onClick={handleLeave} autoFocus>
 						leave
-					</SettingButton>
-				</DialogActions>
-			</Dialog>
-			<Dialog
-				open={invitation.invite}
-				onClose={() => setOpenDialog(false)}
-				PaperProps={{ style: { backgroundColor: theme => theme.palette.primary.main, border: '4px solid #fff' } }}>
-				<DialogTitle>{`${invitation.inviter} invites you to the Room ${invitation.roomId}`}</DialogTitle>
-				<DialogActions>
-					<SettingButton onClick={() => setInvitation({ ...invitation, invite: false })}>reject</SettingButton>
-					<SettingButton onClick={acceptInvite} autoFocus>
-						Accept
 					</SettingButton>
 				</DialogActions>
 			</Dialog>

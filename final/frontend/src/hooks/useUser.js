@@ -6,12 +6,14 @@ const UserContext = createContext({
 	darkMode: false,
 	preGameState: {},
 	friends: [],
-	roomId: null,
+	room: {},
 	invitation: {},
 	exchangeRequire: {},
+	step: null,
+	setStep: () => {},
 	setExchangeRequire: () => {},
 	setInvitation: () => {},
-	setRoomId: () => {},
+	setRoom: () => {},
 	setFriends: () => {},
 	setProfile: () => {},
 	setDarkMode: () => {},
@@ -25,7 +27,8 @@ const UserProvider = ({ children }) => {
 	const [friends, setFriends] = useState([])
 	const [invitation, setInvitation] = useState({ invite: false, roomId: null, position: null, inviter: null, players: null })
 	const [exchangeRequire, setExchangeRequire] = useState({ from: null, to: null, name: null, state: false })
-	const [roomId, setRoomId] = useState()
+	const [room, setRoom] = useState({roomId: null, isHost: true})
+	const [step, setStep] = useState(0)
 	const [profile, setProfile, removeProfile] = useStorage('profile', null, window.localStorage)
 	const [preGameState, setPreGameState, removePreGameState] = useStorage(
 		'pre-game-state',
@@ -67,12 +70,14 @@ const UserProvider = ({ children }) => {
 				setDarkMode,
 				setPreGameState,
 				friends,
-				roomId,
+				room,
 				invitation,
 				exchangeRequire,
+				step,
+				setStep,
 				setExchangeRequire,
 				setInvitation,
-				setRoomId,
+				setRoom,
 				setFriends,
 				login,
 				logout,

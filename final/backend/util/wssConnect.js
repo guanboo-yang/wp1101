@@ -2,10 +2,11 @@ const sendData = (data, connection) => {
 	connection.send(JSON.stringify(data))
 }
 
-const roomBroadcast = (players, userDatas) => {
+// 3 attributes: 1. reciever(array) 2. datas 3. userDatas
+const roomBroadcast = (players, datas, userDatas) => {
 	players.forEach(player => {
 		if (player) {
-			sendData(['updatedPosition', players], userDatas[player].connection)
+			sendData(datas, userDatas[player].connection)
 		}
 	})
 }

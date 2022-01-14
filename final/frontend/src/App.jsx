@@ -3,10 +3,10 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { Appbar, NotFound } from './components'
 import { Chat, Playground, Login, ScoreBoard } from './containers'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
-import { Toolbar, Box, Dialog, DialogTitle, DialogActions } from '@mui/material'
+import { Toolbar, Box, Snackbar, Alert } from '@mui/material'
 import { useUser } from './hooks/useUser'
 // import SettingButton from 'components/SettingButton'
-import { useConnection } from 'connection/connect'
+import { useSnackbar } from './hooks/useSnackbar'
 
 const RequireAuth = ({ children }) => {
 	const { profile } = useUser()
@@ -20,6 +20,7 @@ const App = () => {
 		{ name: 'Scoreboard', path: '/scoreboard', element: <ScoreBoard /> },
 	]
 	const { darkMode } = useUser()
+	const { snackbarOption, handleCloseSnackbar } = useSnackbar()
 
 	const theme = createTheme({
 		typography: {
@@ -48,7 +49,6 @@ const App = () => {
 
 	return (
 		<ThemeProvider theme={theme}>
-			
 			<div className='App' style={{ height: '100vh', overflow: 'auto' }}>
 				<Router>
 					<Appbar links={links} />
@@ -67,6 +67,18 @@ const App = () => {
 						<Toolbar />
 					</Box>
 				</Router>
+				<Snackbar
+					anchorOrigin={{
+						vertical: 'top',
+						horizontal: 'center',
+					}}
+					open={snackbarOption.open}
+					autoHideDuration={1000}
+					onClose={handleCloseSnackbar}>
+					<Alert elevation={6} variant='filled' onClose={handleCloseSnackbar} severity={snackbarOption.severity}>
+						{snackbarOption.message}
+					</Alert>
+				</Snackbar>
 			</div>
 		</ThemeProvider>
 	)

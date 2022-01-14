@@ -4,11 +4,14 @@ import './index.css'
 import App from './App'
 import reportWebVitals from './reportWebVitals'
 import { UserProvider } from './hooks/useUser'
+import { SnackbarProvider } from './hooks/useSnackbar'
 
 ReactDOM.render(
 	<React.StrictMode>
 		<UserProvider>
-			<App />
+			<SnackbarProvider>
+				<App />
+			</SnackbarProvider>
 		</UserProvider>
 	</React.StrictMode>,
 	document.getElementById('root')

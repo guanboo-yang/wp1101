@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import withSnackbar from '../Snackbar'
 import { useEventListener } from 'hooks/index'
 import { draw, getSpriteByType, setCameraOn } from './utils'
 // import { logic } from 'utils/logic'
@@ -9,8 +8,9 @@ import { Ship } from './Ship'
 import { state } from './Sprite'
 import { useConnection } from 'connection/connect'
 import { useUser } from 'hooks/useUser'
+import { useSnackbar } from 'hooks/useSnackbar'
 
-const Game = ({ showMessage }) => {
+const Game = () => {
 	// const { sendData } = logic()
 	const canvasRef = useRef(null)
 	const turnRef = useRef(false)
@@ -20,12 +20,13 @@ const Game = ({ showMessage }) => {
 	const animateID = useRef(null)
 	const { room, profile } = useUser()
 	const { gameEvent } = useConnection()
+	const { showMessage } = useSnackbar()
 	// const [ships, setShips] = useState([])
 
 	useEventListener('keydown', e => {
-		// part1 
+		// part1
 		if (e.key === 'Enter') {
-			gameEvent({roomId: room.roomId, evt: 'enter', name: profile.name})
+			gameEvent({ roomId: room.roomId, evt: 'enter', name: profile.name })
 			if (doublePress) {
 			}
 			turnRef.current = true
@@ -33,12 +34,13 @@ const Game = ({ showMessage }) => {
 		}
 		// part2
 		if (e.key === ' ') {
-			gameEvent({roomId: room.roomId, evt: 'space', name: profile.name})
+			gameEvent({ roomId: room.roomId, evt: 'space', name: profile.name })
 			shipRef.current.shoot(next)
 			setNext('normal')
 		}
 		if (e.key === 'm') {
 			setNext('missile')
+			console.log(showMessage)
 			showMessage('missile')
 		}
 		if (e.key === 'o') {
@@ -49,7 +51,7 @@ const Game = ({ showMessage }) => {
 	})
 	// send part 3
 	useEventListener('keyup', e => {
-		gameEvent({roomId: room.roomId, evt: 'leave', name: profile.name})
+		gameEvent({ roomId: room.roomId, evt: 'leave', name: profile.name })
 		if (e.key === 'Enter') {
 			turnRef.current = false
 			setDoublePress(true)
@@ -115,4 +117,4 @@ const Game = ({ showMessage }) => {
 	)
 }
 
-export default withSnackbar(Game)
+export default Game

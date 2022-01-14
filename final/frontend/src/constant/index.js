@@ -1,5 +1,7 @@
 export const TOTAL_PLAYERS = 4
 
+export const colors = ['#005eff', '#009e22', '#ff00ff', '#ff3030'] // 2 rest
+
 export const MODE = [
 	{ name: 'PILOT HUNTER', rounds: [1, 3, 5] },
 	{ name: 'SHIP HUNTER', rounds: [3, 5, 7] },
@@ -15,8 +17,8 @@ export const LEVEL = [
 ]
 
 export const CANVAS = {
-	WIDTH: 1000,
-	HEIGHT: 1000,
+	OUT: { WIDTH: 1600, HEIGHT: 1600 },
+	IN: { WIDTH: 1500, HEIGHT: 1000 },
 }
 
 export const WEAPON = {

@@ -1,6 +1,6 @@
 export const TOTAL_PLAYERS = 4
 
-export const colors = ['#005eff', '#009e22', '#ff00ff', '#ff3030'] // 2 rest
+export const colors = ['#005eff', '#009e22', '#ff00ff', '#ff3030', '#ff9800', '#666666']
 
 export const MODE = [
 	{ name: 'PILOT HUNTER', rounds: [1, 3, 5] },

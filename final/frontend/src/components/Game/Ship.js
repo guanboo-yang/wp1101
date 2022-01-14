@@ -21,7 +21,7 @@ export class Ship extends Sprite {
 	bulletsAngle = 0
 
 	constructor(color = 0, pos = { x: 0, y: 0 }, angle = 0) {
-		super(pos, { x: color, y: 0, w: 17, h: 11, s: 7 }, angle)
+		super(pos, { x: color, y: 0, w: 17, h: 11, s: 9 }, angle)
 		this.img.src = ship
 		this.fire.src = fire
 		this.interval[0] = setInterval(() => {

@@ -18,6 +18,11 @@ const Playground = () => {
 		imagePreloder([bullet, explosion, mine, mine_p, missile, missile_p, ship, fire, shield])
 	}, [])
 
+	useEffect(() => {
+		const input = document.querySelectorAll('input')
+		input.forEach(i => i.addEventListener('keydown', e => e.stopPropagation()))
+	}, [])
+
 	const acceptInvite = () => {
 		setRoom({ roomId: invitation.roomId, isHost: false })
 		setInvitation({ ...invitation, invite: false })

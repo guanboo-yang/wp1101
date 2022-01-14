@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useUser } from '../../hooks/useUser'
+// import { useUser } from '../../hooks/useUser'
 import { Button } from '@mui/material'
 import Input from './Input'
 import { GoogleLogin } from 'react-google-login'
@@ -12,6 +12,11 @@ const Login = () => {
 	const [signup, setSignup] = useState(false)
 	const { createAccount, loginAccount, loginWithGoogle } = useConnection()
 	const [wrongPassword, setWorngPassword] = useState(false)
+
+	useEffect(() => {
+		const input = document.querySelectorAll('input')
+		input.forEach(i => i.addEventListener('keydown', e => e.stopPropagation()))
+	}, [])
 
 	useEffect(() => {
 		setValues(values => ({ ...values, showPassword: false }))

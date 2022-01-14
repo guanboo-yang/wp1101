@@ -67,7 +67,7 @@ const Game = () => {
 		const width = canvas.width
 		const height = canvas.height
 		// console.log(width, height)
-		shipRef.current = new Ship(5, { x: 100, y: 100 }, 0)
+		shipRef.current = new Ship(3, { x: 100, y: 100 }, 0)
 
 		ctx.strokeStyle = 'white'
 		ctx.textAlign = 'center'
@@ -75,7 +75,7 @@ const Game = () => {
 		let camera = { x: width / 2, y: height / 2, w: width, h: height }
 
 		const animate = () => {
-			camera = setCameraOn(camera, state.objects, 1000)
+			camera = setCameraOn(camera, state.objects, 400)
 			ctx.setTransform(1, 0, 0, 1, 0, 0)
 			ctx.clearRect(0, 0, width, height)
 			draw.line(ctx, '#fff', { x: 0, y: 0 }, { x: 0, y: CANVAS.IN.HEIGHT }, camera)

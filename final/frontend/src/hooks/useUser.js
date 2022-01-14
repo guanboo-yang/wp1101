@@ -23,8 +23,8 @@ const UserContext = createContext({
 const UserProvider = ({ children }) => {
 	// use localStorage or sessionStorage to store user data?
 	const [friends, setFriends] = useState([])
-	const [invitation, setInvitation] = useState({invite: false, roomId: null, position: null, inviter: null, players: null})
-	const [exchangeRequire, setExchangeRequire] = useState({from: null, to: null, name: null, state: false})
+	const [invitation, setInvitation] = useState({ invite: false, roomId: null, position: null, inviter: null, players: null })
+	const [exchangeRequire, setExchangeRequire] = useState({ from: null, to: null, name: null, state: false })
 	const [roomId, setRoomId] = useState()
 	const [profile, setProfile, removeProfile] = useStorage('profile', null, window.localStorage)
 	const [preGameState, setPreGameState, removePreGameState] = useStorage(

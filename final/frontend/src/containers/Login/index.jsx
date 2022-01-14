@@ -12,23 +12,23 @@ const GOOGLE_CLIENT_ID = '202508058751-40ie9aunidgnnafl0pdqselm2bb0r6bq.apps.goo
 const Login = () => {
 	const [signup, setSignup] = useState(false)
 	const { createAccount, loginAccount, loginWithGoogle } = useConnection()
-	const [ wrongPassword, setWorngPassword ] = useState(false)
+	const [wrongPassword, setWorngPassword] = useState(false)
 
 	useEffect(() => {
 		setValues(values => ({ ...values, showPassword: false }))
 	}, [signup])
 
-	const handleSignUp = (e) => {
+	const handleSignUp = e => {
 		e.preventDefault()
-		if (values.password !== values.confirmPassword){
+		if (values.password !== values.confirmPassword) {
 			setWorngPassword(true)
-		}else{
+		} else {
 			setWorngPassword(false)
 			createAccount(values)
 		}
 	}
 
-	const handleSubmit = (e) => {
+	const handleSubmit = e => {
 		e.preventDefault()
 		loginAccount(values)
 	}
@@ -103,7 +103,7 @@ const Login = () => {
 				{signup && (
 					<Input //
 						error={wrongPassword}
-						helperText={wrongPassword?"Your Password doen't match!":''}
+						helperText={wrongPassword ? "Your Password doen't match!" : ''}
 						name='confirmPassword'
 						label='Confirm Password'
 						handlechange={handleChange}

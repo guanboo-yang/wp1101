@@ -6,7 +6,7 @@ import Friend from './Friend'
 import { useState } from 'react'
 import SettingButton from '../SettingButton'
 import Message from './Message'
-import {useConnection} from '../../connection/connect'
+import { useConnection } from '../../connection/connect'
 import { Dialog, DialogTitle, DialogActions } from '@mui/material'
 
 const Room = ({ setStep }) => {
@@ -18,24 +18,29 @@ const Room = ({ setStep }) => {
 	const setPlayers = players => setPreGameState(prev => ({ ...prev, players }))
 	// TODO: get friends from server
 	// Problem, google photo
-	
-    const msgs = [
-		{name: 'Tristan',body: 'Hi'},
-		{name: 'Eric', body: "What's up"},
-		{name: 'Tristan',body: 'Hi'},
-		{name: 'Eric', body: "What's up"},
-		{name: 'Tristan',body: 'Hi'},
-		{name: 'Eric', body: "What's up"},
-		{name: 'Tristan',body: 'Hi'},
-		{name: 'Eric', body: "What's up"},
-		{name: 'Tristan',body: 'Hi'},
-		{name: 'Eric', body: "What's up"},
+
+	const msgs = [
+		{ name: 'Tristan', body: 'Hi' },
+		{ name: 'Eric', body: "What's up" },
+		{ name: 'Tristan', body: 'Hi' },
+		{ name: 'Eric', body: "What's up" },
+		{ name: 'Tristan', body: 'Hi' },
+		{ name: 'Eric', body: "What's up" },
+		{ name: 'Tristan', body: 'Hi' },
+		{ name: 'Eric', body: "What's up" },
+		{ name: 'Tristan', body: 'Hi' },
+		{ name: 'Eric', body: "What's up" },
 	]
 
 	const playersNum = () => players.filter(player => player).length
 
 	const handleLeave = () => {
-		leaveRoom(roomId, players.findIndex(player => player === profile.name), players, playersNum())
+		leaveRoom(
+			roomId,
+			players.findIndex(player => player === profile.name),
+			players,
+			playersNum()
+		)
 		setOpenDialog(false)
 		setStep(-1)
 		login()
@@ -43,25 +48,30 @@ const Room = ({ setStep }) => {
 
 	const acceptInvite = () => {
 		setRoomId(invitation.roomId)
-		setInvitation({...invitation, invite: false})
+		setInvitation({ ...invitation, invite: false })
 		acceptInvitation(invitation)
 	}
 
 	const handleStep = step => () => {
-		swapPosition(roomId, players.findIndex(player => player === profile.name), step, players)
+		swapPosition(
+			roomId,
+			players.findIndex(player => player === profile.name),
+			step,
+			players
+		)
 	}
 
 	const acceptExchange = () => {
-		setExchangeRequire({...exchangeRequire, state: false})
+		setExchangeRequire({ ...exchangeRequire, state: false })
 		exchangePosition(exchangeRequire, players)
 	}
 
 	const handleAddPlayers = ({ players, name }) => {
 		// TODO: [CHANGE] if player id is not in players:
 		if (!players.includes(name)) {
-			if (playersNum === 4){
-				console.log('The Room has been full');
-			}else{
+			if (playersNum === 4) {
+				console.log('The Room has been full')
+			} else {
 				const index = players.indexOf(null)
 				invitePlayer(roomId, index, name, profile.name, players)
 			}
@@ -132,21 +142,27 @@ const Room = ({ setStep }) => {
 					</SettingButton>
 				</DialogActions>
 			</Dialog>
-			<Dialog open={invitation.invite} onClose={() => setOpenDialog(false)} PaperProps={{ style: { backgroundColor: theme => theme.palette.primary.main, border: '4px solid #fff' } }}>
+			<Dialog
+				open={invitation.invite}
+				onClose={() => setOpenDialog(false)}
+				PaperProps={{ style: { backgroundColor: theme => theme.palette.primary.main, border: '4px solid #fff' } }}>
 				<DialogTitle>{`${invitation.inviter} invites you to the Room ${invitation.roomId}`}</DialogTitle>
 				<DialogActions>
-					<SettingButton onClick={() => setInvitation({...invitation, invite: false})}>reject</SettingButton>
+					<SettingButton onClick={() => setInvitation({ ...invitation, invite: false })}>reject</SettingButton>
 					<SettingButton onClick={acceptInvite} autoFocus>
-						Accept 
+						Accept
 					</SettingButton>
 				</DialogActions>
 			</Dialog>
-			<Dialog open={exchangeRequire.state} onClose={() => setOpenDialog(false)} PaperProps={{ style: { backgroundColor: theme => theme.palette.primary.main, border: '4px solid #fff' } }}>
+			<Dialog
+				open={exchangeRequire.state}
+				onClose={() => setOpenDialog(false)}
+				PaperProps={{ style: { backgroundColor: theme => theme.palette.primary.main, border: '4px solid #fff' } }}>
 				<DialogTitle>{`${exchangeRequire.name} Wanna exchange spaceship with you`}</DialogTitle>
 				<DialogActions>
-					<SettingButton onClick={() => setExchangeRequire({...exchangeRequire, state: false})}>reject</SettingButton>
+					<SettingButton onClick={() => setExchangeRequire({ ...exchangeRequire, state: false })}>reject</SettingButton>
 					<SettingButton onClick={acceptExchange} autoFocus>
-						Accept 
+						Accept
 					</SettingButton>
 				</DialogActions>
 			</Dialog>

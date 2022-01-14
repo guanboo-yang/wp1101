@@ -1,4 +1,4 @@
-import mine from 'assets/weapons/mine.png'
+import { mine } from 'assets/weapons'
 import { Explosion } from '.'
 import { Sprite } from '../Sprite'
 

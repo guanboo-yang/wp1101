@@ -1,4 +1,4 @@
-import { bullet } from 'assets'
+import { bullet } from 'assets/weapons'
 import { CANVAS } from 'constant'
 import { Sprite } from '../Sprite'
 

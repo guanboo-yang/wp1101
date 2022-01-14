@@ -5,3 +5,17 @@ export const swapPlayers = (players, from, to, setPlayers) => {
 	players[to] = temp
 	setPlayers(players)
 }
+
+export const imagePreloder = images => {
+	let imagesToLoad = images.length
+	images.forEach((image, index) => {
+		const img = new Image()
+		img.src = image
+		img.onload = () => {
+			imagesToLoad--
+			if (imagesToLoad === 0) {
+			}
+		}
+		window[`image${index}`] = img
+	})
+}

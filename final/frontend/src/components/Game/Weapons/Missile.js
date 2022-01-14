@@ -1,4 +1,4 @@
-import missile from 'assets/weapons/missile.png'
+import { missile } from 'assets/weapons'
 import { CANVAS } from 'constant'
 import { Sprite } from '../Sprite'
 import { Explosion } from '.'

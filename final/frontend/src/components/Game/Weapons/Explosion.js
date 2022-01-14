@@ -1,4 +1,4 @@
-import explosion from 'assets/weapons/explosion.png'
+import { explosion } from 'assets/weapons'
 import { Sprite } from '../Sprite'
 
 export default class Explosion extends Sprite {

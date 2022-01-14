@@ -40,7 +40,6 @@ const Game = () => {
 		}
 		if (e.key === 'm') {
 			setNext('missile')
-			console.log(showMessage)
 			showMessage('missile')
 		}
 		if (e.key === 'o') {

@@ -7,6 +7,7 @@ import { Toolbar, Box, Snackbar, Alert } from '@mui/material'
 import { useUser } from './hooks/useUser'
 // import SettingButton from 'components/SettingButton'
 import { useSnackbar } from './hooks/useSnackbar'
+import { useEffect } from 'react'
 
 const RequireAuth = ({ children }) => {
 	const { profile } = useUser()
@@ -14,6 +15,10 @@ const RequireAuth = ({ children }) => {
 }
 
 const App = () => {
+	useEffect(() => {
+		const input = document.querySelectorAll('input')
+		input.forEach(i => i.addEventListener('keydown', e => e.stopPropagation()))
+	}, [])
 	const links = [
 		{ name: 'Playground', path: '/', element: <Playground /> },
 		{ name: 'Chat', path: '/chat', element: <Chat /> },

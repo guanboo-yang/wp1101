@@ -1,4 +1,4 @@
-import { Box, Typography, Grid, List /* Dialog, DialogTitle, DialogActions */ } from '@mui/material'
+import { Box, Typography, Grid, List /* Dialog, DialogTitle, DialogActions */, Input } from '@mui/material'
 import { useUser } from '../../hooks/useUser'
 import Players from './Players'
 import Friend from './Friend'
@@ -80,19 +80,19 @@ const Room = ({ setStep }) => {
 	return (
 		<div align='center'>
 			<h1>{`Room ${room.roomId}`}</h1>
-			<Grid container spacing={1} alignItems='stretch' sx={{ width: 'min(96vw, 1000px)' }}>
-				<Grid item xs={12} md={3}>
+			<Grid container spacing={1} alignItems='stretch' sx={{ width: 'min(96vw, 1200px)' }}>
+				<Grid item xs={12} md={4}>
 					<Box backgroundColor='primary.dark' sx={{ py: 2, px: 1 }}>
 						<Typography variant='h5'>Chat Room</Typography>
-						<SettingButton text='Invite your friends!' variant='text' />
-						<List sx={{ overflow: 'auto', height: 250 }}>
+						<List sx={{ m: 1, overflow: 'auto', height: 247 }}>
 							{msgs.map(({ name, body }, i) => {
 								return <Message name={name} body={body} key={i} />
 							})}
 						</List>
+						<Input placeholder='Type a message...' />
 					</Box>
 				</Grid>
-				<Grid item xs={12} md={6}>
+				<Grid item xs={12} md={5}>
 					<Grid container backgroundColor='primary.dark' direction='column' justifyContent='center' alignItems='center' height='100%' sx={{ py: 2 }}>
 						<Grid item width='100%'>
 							<Players
@@ -109,7 +109,7 @@ const Room = ({ setStep }) => {
 						<Grid item>
 							{/* <SettingButton onClick={handleLeave}>leave</SettingButton> */}
 							<SettingButton onClick={() => setOpenDialog(true)}>leave</SettingButton>
-							<SettingButton disabled={notReadyToGo() || !room.isHost} onClick={() => gameStart({roomId: room.roomId, players})}>
+							<SettingButton disabled={notReadyToGo() || !room.isHost} onClick={() => gameStart({ roomId: room.roomId, players })}>
 								{/* {room.isHost?'Start':'Prepare'} */}
 								Start
 							</SettingButton>
@@ -119,7 +119,7 @@ const Room = ({ setStep }) => {
 				<Grid item xs={12} md={3}>
 					<Box backgroundColor='primary.dark' sx={{ py: 2, px: 1 }}>
 						<Typography variant='h5'>friends</Typography>
-						<SettingButton text='Invite your friends!' variant='text' />
+						<SettingButton variant='text'>Invite your friends!</SettingButton>
 						<List sx={{ overflow: 'auto', height: 250 }}>
 							{friends.map(({ name, image, online }, i) => (
 								<Friend key={i} name={name} image={image} online={online} players={players} handleAddPlayers={() => handleAddPlayers({ players, name })} />

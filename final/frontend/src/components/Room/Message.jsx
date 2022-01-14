@@ -1,11 +1,18 @@
-import { Typography, Avatar, ListItem } from '@mui/material'
+import { Typography, Avatar, ListItem, Paper, Chip } from '@mui/material'
 
 const Message = ({ name, body }) => {
 	return (
-		<ListItem>
-			<Avatar src={`//joeschmoe.io/api/v1/${name}`} />
-			<Typography>{body}</Typography>
-		</ListItem>
+		<Paper
+			variant='none'
+			sx={{
+				my: 1,
+				backgroundColor: 'inherit',
+				fontSize: theme => theme.typography.caption.fontSize,
+			}}
+			align='left'>
+			<Chip label={name} size='small' color='secondary' sx={{ mr: 0.5, fontSize: theme => theme.typography.caption.fontSize }} />
+			{body}
+		</Paper>
 	)
 }
 

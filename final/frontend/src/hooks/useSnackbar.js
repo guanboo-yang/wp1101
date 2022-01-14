@@ -8,7 +8,7 @@ const SnackbarProvider = ({ children }) => {
 	const [snackbarOption, setSnackbarOption] = useState({
 		open: false,
 		message: '',
-		severity: '',
+		severity: 'success',
 	})
 
 	const showMessage = (message, severity = 'success') => {
@@ -24,7 +24,7 @@ const SnackbarProvider = ({ children }) => {
 		setSnackbarOption({
 			open: false,
 			message: '',
-			severity: '',
+			severity: 'success',
 		})
 	}
 

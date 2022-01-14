@@ -5,7 +5,6 @@ import { Chat, Playground, Login, ScoreBoard } from './containers'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { Toolbar, Box, Snackbar, Alert } from '@mui/material'
 import { useUser } from './hooks/useUser'
-// import SettingButton from 'components/SettingButton'
 import { useSnackbar } from './hooks/useSnackbar'
 import { useEffect } from 'react'
 

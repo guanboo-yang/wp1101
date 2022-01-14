@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect } from 'react'
 import Mode from '../../components/Mode'
 import Room from '../../components/Room'
 import Game from '../../components/Game'
@@ -6,13 +6,20 @@ import { Dialog, DialogTitle, DialogActions } from '@mui/material'
 import SettingButton from 'components/SettingButton'
 import { useUser } from 'hooks/useUser'
 import { useConnection } from 'connection/connect'
+import { imagePreloder } from 'utils'
+import { bullet, explosion, mine, mine_p, missile, missile_p } from 'assets/weapons'
+import { ship, fire, shield } from 'assets/ship'
 
 const Playground = () => {
-	const {invitation, setInvitation, setRoom, room, step, setStep}  = useUser()
-	const {acceptInvitation} = useConnection()
+	const { invitation, setInvitation, setRoom, step, setStep } = useUser()
+	const { acceptInvitation } = useConnection()
+
+	useEffect(() => {
+		imagePreloder([bullet, explosion, mine, mine_p, missile, missile_p, ship, fire, shield])
+	}, [])
 
 	const acceptInvite = () => {
-		setRoom({roomId: invitation.roomId, isHost: false})
+		setRoom({ roomId: invitation.roomId, isHost: false })
 		setInvitation({ ...invitation, invite: false })
 		acceptInvitation(invitation)
 		setStep(1)
@@ -40,7 +47,6 @@ const Playground = () => {
 				</DialogActions>
 			</Dialog>
 		</>
-		
 	)
 }
 

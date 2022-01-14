@@ -1,4 +1,4 @@
-import { Typography, Avatar, ListItem, Paper, Chip } from '@mui/material'
+import { Paper, Chip } from '@mui/material'
 
 const Message = ({ name, body }) => {
 	return (

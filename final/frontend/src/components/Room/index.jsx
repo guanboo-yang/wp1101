@@ -10,12 +10,12 @@ import { useConnection } from '../../connection/connect'
 import { Dialog, DialogTitle, DialogActions } from '@mui/material'
 
 const Room = ({ setStep }) => {
-	const { profile, preGameState, login, setPreGameState, friends, room, exchangeRequire, setExchangeRequire } = useUser()
+	const { profile, preGameState, login, /* setPreGameState, */ friends, room, exchangeRequire, setExchangeRequire } = useUser()
 	const { players, gameMode } = preGameState
 	const { leaveRoom, swapPosition, invitePlayer, exchangePosition, gameStart } = useConnection()
 	const [openDialog, setOpenDialog] = useState(false)
 
-	const setPlayers = players => setPreGameState(prev => ({ ...prev, players }))
+	// const setPlayers = players => setPreGameState(prev => ({ ...prev, players }))
 	// TODO: get friends from server
 	// Problem, google photo
 
@@ -74,7 +74,7 @@ const Room = ({ setStep }) => {
 
 	const notReadyToGo = () => {
 		return false
-		return (gameMode === 2 && playersNum() < 3) || playersNum() < 2
+		// return (gameMode === 2 && playersNum() < 3) || playersNum() < 2
 	}
 
 	return (

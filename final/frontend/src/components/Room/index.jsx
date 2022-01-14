@@ -3,64 +3,68 @@ import { useUser } from '../../hooks/useUser'
 import Players from './Players'
 import Friend from './Friend'
 // TODO: [CHANGE] ask server to send all level information
-import { swapPlayers } from '../../utils'
-// import { useState } from 'react'
+import { useState } from 'react'
 import SettingButton from '../SettingButton'
 import Message from './Message'
-import { useEffect } from 'react'
+import {useConnection} from '../../connection/connect'
+import { Dialog, DialogTitle, DialogActions } from '@mui/material'
 
 const Room = ({ setStep }) => {
-	const { profile, preGameState, login, setPreGameState, friends } = useUser()
+	const { profile, preGameState, login, setPreGameState, friends, roomId, invitation, setInvitation, exchangeRequire, setExchangeRequire, setRoomId } = useUser()
 	const { players, gameMode } = preGameState
-	// const [openDialog, setOpenDialog] = useState(false)
+	const { leaveRoom, swapPosition, invitePlayer, acceptInvitation, exchangePosition } = useConnection()
+	const [openDialog, setOpenDialog] = useState(false)
 
 	const setPlayers = players => setPreGameState(prev => ({ ...prev, players }))
 	// TODO: get friends from server
 	// Problem, google photo
-
-	const msgs = [
-		{ name: 'Tristan', body: 'Hi' },
-		{ name: 'Eric', body: "What's up" },
-		{ name: 'Tristan', body: 'Hi' },
-		{ name: 'Eric', body: "What's up" },
-		{ name: 'Tristan', body: 'Hi' },
-		{ name: 'Eric', body: "What's up" },
-		{ name: 'Tristan', body: 'Hi' },
-		{ name: 'Eric', body: "What's up" },
-		{ name: 'Tristan', body: 'Hi' },
-		{ name: 'Eric', body: "What's up" },
+	
+    const msgs = [
+		{name: 'Tristan',body: 'Hi'},
+		{name: 'Eric', body: "What's up"},
+		{name: 'Tristan',body: 'Hi'},
+		{name: 'Eric', body: "What's up"},
+		{name: 'Tristan',body: 'Hi'},
+		{name: 'Eric', body: "What's up"},
+		{name: 'Tristan',body: 'Hi'},
+		{name: 'Eric', body: "What's up"},
+		{name: 'Tristan',body: 'Hi'},
+		{name: 'Eric', body: "What's up"},
 	]
 
 	const playersNum = () => players.filter(player => player).length
 
 	const handleLeave = () => {
-		// setOpenDialog(false)
+		leaveRoom(roomId, players.findIndex(player => player === profile.name), players, playersNum())
+		setOpenDialog(false)
 		setStep(-1)
 		login()
 	}
 
+	const acceptInvite = () => {
+		setRoomId(invitation.roomId)
+		setInvitation({...invitation, invite: false})
+		acceptInvitation(invitation)
+	}
+
 	const handleStep = step => () => {
-		// TODO: send request to server, if success:
-		swapPlayers(
-			players,
-			players.findIndex(player => player === profile.name),
-			step,
-			setPlayers
-		)
-		// TODO: if fail:
+		swapPosition(roomId, players.findIndex(player => player === profile.name), step, players)
+	}
+
+	const acceptExchange = () => {
+		setExchangeRequire({...exchangeRequire, state: false})
+		exchangePosition(exchangeRequire, players)
 	}
 
 	const handleAddPlayers = ({ players, name }) => {
 		// TODO: [CHANGE] if player id is not in players:
 		if (!players.includes(name)) {
-			// TODO: [CHANGE] ask server to add player:
-			const index = players.indexOf(null)
-			if (index !== -1) {
-				// TODO: [CHANGE] if server response is success:
-				const newPlayers = [...players]
-				newPlayers[index] = name
-				setPlayers(newPlayers)
-			} else return
+			if (playersNum === 4){
+				console.log('The Room has been full');
+			}else{
+				const index = players.indexOf(null)
+				invitePlayer(roomId, index, name, profile.name, players)
+			}
 		}
 	}
 
@@ -70,7 +74,7 @@ const Room = ({ setStep }) => {
 
 	return (
 		<div align='center'>
-			<h1>invite your friend</h1>
+			<h1>{`Room ${roomId}`}</h1>
 			<Grid container spacing={1} alignItems='stretch' sx={{ width: 'min(96vw, 1000px)' }}>
 				<Grid item xs={12} md={3}>
 					<Box backgroundColor='primary.dark' sx={{ py: 2, px: 1 }}>
@@ -98,8 +102,8 @@ const Room = ({ setStep }) => {
 							/>
 						</Grid>
 						<Grid item>
-							<SettingButton onClick={handleLeave}>leave</SettingButton>
-							{/* <SettingButton onClick={() => setOpenDialog(true)}>leave</SettingButton> */}
+							{/* <SettingButton onClick={handleLeave}>leave</SettingButton> */}
+							<SettingButton onClick={() => setOpenDialog(true)}>leave</SettingButton>
 							<SettingButton disabled={notReadyToGo()} onClick={() => setStep(1)}>
 								start
 							</SettingButton>
@@ -118,7 +122,7 @@ const Room = ({ setStep }) => {
 					</Box>
 				</Grid>
 			</Grid>
-			{/* <Dialog open={openDialog} onClose={() => setOpenDialog(false)} PaperProps={{ style: { backgroundColor: theme => theme.palette.primary.main, border: '4px solid #fff' } }}>
+			<Dialog open={openDialog} onClose={() => setOpenDialog(false)} PaperProps={{ style: { backgroundColor: theme => theme.palette.primary.main, border: '4px solid #fff' } }}>
 				<DialogTitle>Are you sure you want to leave?</DialogTitle>
 				<DialogActions>
 					<SettingButton onClick={() => setOpenDialog(false)}>cancel</SettingButton>
@@ -126,7 +130,25 @@ const Room = ({ setStep }) => {
 						leave
 					</SettingButton>
 				</DialogActions>
-			</Dialog> */}
+			</Dialog>
+			<Dialog open={invitation.invite} onClose={() => setOpenDialog(false)} PaperProps={{ style: { backgroundColor: theme => theme.palette.primary.main, border: '4px solid #fff' } }}>
+				<DialogTitle>{`${invitation.inviter} invites you to the Room ${invitation.roomId}`}</DialogTitle>
+				<DialogActions>
+					<SettingButton onClick={() => setInvitation({...invitation, invite: false})}>reject</SettingButton>
+					<SettingButton onClick={acceptInvite} autoFocus>
+						Accept 
+					</SettingButton>
+				</DialogActions>
+			</Dialog>
+			<Dialog open={exchangeRequire.state} onClose={() => setOpenDialog(false)} PaperProps={{ style: { backgroundColor: theme => theme.palette.primary.main, border: '4px solid #fff' } }}>
+				<DialogTitle>{`${exchangeRequire.name} Wanna exchange spaceship with you`}</DialogTitle>
+				<DialogActions>
+					<SettingButton onClick={() => setExchangeRequire({...exchangeRequire, state: false})}>reject</SettingButton>
+					<SettingButton onClick={acceptExchange} autoFocus>
+						Accept 
+					</SettingButton>
+				</DialogActions>
+			</Dialog>
 		</div>
 	)
 }

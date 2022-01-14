@@ -6,7 +6,7 @@ import SettingButton from './SettingButton'
 import { useConnection } from 'connection/connect'
 
 const Mode = ({ setStart }) => {
-	const { requireFriend } = useConnection()
+	const { requireFriend, createRoom } = useConnection()
 	const { preGameState, setPreGameState } = useUser()
 	const { gameMode, rounds, level } = preGameState
 	const [rommID, setRommID] = useState(null)
@@ -17,6 +17,7 @@ const Mode = ({ setStart }) => {
 
 	const handleCreateRoom = () => {
 		// TODO: create room with { gameMode, rounds, level }
+		createRoom({gameMode, rounds, level})	
 		requireFriend()
 		setStart()
 	}

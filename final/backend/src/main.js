@@ -1,117 +1,118 @@
 import { connect, connection } from 'mongoose'
 import dotenv from 'dotenv-defaults'
-import { Player } from '../models/schemas';
-import { sendData } from '../connect/wssConnect';
-const WebSocketServer = require('websocket').server;
-const http = require('http');
+import { Player, Room } from '../models/schemas'
+import { sendData, roomBroadcast, getFriendsList } from '../util/wssConnect'
+import { usualLogin, googleLogin, createAccount } from '../events/login'
+import { createNewRoom, leaveRoom, swapRequest, acceptInvitation, acceptExchange, invite } from '../events/room'
+const WebSocketServer = require('websocket').server
+const http = require('http')
 const db = connection
 const port = 5000
-let userDatas = []
+let userDatas = {}
 // userDatas include 3 attributes: connection, name, online
 
 dotenv.config()
-connect(process.env.MONGO_URL)
+connect(process.env.MONGO_URL, { autoIndex: false })
 
-const server = http.createServer(function(request, response) {
-	response.writeHead(404);
-	response.end();
-});
+const server = http.createServer(function (request, response) {
+    response.writeHead(404)
+    response.end()
+})
 
 const wsServer = new WebSocketServer({
-	httpServer: server,
-	autoAcceptConnections: false
-});
+    httpServer: server,
+    autoAcceptConnections: false
+})
 
 const originIsAllowed = (origin) => {
-	return true;
+    return true
 }
 
-db.once('open', async() => {
-	// Setting db
-	let users = await Player.find({})
-	userDatas = users.map((user) => {
-		return {name: user.name, online: false, connection: null}
-	})
+db.once('open', async () => {
+    // Setting db
+    Room.deleteMany({})
+    let users = await Player.find({})
+    users.forEach((user) => {
+        userDatas[user.name] = { online: false, connection: null }
+    })
 
-	wsServer.on('request', (request) => {
-		if (!originIsAllowed(request.origin)) {
-		  request.reject();
-		  console.log((new Date()) + ' Connection from origin ' + request.origin + ' rejected.');
-		  return;
-		}
-	
-		let connection = request.accept('echo-protocol', request.origin);
+    wsServer.on('request', (request) => {
+        if (!originIsAllowed(request.origin)) {
+            request.reject()
+            console.log(
+                new Date() +
+                    ' Connection from origin ' +
+                    request.origin +
+                    ' rejected.'
+            )
+            return
+        }
 
-		connection.on('message', async (message) => {
-			const [type, datas] = JSON.parse(message.utf8Data)
-			switch (type) {
-				case 'login':
-					var {password, email} = datas
-					var user = await Player.find({email, password})
-					if (!user.length){
-						sendData(['loginFail', null], connection)
-					}else{
-						userDatas = userDatas.map((data) => {
-							if (data.name === user.name){
-								return {...data, online: true, connection: connection}
-							}return data
-						})
-						sendData(['loginSuccess', user[0]], connection)
-					}
-					break
-				case 'googleLogin':
-					var {name, email, imageUrl} = datas
-					var user = await Player.find({email, name})
-					if (user.length){
-						sendData(['loginSuccess', user[0]], connection)
-						userDatas = userDatas.map((data) => {
-							if (data.name === user.name){
-								return {...data, online: true, connection: connection}
-							}return data
-						})
-					}else{
-						let newUser = await new Player({name, email}).save()
-						sendData(['loginSuccess', newUser], connection)
-						userDatas.push({name: name, online: true, connection: connection, image: imageUrl})
-					}
-					break
-				case 'create':
-					var {name, email, password} = datas
-					var user = new Player({ name, email, password });
-					try {
-						await user.save();
-						userDatas.push({name: name, online: true, connection: connection})
-						sendData(['loginSuccess', user], connection);
-					} catch (err) {
-						sendData(['createFail', null] , connection);
-					}
-					break;
-				case 'requireFriends':
-					let returnValue = userDatas.map((data) => {
-						return {name: data.name, online: data.online}
-					})
-					sendData(['friendLists', returnValue], connection)
-					break
-				case 'createRoom':
+        let connection = request.accept('echo-protocol', request.origin)
+        // Using local storage to login
+        var user = request.resourceURL.query.name
+        userDatas[user] = { online: true, connection: connection }
 
-					break;
-				default:
+        connection.on('message', async (message) => {
+            const [type, datas] = JSON.parse(message.utf8Data)
+            switch (type) {
+                case 'login':
+                    var res = await usualLogin(connection, datas)
+                    if (res.success)
+                        userDatas[res.name] = {
+                            online: true,
+                            connection: connection
+                        }
+                    break
+                case 'googleLogin':
+                    var res = await googleLogin(connection, datas)
+                    if (res.success)
+                        userDatas[res.name] = {
+                            online: true,
+                            connection: connection
+                        }
+                    break
+                case 'create':
+                    var res = await createAccount(connection, datas)
+                    if (res.success)
+                        userDatas[res.name] = {
+                            online: true,
+                            connection: connection
+                        }
+                    break
+                case 'requireFriends':
+                    let returnValue = getFriendsList(userDatas)
+                    sendData(['friendLists', returnValue], connection)
+                    break
+                case 'createRoom':
+                    createNewRoom(connection, datas)
+                    break
+                case 'leaveRoom':
+                    leaveRoom(userDatas, datas)
+                    break
+                case 'invitePlayer':
+                    await invite(userDatas, datas)
+                    break
+                case 'swapPosition':
+                    await swapRequest(userDatas, datas)
+                    break
+                case 'acceptInvitation':
+					await acceptInvitation(userDatas, datas)
+                    break
+                case 'acceptExchange':
+                    await acceptExchange(userDatas, datas)
 					break
-			}
-		});
-		connection.on('close', () => {
-			console.log(userDatas);
-			userDatas = userDatas.map((user) => {
-				if (user.connection === connection){
-					return {...user, online: false}
-				}
-				return user
-			})
-			console.log('Disconnected');
-		});
-	});
+                default:
+                    break
+            }
+        })
+        connection.on('close', () => {
+            userDatas[user] = { ...user, online: false }
+            console.log('Disconnected')
+        })
+    })
 
-	server.listen(port, () => {
-		console.log(`Listening at port ${port}`)
-	})
+    server.listen(port, () => {
+        console.log(`Listening at port ${port}`)
+    })
 })

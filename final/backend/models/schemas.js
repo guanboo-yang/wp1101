@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 
 const PlayerSchema = mongoose.Schema(
 	{
-		name: { type: String, required: true, unique: true },
+		name: { type: String, required: true },
 		friends: [{type: mongoose.Schema.Types.ObjectId, ref: 'Player', default: []}],
 		email: { type: String, required: true, unique: true },
 		password: { type: String },
@@ -13,10 +13,11 @@ const PlayerSchema = mongoose.Schema(
 )
 
 const RoomSchema = mongoose.Schema({
-	players: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Player' }],
-	messages: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Message' }],
+	players: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Player' } ],
+	roomId: [{type: Number, required: true}],
+	messages: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Message', default: []}],
 	gameMode: { type: Number, default: 0 },
-	rounds: { type: Number, default: 3 },
+	rounds: { type: Number, default: 0 },
 	level: { type: Number, default: 0 },
 })
 

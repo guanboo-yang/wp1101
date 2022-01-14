@@ -1,15 +1,18 @@
 import { useUser } from "../hooks/useUser";
 import { useNavigate } from "react-router-dom";
+let userProfile = JSON.parse(localStorage.getItem('profile'))
 
-const client = new WebSocket("ws://localhost:5000", 'echo-protocol');
+const client = new WebSocket(userProfile?`ws://localhost:5000?name=${userProfile.name}`:`ws://localhost:5000`, "echo-protocol");
+
 
 const useConnection = () => {
-  const { login, setFriends, profile } = useUser();
+  const { login, setFriends, setRoomId, roomId, profile, setPreGameState, setInvitation, exchangeRequire, setExchangeRequire } = useUser();
   const navigate = useNavigate();
 
   client.onmessage = async (byteString) => {
     const { data } = byteString;
     const [task, payLoad] = JSON.parse(data);
+    const setPlayers = players => setPreGameState(prev => ({ ...prev, players }))
 
     switch (task) {
       // Return [userData, friendsData]
@@ -27,17 +30,39 @@ const useConnection = () => {
         break;
 
       case "friendLists":
-        let friends = payLoad.sort((x, y) => {
-            return (x === y)? 0 : x? -1 : 1;
-        })
-        friends = friends.filter((user) => {
-            if (user.name !== profile.name)
-                return user
-        })
-        setFriends(friends)
+        let friends = payLoad.filter((user) => {
+          if (user.name !== profile.name) return user;
+        });
+        friends = friends.sort((x, y) => {
+          return x.online === y.online ? 0 : x ? -1 : 1;
+        });
+        console.log(friends);
+        setFriends(friends);
+        break;
+      case "exchagePos":
+        var {from, to, name} = payLoad
+        setExchangeRequire({state: true, from, to, name})
+        break;
+      case "roomCreated":
+        setRoomId(payLoad.roomId)
+        break
+      case "updatedPosition":
+        setPlayers(payLoad)
+        break;
+      case "invitation":
+        var {roomId, index, inviter, players} = payLoad
+        setInvitation({invite: true, roomId, index, inviter, players})
+        break;
+      
+      default:
         break;
     }
   };
+
+  client.onclose = () => {
+    console.log('Sorry, you are disconnected, please reload!');
+
+  }
   // Login Part
   const createAccount = (userDatas) => {
     sendData(["create", userDatas]);
@@ -48,16 +73,49 @@ const useConnection = () => {
   };
 
   const loginWithGoogle = (userDatas) => {
-      sendData(["googleLogin", {name: userDatas.givenName, email: userDatas.email, image: userDatas.imageUrl}])
-  }
+    console.log(userDatas);
+    sendData([
+      "googleLogin",
+      {
+        name: userDatas.name,
+        email: userDatas.email,
+        image: userDatas.imageUrl
+      }
+    ]);
+  };
   // Require friends part
   const requireFriend = () => {
-    sendData(["requireFriends", null])
-  }
+    sendData(["requireFriends", null]);
+  };
   // Rooms
-  const createRoom = () => {
-    sendData(["createRoom", profile.name])
+  const swapPosition = (roomId, from, to, players) => {
+    sendData(['swapPosition', {roomId, from, to, players}])
   }
+
+  const createRoom = (mode) => {
+    let { gameMode, rounds, level } = mode;
+    sendData([
+      "createRoom",
+      { name: profile.name, gameMode: gameMode, rounds: rounds, level: level }
+    ]);
+  };
+
+  const leaveRoom = (roomId, index, players, playersNum) => {
+    sendData(["leaveRoom", {roomId, index, players, playersNum}])
+  };
+
+  const invitePlayer = (roomId, index, name, inviter, players) => {
+    sendData(["invitePlayer", {roomId, index, name, inviter, players}])
+  }
+
+  const acceptInvitation = ({roomId, index, players}) => {
+    sendData(["acceptInvitation", {roomId, index, name: profile.name, players}])
+  }
+
+  const exchangePosition = ({from, to}, players) => {
+    sendData(["acceptExchange", {from, to, roomId, players}])
+  }
+
   const sendData = (data) => {
     client.send(JSON.stringify(data));
   };
@@ -66,7 +124,13 @@ const useConnection = () => {
     createAccount,
     loginAccount,
     requireFriend,
-    loginWithGoogle
+    loginWithGoogle,
+    createRoom,
+    leaveRoom,
+    invitePlayer,
+    swapPosition,
+    acceptInvitation,
+    exchangePosition
   };
 };
 

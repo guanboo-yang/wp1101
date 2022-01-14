@@ -10,8 +10,6 @@ import { useConnection } from 'connection/connect'
 const GOOGLE_CLIENT_ID = '202508058751-40ie9aunidgnnafl0pdqselm2bb0r6bq.apps.googleusercontent.com'
 
 const Login = () => {
-	const { login } = useUser()
-	const navigate = useNavigate()
 	const [signup, setSignup] = useState(false)
 	const { createAccount, loginAccount, loginWithGoogle } = useConnection()
 	const [ wrongPassword, setWorngPassword ] = useState(false)
@@ -66,14 +64,7 @@ const Login = () => {
 	const onGoogleSuccess = async res => {
 		const result = res?.profileObj
 		const token = res?.tokenObj?.id_token
-		console.log(result, token);
 		loginWithGoogle(result)
-		// try {
-		// 	login({ ...result, token })
-		// 	navigate('/')
-		// } catch (err) {
-		// 	console.log(err)
-		// }
 	}
 
 	const onGoogleFailure = res => {

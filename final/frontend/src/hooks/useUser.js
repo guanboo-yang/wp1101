@@ -31,7 +31,7 @@ const UserProvider = ({ children }) => {
 	const [friends, setFriends] = useState([])
 	const [invitation, setInvitation] = useState({ invite: false, roomId: null, position: null, inviter: null, players: null })
 	const [exchangeRequire, setExchangeRequire] = useState({ from: null, to: null, name: null, state: false })
-	const [room, setRoom] = useState({roomId: null, isHost: true, message: [], players: [null, null, null, null]})
+	const [room, setRoom] = useState({ roomId: null, isHost: true, message: [], players: [null, null, null, null] })
 	const [step, setStep] = useState(0)
 	const [profile, setProfile, removeProfile] = useStorage('profile', null, window.localStorage)
 	// const [players, setPlayers] = useState([null, null, null, null])
@@ -60,7 +60,7 @@ const UserProvider = ({ children }) => {
 	}
 
 	const logout = () => {
-		client.send([JSON.stringify(['logout', {name: profile.name}])])
+		client.send([JSON.stringify(['logout', { name: profile.name }])])
 		removeProfile()
 		removePreGameState()
 	}

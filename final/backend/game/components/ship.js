@@ -2,7 +2,7 @@ import { Bodies } from 'matter-js'
 
 const ship = () => {
 	return Bodies.circle(100, 100, 18, {
-		label: 'ship',
+		label: 'ships',
 		friction: 0,
 		frictionAir: 0.03, // add air friction
 		frictionStatic: 1,

@@ -17,17 +17,17 @@ const addBounds = (/** @type {number} */ w, /** @type {number} */ h, /** @type {
 	]
 }
 
-const playersNum = players => players.filter((/** @type {any} */ p) => p).length
+const playersNum = (/** @type {{ filter: (arg0: (p: any) => any) => { (): any; new (): any; length: any; }; }} */ players) => players.filter((/** @type {any} */ p) => p).length
 
-const toVertices = e => e.vertices.map(({ x, y }) => ({ x, y }))
+const toVertices = (/** @type {{ vertices: { x: any; y: any; }[]; }} */ e) => e.vertices.map(({ x, y }) => ({ x, y }))
 
 const ALL_GAME = {}
 
-const singleGame = (roomId, players, userDatas) => {
+const singleGame = (/** @type {string | number} */ roomId, players, /** @type {{ [x: string]: { online: any; }; }} */ userDatas) => {
 	const bounds = [canvas.width, canvas.height]
 
 	const sprites = {
-		ships: players.map((/** @type {any} */ p, i) => {
+		ships: players.map((/** @type {any} */ p, /** @type {any} */ i) => {
 			if (!p) return null
 			return ship()
 		}),
@@ -44,9 +44,8 @@ const singleGame = (roomId, players, userDatas) => {
 	)
 
 	Events.on(engine, 'collisionStart', ({ pairs }) => {
-		pairs.forEach(({ bodyA, bodyB }) => {
-			checkCollision(engine.world, bodyA, bodyB)
-		})
+		// @ts-ignore
+		pairs.forEach(({ bodyA, bodyB }) => checkCollision(engine.world, sprites, bodyA, bodyB))
 	})
 
 	const gameInterval = setInterval(() => {
@@ -57,7 +56,7 @@ const singleGame = (roomId, players, userDatas) => {
 					'gameUpdate',
 					{
 						sprites: [
-							...sprites.ships.map((ship, index) => {
+							...sprites.ships.map((/** @type {{ id: any; position: { x: any; y: any; }; angle: any; }} */ ship, /** @type {any} */ index) => {
 								if (!ship) return null
 								return {
 									type: 'ship',
@@ -87,7 +86,7 @@ const singleGame = (roomId, players, userDatas) => {
 		} catch (e) {
 			console.log(e)
 		}
-		sprites.ships.forEach((ship, index) => {
+		sprites.ships.forEach((/** @type {Body} */ ship, /** @type {string | number} */ index) => {
 			if (!ship) return
 			const { x, y } = ship.position
 			let angle = ship.angle
@@ -104,29 +103,16 @@ const singleGame = (roomId, players, userDatas) => {
 				ALL_GAME[roomId].keys[index].shoot = false
 				const bull = bullet(x + Math.cos(angle) * 30, y + Math.sin(angle) * 30)
 				sprites.bullets.push(bull)
+				Body.applyForce(ship, { x, y }, { x: -Math.cos(angle) * FORCE * 2, y: -Math.sin(angle) * FORCE * 2 })
 				Body.setAngle(bull, angle)
 				Body.setVelocity(bull, { x: Math.cos(angle) * bullet_speed, y: Math.sin(angle) * bullet_speed })
 				Composite.add(engine.world, bull)
 			}
 		})
 
-		// if (key.shoot) {
-		// 	sprites.bullets.push(
-		// 		Bodies.circle(sprites.ships[0].position.x, sprites.ships[0].position.y, 5, {
-		// 			restitution: 0.5,
-		// 			friction: 0.5,
-		// 			frictionStatic: 0.5,
-		// 			frictionAir: 0.5,
-		// 			density: 0.5,
-		// 			collisionFilter: {
-		// 				group: -1,
-		// 			},
-		// 		})
-		// 	)
-		// }
 		Engine.update(engine, frameRate)
 
-		players.forEach((/** @type {any} */ player, index) => {
+		players.forEach((/** @type {string} */ player, /** @type {number} */ index) => {
 			if (player && !userDatas[player].online) {
 				players[index] = null
 			}
@@ -138,7 +124,7 @@ const singleGame = (roomId, players, userDatas) => {
 	}, frameRate)
 }
 
-export const game = (roomId, /** @type {any} */ players, /** @type {any} */ userDatas) => {
+export const game = (/** @type {number} */ roomId, /** @type {any} */ players, /** @type {any} */ userDatas) => {
 	// ALL_GAME[roomId] = { singleGame, players, userDatas }
 	// ALL_GAME[roomId].singleGame(ALL_GAME[roomId].players, ALL_GAME[roomId].userDatas)
 	ALL_GAME[roomId] = {
@@ -152,7 +138,7 @@ export const game = (roomId, /** @type {any} */ players, /** @type {any} */ user
 	}
 }
 
-export const handleKey = (roomId, index, key) => {
+export const handleKey = (/** @type {number} */ roomId, /** @type {number} */ index, /** @type {string} */ key) => {
 	switch (key) {
 		case 'enter':
 			ALL_GAME[roomId].keys[index].turn = true
@@ -168,12 +154,18 @@ export const handleKey = (roomId, index, key) => {
 	}
 }
 
-const checkCollision = (world, bodyA, bodyB) => {
+const checkCollision = (/** @type {Composite} */ world, /** @type {Body[]} */ sprites, /** @type {Composite} */ bodyA, /** @type {Composite} */ bodyB) => {
 	// console.log(bodyA.label, bodyB.label)
-	if (bodyB.label === 'bullet') [bodyA, bodyB] = [bodyB, bodyA]
-	if (bodyA.label === 'bullet') {
+	if (bodyB.label === 'bullets') [bodyA, bodyB] = [bodyB, bodyA]
+	if (bodyA.label === 'bullets') {
 		Composite.remove(world, bodyA)
+		sprites[bodyA.label].splice(sprites[bodyA.label].indexOf(bodyA), 1)
 		if (bodyB.label === 'Rectangle Body') return
 		Composite.remove(world, bodyB)
+		if (bodyB.label === 'ships') {
+			sprites[bodyB.label].splice(sprites[bodyB.label].indexOf(bodyB), 1, null)
+		} else {
+			sprites[bodyB.label].splice(sprites[bodyB.label].indexOf(bodyB), 1)
+		}
 	}
 }

@@ -92,7 +92,7 @@ export const getSpriteByType = (objects, type, boolean = true) => {
 }
 
 export const setCameraOn = (camera, sprites, padding = 0) => {
-	const delta = 0.05
+	const delta = 0.2
 	const minX = Math.min(...sprites.map(sprite => sprite.pos.x))
 	const maxX = Math.max(...sprites.map(sprite => sprite.pos.x))
 	const minY = Math.min(...sprites.map(sprite => sprite.pos.y))

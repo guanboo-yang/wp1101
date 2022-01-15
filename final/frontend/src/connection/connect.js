@@ -84,7 +84,7 @@ const useConnection = () => {
 	}
 
 	client.onclose = () => {
-		if (room.roomId){
+		if (room.roomId) {
 			leaveRoom(
 				room.roomId,
 				room.players.findIndex(player => player === profile.name),

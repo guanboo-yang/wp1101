@@ -92,11 +92,9 @@ const Game = () => {
 
 		// let camera = { x: CANVAS.IN.HEIGHT / 2, y: CANVAS.IN.HEIGHT / 2, w: CANVAS.IN.HEIGHT * 1, h: CANVAS.IN.HEIGHT * 1 }
 
-		// const animate = () => {
 		// const objects = Object.keys(state.objects).reduce((acc, key) => {
 		// 	return [...acc, state.objects[key]]
 		// }, [])
-		// camera = setCameraOn(camera, sprites.ships, 400)
 
 		if (sprites.ships && sprites.ships.length > 0) changeCamera(sprites.ships)
 		// console.log(camera)
@@ -119,7 +117,6 @@ const Game = () => {
 		// console.log(state.objects)
 		if (sprites.ships && sprites.ships.length > 0) {
 			sprites.ships.forEach((ship, i) => {
-				// console.log(sprites.ships[1])
 				state.objects.ships[i].set(ship)
 				state.objects.ships[i].draw(ctx, draw, camera)
 			})

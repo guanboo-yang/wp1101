@@ -19,11 +19,10 @@ const getFriendsList = userDatas => {
 	return friends
 }
 
-const updateFriends = (userDatas) => {
+const updateFriends = userDatas => {
 	let friends = getFriendsList(userDatas)
 	for (const [_, value] of Object.entries(userDatas)) {
-		if (value.connection)
-		sendData(['friendLists', friends], value.connection)
+		if (value.connection) sendData(['friendLists', friends], value.connection)
 	}
 }
 

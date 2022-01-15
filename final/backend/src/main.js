@@ -16,126 +16,121 @@ dotenv.config()
 connect(process.env.MONGO_URL, { autoIndex: false })
 
 const server = http.createServer(function (request, response) {
-    response.writeHead(404)
-    response.end()
+	response.writeHead(404)
+	response.end()
 })
 
 const wsServer = new WebSocketServer({
-    httpServer: server,
-    autoAcceptConnections: false
+	httpServer: server,
+	autoAcceptConnections: false,
 })
 
-const originIsAllowed = (origin) => {
-    return true
+const originIsAllowed = origin => {
+	return true
 }
 
 db.once('open', async () => {
-    // Setting db
-    Room.deleteMany({})
-    let users = await Player.find({})
-    users.forEach((user) => {
-        userDatas[user.name] = { online: false, connection: null }
-    })
+	// Setting db
+	Room.deleteMany({})
+	let users = await Player.find({})
+	users.forEach(user => {
+		userDatas[user.name] = { online: false, connection: null }
+	})
 
-    wsServer.on('request', (request) => {
-        if (!originIsAllowed(request.origin)) {
-            request.reject()
-            console.log(
-                new Date() +
-                    ' Connection from origin ' +
-                    request.origin +
-                    ' rejected.'
-            )
-            return
-        }
-        
-        let connection = request.accept('echo-protocol', request.origin)
-        sendData(['getClientId', process.env.CLIENT_ID], connection)
-        var user = request.resourceURL.query.name
-        if (user){
-            userDatas[user] = { online: true, connection: connection }
-            updateFriends(userDatas)
-        }
+	wsServer.on('request', request => {
+		if (!originIsAllowed(request.origin)) {
+			request.reject()
+			console.log(new Date() + ' Connection from origin ' + request.origin + ' rejected.')
+			return
+		}
 
-        connection.on('message', async (message) => {
-            const [type, datas] = JSON.parse(message.utf8Data)
-            switch (type) {
-                case 'login':
-                    var res = await usualLogin(connection, datas)
-                    if (res.success){
-                        userDatas[res.name] = {
-                            online: true,
-                            connection: connection
-                        }
-                        updateFriends(userDatas)
-                    }
-                    break
-                case 'googleLogin':
-                    var res = await googleLogin(connection, datas)
-                    if (res.success){
-                        userDatas[res.name] = {
-                            online: true,
-                            connection: connection
-                        }
-                        updateFriends(userDatas)
-                    }
-                    break
-                case 'create':
-                    var res = await createAccount(connection, datas)
-                    if (res.success){
-                        userDatas[res.name] = {
-                            online: true,
-                            connection: connection
-                        }
-                        updateFriends(userDatas)
-                    }
-                    break
-                case 'requireFriends':
-                    let returnValue = getFriendsList(userDatas)
-                    sendData(['friendLists', returnValue], connection)
-                    break
-                case 'createRoom':
-                    createNewRoom(connection, datas)
-                    break
-                case 'leaveRoom':
-                    console.log(datas);
-                    leaveRoom(userDatas, datas)
-                    break
-                case 'invitePlayer':
-                    await invite(userDatas, datas)
-                    break
-                case 'swapPosition':
-                    await swapRequest(userDatas, datas)
-                    break
-                case 'acceptInvitation':
-					await acceptInvitation(userDatas, datas)
-                    break
-                case 'acceptExchange':
-                    await acceptExchange(userDatas, datas)
+		let connection = request.accept('echo-protocol', request.origin)
+		sendData(['getClientId', process.env.CLIENT_ID], connection)
+		var user = request.resourceURL.query.name
+		if (user) {
+			userDatas[user] = { online: true, connection: connection }
+			updateFriends(userDatas)
+		}
+
+		connection.on('message', async message => {
+			const [type, datas] = JSON.parse(message.utf8Data)
+			switch (type) {
+				case 'login':
+					var res = await usualLogin(connection, datas)
+					if (res.success) {
+						userDatas[res.name] = {
+							online: true,
+							connection: connection,
+						}
+						updateFriends(userDatas)
+					}
 					break
-                case 'gameStart':
-                    await gameStart(userDatas, datas)
-                    break;
-                case 'gameEvent':
-                    await eventHandler(userDatas, datas)
-                    break;
-                case 'newMessage':
-                    await newMessage(userDatas, datas)
-                    break;
-                default:
-                    break
-            }
-        })
-        connection.on('close', () => {
-            if (user){
-                userDatas[user] = { ...user, online: false, connection: null }
-                updateFriends(userDatas)
-            }
-            console.log('Disconnected')
-        })
-    })
+				case 'googleLogin':
+					var res = await googleLogin(connection, datas)
+					if (res.success) {
+						userDatas[res.name] = {
+							online: true,
+							connection: connection,
+						}
+						updateFriends(userDatas)
+					}
+					break
+				case 'create':
+					var res = await createAccount(connection, datas)
+					if (res.success) {
+						userDatas[res.name] = {
+							online: true,
+							connection: connection,
+						}
+						updateFriends(userDatas)
+					}
+					break
+				case 'requireFriends':
+					let returnValue = getFriendsList(userDatas)
+					sendData(['friendLists', returnValue], connection)
+					break
+				case 'createRoom':
+					createNewRoom(connection, datas)
+					break
+				case 'leaveRoom':
+					console.log(datas)
+					leaveRoom(userDatas, datas)
+					break
+				case 'invitePlayer':
+					await invite(userDatas, datas)
+					break
+				case 'swapPosition':
+					await swapRequest(userDatas, datas)
+					break
+				case 'acceptInvitation':
+					await acceptInvitation(userDatas, datas)
+					break
+				case 'acceptExchange':
+					await acceptExchange(userDatas, datas)
+					break
+				case 'gameStart':
+					await gameStart(userDatas, datas)
+					break
+				case 'gameEvent':
+					await eventHandler(userDatas, datas)
+					break
+				case 'newMessage':
+					await newMessage(userDatas, datas)
+					break
+				default:
+					break
+			}
+		})
+		connection.on('close', () => {
+			if (user) {
+				userDatas[user] = { ...user, online: false, connection: null }
+				updateFriends(userDatas)
+			}
+			console.log('Disconnected')
+		})
+	})
 
-    server.listen(port, () => {
-        console.log(`Listening at port ${port}`)
-    })
+	server.listen(port, () => {
+		console.log(`Listening at port ${port}`)
+	})
 })

@@ -1,6 +1,6 @@
 import { useUser } from '../hooks/useUser'
+import { useSnackbar } from '../hooks/useSnackbar'
 import { useNavigate } from 'react-router-dom'
-// import withSnackbar from '../components/Snackbar'
 
 let userProfile = JSON.parse(localStorage.getItem('profile'))
 
@@ -8,6 +8,7 @@ const client = new WebSocket(userProfile ? `ws://localhost:5000?name=${userProfi
 
 const useConnection = () => {
 	const { login, setFriends, setRoom, room, profile, setPreGameState, setInvitation, setExchangeRequire, setStep } = useUser()
+	const { showMessage } = useSnackbar()
 	const navigate = useNavigate()
 
 	client.onmessage = async byteString => {
@@ -22,10 +23,10 @@ const useConnection = () => {
 				navigate('/')
 				break
 			case 'createFail':
-				console.log('The Username or the Email has been taken')
+				showMessage('The Username or the Email has been taken', 'error', 2000)
 				break
 			case 'loginFail':
-				console.log('Wrong Email or Password')
+				showMessage('Wrong Email or Password', 'error', 2000)
 				break
 			case 'friendLists':
 				let friends = payLoad.filter(user => {
@@ -42,7 +43,7 @@ const useConnection = () => {
 				setExchangeRequire({ state: true, from, to, name })
 				break
 			case 'roomCreated':
-				setRoom({roomId: payLoad.roomId, isHost: true})
+				setRoom({ roomId: payLoad.roomId, isHost: true })
 				break
 			case 'updatedPosition':
 				setPlayers(payLoad)
@@ -53,16 +54,17 @@ const useConnection = () => {
 				break
 			case 'gameStart':
 				setStep(2)
-				break;
+				break
 			case '':
 				break
 			default:
+				console.log('Unknown task:', task, payLoad)
 				break
 		}
 	}
 
 	client.onclose = () => {
-		console.log('Sorry, you are disconnected, please reload!')
+		showMessage('Sorry, you are disconnected, please reload!', 'error', 10000)
 	}
 	// Login Part
 	const createAccount = userDatas => {
@@ -113,12 +115,12 @@ const useConnection = () => {
 	}
 
 	// Game
-	const gameStart = ({roomId, players}) => {
-		sendData(['gameStart', {roomId, players}])
+	const gameStart = ({ roomId, players }) => {
+		sendData(['gameStart', { roomId, players }])
 	}
 
-	const gameEvent = ({roomId, evt, name}) => {
-		sendData(['gameEvent', {roomId, evt, name}])
+	const gameEvent = ({ roomId, evt, name }) => {
+		sendData(['gameEvent', { roomId, evt, name }])
 	}
 
 	const sendData = data => {
@@ -136,8 +138,8 @@ const useConnection = () => {
 		swapPosition,
 		acceptInvitation,
 		exchangePosition,
-    	gameStart,
-		gameEvent
+		gameStart,
+		gameEvent,
 	}
 }
 

@@ -7,24 +7,25 @@ const SnackbarContext = createContext({
 const SnackbarProvider = ({ children }) => {
 	const [snackbarOption, setSnackbarOption] = useState({
 		open: false,
-		message: '',
+		message: 'I am a default message',
 		severity: 'success',
+		duration: 2000,
 	})
 
-	const showMessage = (message, severity = 'success') => {
+	const showMessage = (message, severity = 'success', duration = 2000) => {
 		setSnackbarOption({
 			open: true,
 			message,
 			severity,
+			duration,
 		})
 	}
 
 	const handleCloseSnackbar = (event, reason) => {
 		if (reason === 'clickaway') return
 		setSnackbarOption({
+			...snackbarOption,
 			open: false,
-			message: '',
-			severity: 'success',
 		})
 	}
 

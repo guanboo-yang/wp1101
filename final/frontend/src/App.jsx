@@ -72,7 +72,7 @@ const App = () => {
 						horizontal: 'center',
 					}}
 					open={snackbarOption.open}
-					autoHideDuration={1000}
+					autoHideDuration={snackbarOption.duration}
 					onClose={handleCloseSnackbar}>
 					<Alert elevation={6} variant='filled' onClose={handleCloseSnackbar} severity={snackbarOption.severity}>
 						{snackbarOption.message}

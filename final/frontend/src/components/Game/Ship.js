@@ -1,16 +1,14 @@
-import { CANVAS } from 'constant'
 import { ship, fire } from 'assets/ship'
 import { Sprite } from './Sprite'
 import { Bullet, Missile, Mine } from './Weapons'
 import { colors } from 'constant'
 
 const getHeadPos = (pos, angle, size) => {
-	console.log(pos, angle, size)
 	return { x: pos.x + size * Math.cos(angle), y: pos.y + size * Math.sin(angle) }
 }
 
 export class Ship extends Sprite {
-	type = 'ships'
+	type = 'ship'
 	fire = new Image()
 	isFire = 0
 	isBlank = false
@@ -21,11 +19,11 @@ export class Ship extends Sprite {
 	bullets = 3
 	bulletsAngle = 0
 
-	constructor(color = 0, pos = { x: 0, y: 0 }, angle = 0) {
+	constructor(id, color = 0, pos = { x: 0, y: 0 }, angle = 0) {
 		super(pos, { x: color, y: 0, w: 17, h: 11, s: 9 }, angle)
 		this.img.src = ship
 		this.fire.src = fire
-		this.addObject(this)
+		// this.addObject(this, id)
 		this.interval[0] = setInterval(() => {
 			this.rect.y = (this.rect.y + 1) % 3
 			this.bulletsAngle += 0.15
@@ -50,30 +48,6 @@ export class Ship extends Sprite {
 				this.bullets++
 				this.interval[1] = undefined
 			}, 1000)
-		}
-		// count next state
-		this.speed.x += this.acc * Math.cos(this.angle)
-		this.speed.y += this.acc * Math.sin(this.angle)
-		this.pos.x += this.speed.x
-		this.pos.y += this.speed.y
-		this.speed.x *= 0.97
-		this.speed.y *= 0.97
-		// check borders
-		if (this.pos.x < 0 + (this.rect.s * this.scale) / 2) {
-			this.pos.x = 0 + (this.rect.s * this.scale) / 2
-			this.speed.x = 0
-		}
-		if (this.pos.x > CANVAS.IN.WIDTH - (this.rect.s * this.scale) / 2) {
-			this.pos.x = CANVAS.IN.WIDTH - (this.rect.s * this.scale) / 2
-			this.speed.x = 0
-		}
-		if (this.pos.y < 0 + (this.rect.s * this.scale) / 2) {
-			this.pos.y = 0 + (this.rect.s * this.scale) / 2
-			this.speed.y = 0
-		}
-		if (this.pos.y > CANVAS.IN.HEIGHT - (this.rect.s * this.scale) / 2) {
-			this.pos.y = CANVAS.IN.HEIGHT - (this.rect.s * this.scale) / 2
-			this.speed.y = 0
 		}
 	}
 
@@ -120,10 +94,10 @@ export class Ship extends Sprite {
 		draw.text(ctx, `P${this.rect.x + 1}`, colors[this.rect.x], this.pos, camera)
 
 		// draw bullets around ship
-		// for (let i = 0; i < this.bullets; i++) {
-		// 	let pos = getHeadPos({ x: this.pos.x - 6, y: this.pos.y - 6 }, this.bulletsAngle + (i * (Math.PI * 2)) / 3, 10 * this.scale)
-		// 	draw.rect(ctx, '#fff', { w: 8, h: 8 }, pos, camera)
-		// }
+		for (let i = 0; i < this.bullets; i++) {
+			let pos = getHeadPos({ x: this.pos.x - 6, y: this.pos.y - 6 }, this.bulletsAngle + (i * (Math.PI * 2)) / 3, 10 * this.scale)
+			draw.rect(ctx, '#fff', { w: 8, h: 8 }, pos, camera)
+		}
 	}
 
 	destroy() {

@@ -7,9 +7,7 @@ const GameContext = createContext({
 
 const GameProvider = ({ children }) => {
 	const [sprites, setSprites] = useState({
-		ships: [],
-		bullets: [],
-		walls: [],
+		sprites: [],
 		bounds: [],
 	})
 

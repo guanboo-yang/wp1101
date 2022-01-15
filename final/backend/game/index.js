@@ -1,8 +1,11 @@
-import { Engine, Runner, Bodies, Composite, Body } from 'matter-js'
+import { Engine, Events, Bodies, Composite, Body } from 'matter-js'
 import { roomBroadcast } from '../util/wssConnect'
+import ship from './components/ship'
+import bullet from './components/bullet'
 
 const frameRate = 1000 / 30
-const FORCE = 0.0001
+const FORCE = 0.0007
+const bullet_speed = 30
 const canvas = { width: 1500, height: 1000 }
 
 const addBounds = (/** @type {number} */ w, /** @type {number} */ h, /** @type {number} */ b) => {
@@ -14,6 +17,8 @@ const addBounds = (/** @type {number} */ w, /** @type {number} */ h, /** @type {
 	]
 }
 
+const playersNum = players => players.filter((/** @type {any} */ p) => p).length
+
 const toVertices = e => e.vertices.map(({ x, y }) => ({ x, y }))
 
 const ALL_GAME = {}
@@ -22,30 +27,58 @@ const singleGame = (roomId, players, userDatas) => {
 	const bounds = [canvas.width, canvas.height]
 
 	const sprites = {
-		ships: [Bodies.circle(100, 100, 20), Bodies.circle(100, 900, 20)],
+		ships: players.map((/** @type {any} */ p, i) => {
+			if (!p) return null
+			return ship()
+		}),
 		bullets: [],
 		bounds: addBounds(...bounds, 100),
 	}
 
 	const engine = Engine.create({ gravity: { scale: 0 } })
 	// const world = engine.world
-	Composite.add(engine.world, [].concat(...Object.values(sprites)))
-	// const runner = Runner.create()
-	// Runner.run(runner, engine)
-	setInterval(() => {
+	// console.log([].concat(...Object.values(sprites)).filter(e => e))
+	Composite.add(
+		engine.world,
+		[].concat(...Object.values(sprites)).filter(e => e)
+	)
+
+	Events.on(engine, 'collisionStart', ({ pairs }) => {
+		pairs.forEach(({ bodyA, bodyB }) => {
+			checkCollision(engine.world, bodyA, bodyB)
+		})
+	})
+
+	const gameInterval = setInterval(() => {
 		try {
 			roomBroadcast(
 				players,
 				[
 					'gameUpdate',
 					{
-						ships: sprites.ships.map(ship => ({
-							pos: {
-								x: ship.position.x,
-								y: ship.position.y,
-							},
-							angle: ship.angle,
-						})),
+						sprites: [
+							...sprites.ships.map((ship, index) => {
+								if (!ship) return null
+								return {
+									type: 'ship',
+									id: ship.id,
+									color: index,
+									pos: {
+										x: ship.position.x,
+										y: ship.position.y,
+									},
+									angle: ship.angle,
+								}
+							}),
+							...sprites.bullets.map(bullet => ({
+								type: 'bullet',
+								pos: {
+									x: bullet.position.x,
+									y: bullet.position.y,
+								},
+								id: bullet.id,
+							})),
+						],
 						bounds: bounds,
 					},
 				],
@@ -55,6 +88,7 @@ const singleGame = (roomId, players, userDatas) => {
 			console.log(e)
 		}
 		sprites.ships.forEach((ship, index) => {
+			if (!ship) return
 			const { x, y } = ship.position
 			let angle = ship.angle
 			if (ALL_GAME[roomId].keys[index].turn) {
@@ -66,6 +100,14 @@ const singleGame = (roomId, players, userDatas) => {
 			}
 			Body.applyForce(ship, { x, y }, force)
 			Body.setAngle(ship, angle)
+			if (ALL_GAME[roomId].keys[index].shoot) {
+				ALL_GAME[roomId].keys[index].shoot = false
+				const bull = bullet(x + Math.cos(angle) * 30, y + Math.sin(angle) * 30)
+				sprites.bullets.push(bull)
+				Body.setAngle(bull, angle)
+				Body.setVelocity(bull, { x: Math.cos(angle) * bullet_speed, y: Math.sin(angle) * bullet_speed })
+				Composite.add(engine.world, bull)
+			}
 		})
 
 		// if (key.shoot) {
@@ -83,6 +125,16 @@ const singleGame = (roomId, players, userDatas) => {
 		// 	)
 		// }
 		Engine.update(engine, frameRate)
+
+		players.forEach((/** @type {any} */ player, index) => {
+			if (player && !userDatas[player].online) {
+				players[index] = null
+			}
+		})
+		if (playersNum(players) === 0) {
+			clearInterval(gameInterval)
+			return
+		}
 	}, frameRate)
 }
 
@@ -101,7 +153,6 @@ export const game = (roomId, /** @type {any} */ players, /** @type {any} */ user
 }
 
 export const handleKey = (roomId, index, key) => {
-	console.log(roomId, index, key)
 	switch (key) {
 		case 'enter':
 			ALL_GAME[roomId].keys[index].turn = true
@@ -114,5 +165,15 @@ export const handleKey = (roomId, index, key) => {
 			break
 		default:
 			break
+	}
+}
+
+const checkCollision = (world, bodyA, bodyB) => {
+	// console.log(bodyA.label, bodyB.label)
+	if (bodyB.label === 'bullet') [bodyA, bodyB] = [bodyB, bodyA]
+	if (bodyA.label === 'bullet') {
+		Composite.remove(world, bodyA)
+		if (bodyB.label === 'Rectangle Body') return
+		Composite.remove(world, bodyB)
 	}
 }

@@ -86,6 +86,7 @@ export const draw = {
 }
 
 export const getSpriteByType = (objects, type, boolean = true) => {
+	objects = objects.filter(object => object)
 	if (boolean) return objects.filter(object => object.type === type)
 	return objects.filter(object => object.type !== type)
 }

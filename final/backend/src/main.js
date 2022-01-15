@@ -63,7 +63,7 @@ db.once('open', async () => {
 							connection: connection,
 						}
 						updateFriends(userDatas)
-                        user = res.name
+						user = res.name
 					}
 					break
 				case 'googleLogin':
@@ -74,7 +74,7 @@ db.once('open', async () => {
 							connection: connection,
 						}
 						updateFriends(userDatas)
-                        user = res.name
+						user = res.name
 					}
 					break
 				case 'create':
@@ -85,8 +85,8 @@ db.once('open', async () => {
 							connection: connection,
 						}
 						updateFriends(userDatas)
-                        user = res.name
-                    }
+						user = res.name
+					}
 					break
 				case 'requireFriends':
 					let returnValue = getFriendsList(userDatas)
@@ -120,10 +120,10 @@ db.once('open', async () => {
 					await newMessage(userDatas, datas)
 					break
 				case 'logout':
-					var {name} = datas
-					userDatas[name] = {...userDatas[name], online: false, connection: null}
+					var { name } = datas
+					userDatas[name] = { ...userDatas[name], online: false, connection: null }
 					updateFriends(userDatas)
-					break;
+					break
 				default:
 					break
 			}
@@ -133,7 +133,7 @@ db.once('open', async () => {
 				userDatas[user] = { ...user, online: false, connection: null }
 				updateFriends(userDatas)
 			}
-			console.log('Disconnected')
+			console.log(user, 'disconnected')
 		})
 	})
 

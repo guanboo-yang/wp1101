@@ -39,9 +39,7 @@ const useConnection = () => {
 				break
 			case 'friendLists':
 				const friends = payLoad
-					.filter(user => {
-						if (user.name !== profile.name) return user
-					})
+					.filter(user => user.name !== profile.name)
 					.sort((a, b) => {
 						return b.online - a.online
 					})
@@ -69,6 +67,7 @@ const useConnection = () => {
 			case 'newMessage':
 				const { message, send } = payLoad
 				setRoom({ ...room, message: [...room.message, { body: message, name: send }] })
+				break
 			case 'gameUpdate':
 				// console.log(payLoad)
 				updateGame(payLoad)
@@ -91,12 +90,12 @@ const useConnection = () => {
 		showMessage('Sorry, you are disconnected, please reload!', 'error', 10000)
 	}
 	// Login Part
-	const createAccount = ({name, email, password}) => {
-		sendData(['create', {name, email, password}])
+	const createAccount = ({ name, email, password }) => {
+		sendData(['create', { name, email, password }])
 	}
 
-	const loginAccount = ({email, password}) => {
-		sendData(['login', {email, password}])
+	const loginAccount = ({ email, password }) => {
+		sendData(['login', { email, password }])
 	}
 
 	const loginWithGoogle = userDatas => {

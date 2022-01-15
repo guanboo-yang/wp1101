@@ -1,5 +1,5 @@
 export const state = {
-	objects: {},
+	objects: [],
 }
 
 export class Sprite {
@@ -29,14 +29,6 @@ export class Sprite {
 		this.angle = angle
 	}
 
-	move() {}
-
-	addObject(obj) {
-		// state.objects.push(obj)
-		state.objects[obj.type] = state.objects[obj.type] || []
-		state.objects[obj.type].push(obj)
-	}
-
 	draw(ctx) {
 		ctx.drawImage(
 			this.img,
@@ -51,7 +43,5 @@ export class Sprite {
 		)
 	}
 
-	remove() {
-		state.objects[this.type] = state.objects[this.type].filter(obj => obj !== this)
-	}
+	remove() {}
 }

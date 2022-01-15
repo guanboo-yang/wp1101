@@ -5,59 +5,41 @@ import { draw, getSpriteByType, setCameraOn } from './utils'
 import './index.css'
 import { CANVAS } from 'constant'
 import { Ship } from './Ship'
+import { Bullet } from './Weapons'
 import { state } from './Sprite'
 import { useConnection } from 'connection/connect'
 import { useUser } from 'hooks/useUser'
-import { useSnackbar } from 'hooks/useSnackbar'
 import { useGame } from 'hooks/useGame'
 
 const Game = () => {
 	// const { sendData } = logic()
 	const canvasRef = useRef(null)
-	const turnRef = useRef(false)
 	const [doublePress, setDoublePress] = useState(false)
-	const [next, setNext] = useState('normal')
-	const shipRef = useRef(null)
-	const animateID = useRef(null)
 	const { room, profile } = useUser()
 	const { gameEvent } = useConnection()
-	const { showMessage } = useSnackbar()
 	const { sprites } = useGame()
-	const [objects, setObjects] = useState(sprites)
 
 	useEventListener('keydown', e => {
 		// part1
 		if (e.key === 'Enter') {
+			console.log('enter')
 			gameEvent({ roomId: room.roomId, evt: 'enter', name: profile.name })
 			if (doublePress) {
 			}
-			turnRef.current = true
-			setDoublePress(false)
 		}
 		// part2
 		if (e.key === ' ') {
+			console.log('space')
 			gameEvent({ roomId: room.roomId, evt: 'space', name: profile.name })
-			shipRef.current.shoot(next)
-			setNext('normal')
 		}
-		if (e.key === 'm') {
-			setNext('missile')
-			showMessage('missile')
-		}
-		if (e.key === 'o') {
-			setNext('mine')
-			showMessage('mine')
-		}
-		if (e.key === 'd') console.log(state.objects)
 		if (e.key === 's') {
 			console.log(sprites.ships)
 		}
 	})
 	// send part 3
 	useEventListener('keyup', e => {
-		gameEvent({ roomId: room.roomId, evt: 'leave', name: profile.name })
 		if (e.key === 'Enter') {
-			turnRef.current = false
+			gameEvent({ roomId: room.roomId, evt: 'leave', name: profile.name })
 			setDoublePress(true)
 			setTimeout(() => {
 				setDoublePress(false)
@@ -68,10 +50,12 @@ const Game = () => {
 	// useEffect(() => {
 	// 	setObjects(sprites)
 	// }, [sprites])
-	useEffect(() => {
-		shipRef.current = new Ship(3, { x: 100, y: 100 }, 0)
-		shipRef.current = new Ship(2, { x: 100, y: 100 }, 0)
-	}, [])
+	// useEffect(() => {
+	// 	shipRef.current = new Ship(0, { x: 100, y: 100 }, 0)
+	// 	shipRef.current = new Ship(1, { x: 100, y: 100 }, 0)
+	// 	shipRef.current = new Ship(2, { x: 100, y: 100 }, 0)
+	// 	shipRef.current = new Ship(3, { x: 100, y: 100 }, 0)
+	// }, [])
 
 	let camera_o = { x: 750, y: 500, w: 1500, h: 1000 }
 	const [camera, setCamera] = useState(camera_o)
@@ -96,7 +80,8 @@ const Game = () => {
 		// 	return [...acc, state.objects[key]]
 		// }, [])
 
-		if (sprites.ships && sprites.ships.length > 0) changeCamera(sprites.ships)
+		if (sprites.sprites && sprites.sprites.length > 0) changeCamera(getSpriteByType(sprites.sprites, 'ship'))
+
 		// console.log(camera)
 		ctx.setTransform(1, 0, 0, 1, 0, 0)
 		ctx.clearRect(0, 0, width, height)
@@ -115,12 +100,44 @@ const Game = () => {
 		}
 
 		// console.log(state.objects)
-		if (sprites.ships && sprites.ships.length > 0) {
-			sprites.ships.forEach((ship, i) => {
-				state.objects.ships[i].set(ship)
-				state.objects.ships[i].draw(ctx, draw, camera)
+		if (sprites.sprites.length > 0) {
+			sprites.sprites.forEach(sprite => {
+				if (!sprite) return
+				if (state.objects[sprite.id]) {
+					state.objects[sprite.id].set(sprite)
+					state.objects[sprite.id].draw(ctx, draw, camera)
+				} else {
+					switch (sprite.type) {
+						case 'ship':
+							state.objects[sprite.id] = new Ship(sprite.id, sprite.color, sprite.position, sprite.angle)
+							break
+						case 'bullet':
+							state.objects[sprite.id] = new Bullet(sprite.id, sprite.color, sprite.position, sprite.angle)
+							break
+						default:
+							break
+					}
+				}
 			})
 		}
+		// if (sprites.ships && sprites.ships.length > 0) {
+		// 	sprites.ships.forEach((ship, i) => {
+		// 		state.objects.ships[i].set(ship)
+		// 		state.objects.ships[i].draw(ctx, draw, camera)
+		// 	})
+		// }
+
+		// if (sprites.bullets && sprites.bullets.length > 0) {
+		// 	sprites.bullets.forEach((bullet, i) => {
+		// 		console.log(bullet.id)
+		// 		if (state.objects.bullets[i]) {
+		// 			state.objects.bullets[i].set(bullet)
+		// 			state.objects.bullets[i].draw(ctx, draw, camera)
+		// 		} else {
+		// 			state.objects.bullets.push(new Bullet(bullet.id, bullet, camera))
+		// 		}
+		// 	})
+		// }
 		// 	// ships.move()
 		// })
 		// getSpriteByType(state.objects, 'ship', true).forEach(ship => {

@@ -11,6 +11,10 @@ export default class Bullet extends Sprite {
 		this.img.src = bullet
 	}
 
+	set(bullet) {
+		this.pos = bullet.pos
+	}
+
 	move() {
 		this.pos.x += this.speed * Math.cos(this.angle)
 		this.pos.y += this.speed * Math.sin(this.angle)

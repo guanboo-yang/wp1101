@@ -11,6 +11,10 @@ const useConnection = () => {
 	const { showMessage } = useSnackbar()
 	const navigate = useNavigate()
 
+	client.onopen = () => {
+		showMessage('Connected Successfully', 'success', 2000)
+	}
+
 	client.onmessage = async byteString => {
 		const { data } = byteString
 		const [task, payLoad] = JSON.parse(data)
@@ -29,12 +33,13 @@ const useConnection = () => {
 				showMessage('Wrong Email or Password', 'error', 2000)
 				break
 			case 'friendLists':
-				let friends = payLoad.filter(user => {
-					if (user.name !== profile.name) return user
-				})
-				friends = friends.sort((x, y) => {
-					return x.online === y.online ? 0 : x ? -1 : 1
-				})
+				const friends = payLoad
+					.filter(user => {
+						if (user.name !== profile.name) return user
+					})
+					.sort((x, y) => {
+						return x.online === y.online ? 0 : x ? -1 : 1
+					})
 				console.log(friends)
 				setFriends(friends)
 				break

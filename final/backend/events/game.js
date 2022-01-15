@@ -11,13 +11,8 @@ const gameStart = async (userDatas, { roomId, players }) => {
 	game(players, userDatas)
 }
 
-<<<<<<< HEAD
 const eventHandler = (userDatas, {roomId, index, evt, name}) => {
     console.log(name, evt, index);
-=======
-const eventHandler = (userDatas, { roomId, evt, name }) => {
-	console.log(name, evt)
->>>>>>> c189905abc9ac0e915474e98546e5e9073e3c5ec
 }
 
 export { gameStart, eventHandler }

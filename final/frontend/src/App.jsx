@@ -6,7 +6,6 @@ import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { Toolbar, Box, Snackbar, Alert } from '@mui/material'
 import { useUser } from './hooks/useUser'
 import { useSnackbar } from './hooks/useSnackbar'
-
 const RequireAuth = ({ children }) => {
 	const { profile } = useUser()
 	return profile ? children : <Navigate to='/login' />

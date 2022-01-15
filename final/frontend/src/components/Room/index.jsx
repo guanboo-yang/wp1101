@@ -45,14 +45,14 @@ const Room = ({ setStep }) => {
 	}
 
 	const handleStep = step => () => {
-		if (room.players.findIndex(player => player === profile.name) )
-		swapPosition(
-			room.roomId,
-			room.players.findIndex(player => player === profile.name),
-			step,
-			room.players
-		)
-	}
+		if (room.players.findIndex(player => player === profile.name) !== step)
+			swapPosition(
+				room.roomId,
+				room.players.findIndex(player => player === profile.name),
+				step,
+				room.players
+			)
+		}
 
 	const acceptExchange = () => {
 		setExchangeRequire({ ...exchangeRequire, state: false })

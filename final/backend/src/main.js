@@ -50,7 +50,7 @@ db.once('open', async () => {
         }
         
         let connection = request.accept('echo-protocol', request.origin)
-        sendData(['getClientId', process.env.CLINT_ID], connection)
+        sendData(['getClientId', process.env.CLIENT_ID], connection)
         var user = request.resourceURL.query.name
         if (user){
             userDatas[user] = { online: true, connection: connection }

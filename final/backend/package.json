@@ -4,6 +4,7 @@
 	"main": "index.js",
 	"license": "MIT",
 	"dependencies": {
+		"bcryptjs": "^2.4.3",
 		"express": "^4.17.1",
 		"matter-js": "^0.18.0",
 		"mongoose": "^6.1.0",

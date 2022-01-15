@@ -1,14 +1,20 @@
 import { Player } from '../models/schemas'
 import { sendData } from '../util/wssConnect'
+import bcrypt from 'bcryptjs'
 
-const usualLogin = async (connection, datas) => {
-	var { password, email } = datas
-	var user = await Player.findOne({ email, password })
+const usualLogin = async (connection, { password, email }) => {
+	var user = await Player.findOne({ email })
 	if (!user) {
 		sendData(['loginFail', null], connection)
 		return { success: false }
 	} else {
-		sendData(['loginSuccess', user], connection)
+		let correctPwd = await bcrypt.compare(password, user.password)
+		if (correctPwd){
+			sendData(['loginSuccess', user], connection)
+		}else{
+			sendData(['loginFail', null], connection)
+			return { success: false }
+		}
 		return { success: true, name: user.name }
 	}
 }
@@ -26,8 +32,7 @@ const googleLogin = async (connection, datas) => {
 	}
 }
 
-const createAccount = async (connection, datas) => {
-	var { name, email, password } = datas
+const createAccount = async (connection, { name, email, password }) => {
 	var user = new Player({ name, email, password })
 	try {
 		await user.save()

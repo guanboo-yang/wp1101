@@ -8,7 +8,7 @@ let userProfile = JSON.parse(localStorage.getItem('profile'))
 const client = new WebSocket(userProfile ? `ws://localhost:5000?name=${userProfile.name}` : `ws://localhost:5000`, 'echo-protocol')
 
 const useConnection = () => {
-	const { login, setFriends, setRoom, room, profile, setPreGameState, setInvitation, setExchangeRequire, setStep, setClientId } = useUser()
+	const { login, setFriends, setRoom, room, profile, setInvitation, setExchangeRequire, setStep, setClientId } = useUser()
 	const { showMessage } = useSnackbar()
 	const { updateGame } = useGame()
 	const navigate = useNavigate()
@@ -35,7 +35,6 @@ const useConnection = () => {
 				showMessage('Wrong Email or Password', 'error', 2000)
 				break
 			case 'getClientId':
-				console.log(payLoad)
 				setClientId(payLoad)
 				break
 			case 'friendLists':
@@ -43,10 +42,9 @@ const useConnection = () => {
 					.filter(user => {
 						if (user.name !== profile.name) return user
 					})
-					.sort((x, y) => {
-						return x.online === y.online ? 0 : x ? -1 : 1
+					.sort((a, b) => {
+						return b.online - a.online
 					})
-				console.log(friends)
 				setFriends(friends)
 				break
 			case 'exchagePos':
@@ -75,8 +73,6 @@ const useConnection = () => {
 				// console.log(payLoad)
 				updateGame(payLoad)
 				break
-			case '':
-				break
 			default:
 				console.log('Unknown task:', task, payLoad)
 				break
@@ -95,12 +91,12 @@ const useConnection = () => {
 		showMessage('Sorry, you are disconnected, please reload!', 'error', 10000)
 	}
 	// Login Part
-	const createAccount = userDatas => {
-		sendData(['create', userDatas])
+	const createAccount = ({name, email, password}) => {
+		sendData(['create', {name, email, password}])
 	}
 
-	const loginAccount = userDatas => {
-		sendData(['login', userDatas])
+	const loginAccount = ({email, password}) => {
+		sendData(['login', {email, password}])
 	}
 
 	const loginWithGoogle = userDatas => {

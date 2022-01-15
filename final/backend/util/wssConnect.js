@@ -5,7 +5,7 @@ const sendData = (data, connection) => {
 // 3 attributes: 1. reciever(array) 2. datas 3. userDatas
 const roomBroadcast = (players, datas, userDatas) => {
 	players.forEach(player => {
-		if (player) {
+		if (player && userDatas[player].online) {
 			sendData(datas, userDatas[player].connection)
 		}
 	})

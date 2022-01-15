@@ -46,7 +46,7 @@ db.once('open', async () => {
 
 		let connection = request.accept('echo-protocol', request.origin)
 		sendData(['getClientId', process.env.CLIENT_ID], connection)
-		var user = request.resourceURL.query.name
+		let user = request.resourceURL.query.name
 		if (user) {
 			userDatas[user] = { online: true, connection: connection }
 			updateFriends(userDatas)
@@ -63,6 +63,7 @@ db.once('open', async () => {
 							connection: connection,
 						}
 						updateFriends(userDatas)
+                        user = res.name
 					}
 					break
 				case 'googleLogin':
@@ -73,6 +74,7 @@ db.once('open', async () => {
 							connection: connection,
 						}
 						updateFriends(userDatas)
+                        user = res.name
 					}
 					break
 				case 'create':
@@ -83,7 +85,8 @@ db.once('open', async () => {
 							connection: connection,
 						}
 						updateFriends(userDatas)
-					}
+                        user = res.name
+                    }
 					break
 				case 'requireFriends':
 					let returnValue = getFriendsList(userDatas)
@@ -93,7 +96,6 @@ db.once('open', async () => {
 					createNewRoom(connection, datas)
 					break
 				case 'leaveRoom':
-					console.log(datas)
 					leaveRoom(userDatas, datas)
 					break
 				case 'invitePlayer':
@@ -117,6 +119,11 @@ db.once('open', async () => {
 				case 'newMessage':
 					await newMessage(userDatas, datas)
 					break
+				case 'logout':
+					var {name} = datas
+					userDatas[name] = {...userDatas[name], online: false, connection: null}
+					updateFriends(userDatas)
+					break;
 				default:
 					break
 			}

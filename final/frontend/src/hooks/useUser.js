@@ -1,5 +1,6 @@
 import { createContext, useContext, useState } from 'react'
 import { useDarkMode, useStorage } from '.'
+const client = new WebSocket(`ws://localhost:5000`, 'echo-protocol')
 
 const UserContext = createContext({
 	profile: null,
@@ -48,7 +49,6 @@ const UserProvider = ({ children }) => {
 	const [darkMode, setDarkMode] = useDarkMode()
 
 	const login = (prof = profile) => {
-		console.log('login', prof)
 		setProfile(prof)
 		setPreGameState({
 			// TODO: [CHANGE] ask server for pre-game status
@@ -60,6 +60,7 @@ const UserProvider = ({ children }) => {
 	}
 
 	const logout = () => {
+		client.send([JSON.stringify(['logout', {name: profile.name}])])
 		removeProfile()
 		removePreGameState()
 	}

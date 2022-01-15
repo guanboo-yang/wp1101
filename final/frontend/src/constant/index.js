@@ -27,3 +27,5 @@ export const WEAPON = {
 	MISSILE: 'missile',
 	EXPLOSION: 'explosion',
 }
+
+export const saltRound = 10;

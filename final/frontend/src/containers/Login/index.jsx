@@ -5,8 +5,8 @@ import Input from './Input'
 import { GoogleLogin } from 'react-google-login'
 import { Google } from '@mui/icons-material'
 import { useConnection } from 'connection/connect'
-
-// const GOOGLE_CLIENT_ID = '202508058751-40ie9aunidgnnafl0pdqselm2bb0r6bq.apps.googleusercontent.com'
+import { saltRound } from 'constant'
+import bcrypt from 'bcryptjs'
 
 const Login = () => {
 	const [signup, setSignup] = useState(false)
@@ -23,19 +23,19 @@ const Login = () => {
 		setValues(values => ({ ...values, showPassword: false }))
 	}, [signup])
 
-	const handleSignUp = e => {
+	const handleSignUp = async (e) => {
 		e.preventDefault()
 		if (values.password !== values.confirmPassword) {
 			setWorngPassword(true)
 		} else {
 			setWorngPassword(false)
-			createAccount(values)
+			createAccount({email: values.email, name: values.name, password: await bcrypt.hash(values.password, saltRound)})
 		}
 	}
 
-	const handleSubmit = e => {
+	const handleSubmit = async (e) => {
 		e.preventDefault()
-		loginAccount(values)
+		loginAccount({email: values.email, password: values.password})
 	}
 
 	const style = {
@@ -68,7 +68,7 @@ const Login = () => {
 
 	const onGoogleSuccess = async res => {
 		const result = res?.profileObj
-		const token = res?.tokenObj?.id_token
+		// const token = res?.tokenObj?.id_token
 		loginWithGoogle(result)
 	}
 

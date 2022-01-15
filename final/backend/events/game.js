@@ -1,17 +1,18 @@
-import { Player, Room } from "../models/schemas"
-import { roomBroadcast } from "../util/wssConnect";
+import { Player, Room } from '../models/schemas'
+import { roomBroadcast } from '../util/wssConnect'
+import { game } from '../game'
 
-const gameStart = async(userDatas, {roomId, players}) => {
-    console.log(roomId);
-    // await Room.findOne({roomId})
-    
+const gameStart = async (userDatas, { roomId, players }) => {
+	console.log(roomId)
+	// await Room.findOne({roomId})
 
+	roomBroadcast(players, ['gameStart', players], userDatas)
 
-    roomBroadcast(players, ['gameStart', players], userDatas)
+	game(players, userDatas)
 }
 
-const eventHandler = (userDatas, {roomId, evt, name}) => {
-    console.log(name, evt);
+const eventHandler = (userDatas, { roomId, evt, name }) => {
+	console.log(name, evt)
 }
 
 export { gameStart, eventHandler }

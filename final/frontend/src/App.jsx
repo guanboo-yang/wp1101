@@ -62,24 +62,24 @@ const App = () => {
 							<Route path='/login' element={<Login />} />
 							<Route path='*' element={<NotFound />} />
 						</Routes>
+						<Snackbar
+							anchorOrigin={{
+								vertical: 'top',
+								horizontal: 'center',
+							}}
+							open={snackbarOption.open}
+							autoHideDuration={snackbarOption.duration}
+							onClose={handleCloseSnackbar}>
+							<Alert elevation={6} variant='filled' onClose={handleCloseSnackbar} severity={snackbarOption.severity}>
+								{snackbarOption.message}
+							</Alert>
+						</Snackbar>
 					</Box>
 					{/* hide on md and above */}
 					<Box display={{ xs: 'block', md: 'none' }}>
 						<Toolbar />
 					</Box>
 				</Router>
-				<Snackbar
-					anchorOrigin={{
-						vertical: 'top',
-						horizontal: 'center',
-					}}
-					open={snackbarOption.open}
-					autoHideDuration={snackbarOption.duration}
-					onClose={handleCloseSnackbar}>
-					<Alert elevation={6} variant='filled' onClose={handleCloseSnackbar} severity={snackbarOption.severity}>
-						{snackbarOption.message}
-					</Alert>
-				</Snackbar>
 			</div>
 		</ThemeProvider>
 	)

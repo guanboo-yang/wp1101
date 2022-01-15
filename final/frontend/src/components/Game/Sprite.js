@@ -1,5 +1,5 @@
 export const state = {
-	objects: [],
+	objects: {},
 }
 
 export class Sprite {
@@ -27,13 +27,14 @@ export class Sprite {
 		Object.assign(this.pos, pos)
 		Object.assign(this.rect, rect)
 		this.angle = angle
-		state.objects.push(this)
 	}
 
 	move() {}
 
 	addObject(obj) {
-		state.objects.push(obj)
+		// state.objects.push(obj)
+		state.objects[obj.type] = state.objects[obj.type] || []
+		state.objects[obj.type].push(obj)
 	}
 
 	draw(ctx) {
@@ -51,6 +52,6 @@ export class Sprite {
 	}
 
 	remove() {
-		state.objects.splice(state.objects.indexOf(this), 1)
+		state.objects[this.type] = state.objects[this.type].filter(obj => obj !== this)
 	}
 }

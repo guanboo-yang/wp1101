@@ -7,7 +7,7 @@ let userProfile = JSON.parse(localStorage.getItem('profile'))
 const client = new WebSocket(userProfile ? `ws://localhost:5000?name=${userProfile.name}` : `ws://localhost:5000`, 'echo-protocol')
 
 const useConnection = () => {
-	const { login, setFriends, setRoom, room, profile, setPreGameState, setInvitation, setExchangeRequire, setStep } = useUser()
+	const { login, setFriends, setRoom, room, profile, setPreGameState, setInvitation, setExchangeRequire, setStep, setClientId } = useUser()
 	const { showMessage } = useSnackbar()
 	const navigate = useNavigate()
 
@@ -18,7 +18,7 @@ const useConnection = () => {
 	client.onmessage = async byteString => {
 		const { data } = byteString
 		const [task, payLoad] = JSON.parse(data)
-		const setPlayers = players => setPreGameState(prev => ({ ...prev, players }))
+		// const setPlayers = players => setPreGameState(prev => ({ ...prev, players }))
 
 		switch (task) {
 			// Return [userData, friendsData]
@@ -32,6 +32,10 @@ const useConnection = () => {
 			case 'loginFail':
 				showMessage('Wrong Email or Password', 'error', 2000)
 				break
+			case 'getClientId':
+				console.log(payLoad);
+				setClientId(payLoad)
+				break;
 			case 'friendLists':
 				const friends = payLoad
 					.filter(user => {
@@ -48,10 +52,12 @@ const useConnection = () => {
 				setExchangeRequire({ state: true, from, to, name })
 				break
 			case 'roomCreated':
-				setRoom({ roomId: payLoad.roomId, isHost: true })
+				setRoom({ ...room, roomId: payLoad.roomId, isHost: true })
 				break
 			case 'updatedPosition':
-				setPlayers(payLoad)
+				// setPlayers(payLoad)
+				console.log(payLoad);
+				setRoom({...room, players: payLoad})
 				break
 			case 'invitation':
 				const { roomId, index, inviter, players } = payLoad
@@ -60,7 +66,9 @@ const useConnection = () => {
 			case 'gameStart':
 				setStep(2)
 				break
-			case '':
+			case 'newMessage':
+				const {message, send} = payLoad
+				setRoom({...room, message: [...room.message, {body: message, name: send}]})
 				break
 			default:
 				console.log('Unknown task:', task, payLoad)
@@ -119,6 +127,10 @@ const useConnection = () => {
 		sendData(['acceptExchange', { from, to, roomId: room.roomId, players }])
 	}
 
+	const sendMessage = ({players, roomId, message, send}) => {
+		sendData(['newMessage', {players, roomId, send, message}])
+	}
+
 	// Game
 	const gameStart = ({ roomId, players }) => {
 		sendData(['gameStart', { roomId, players }])
@@ -143,8 +155,9 @@ const useConnection = () => {
 		swapPosition,
 		acceptInvitation,
 		exchangePosition,
-		gameStart,
-		gameEvent,
+		sendMessage,
+    	gameStart,
+		gameEvent
 	}
 }
 

@@ -10,6 +10,8 @@ const UserContext = createContext({
 	invitation: {},
 	exchangeRequire: {},
 	step: null,
+	clientId: '',
+	setClientId: () => {},
 	setStep: () => {},
 	setExchangeRequire: () => {},
 	setInvitation: () => {},
@@ -24,17 +26,19 @@ const UserContext = createContext({
 
 const UserProvider = ({ children }) => {
 	// use localStorage or sessionStorage to store user data?
+	const [clientId, setClientId] = useState('')
 	const [friends, setFriends] = useState([])
 	const [invitation, setInvitation] = useState({ invite: false, roomId: null, position: null, inviter: null, players: null })
 	const [exchangeRequire, setExchangeRequire] = useState({ from: null, to: null, name: null, state: false })
-	const [room, setRoom] = useState({roomId: null, isHost: true})
+	const [room, setRoom] = useState({roomId: null, isHost: true, message: [], players: [null, null, null, null]})
 	const [step, setStep] = useState(0)
 	const [profile, setProfile, removeProfile] = useStorage('profile', null, window.localStorage)
+	// const [players, setPlayers] = useState([null, null, null, null])
 	const [preGameState, setPreGameState, removePreGameState] = useStorage(
 		'pre-game-state',
 		{
 			// TODO: [CHANGE] let server handle this
-			players: [null, null, null, null],
+			// players: [null, null, null, null],
 			gameMode: 0,
 			rounds: 3,
 			level: 0,
@@ -74,6 +78,8 @@ const UserProvider = ({ children }) => {
 				invitation,
 				exchangeRequire,
 				step,
+				clientId,
+				setClientId,
 				setStep,
 				setExchangeRequire,
 				setInvitation,

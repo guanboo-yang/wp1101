@@ -7,7 +7,7 @@ import { useConnection } from 'connection/connect'
 
 const Mode = ({ setStart }) => {
 	const { requireFriend, createRoom } = useConnection()
-	const { preGameState, setPreGameState } = useUser()
+	const { preGameState, setPreGameState, room, profile, setRoom } = useUser()
 	const { gameMode, rounds, level } = preGameState
 	const [rommID, setRommID] = useState(null)
 
@@ -17,6 +17,7 @@ const Mode = ({ setStart }) => {
 
 	const handleCreateRoom = () => {
 		// TODO: create room with { gameMode, rounds, level }
+		setRoom({...room, players: [profile.name, null, null, null]})
 		createRoom({gameMode, rounds, level})	
 		requireFriend()
 		setStart()

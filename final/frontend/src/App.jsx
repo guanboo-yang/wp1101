@@ -13,10 +13,12 @@ const RequireAuth = ({ children }) => {
 }
 
 const App = () => {
+	const { room } = useUser()
+
 	const links = [
-		{ name: 'Playground', path: '/', element: <Playground /> },
-		{ name: 'Chat', path: '/chat', element: <Chat /> },
-		{ name: 'Scoreboard', path: '/scoreboard', element: <ScoreBoard /> },
+		{ name: 'Playground', path: '/', element: <Playground />, disable: false },
+		{ name: 'Chat', path: '/chat', element: <Chat />, disable: room.roomId?true:false },
+		{ name: 'Scoreboard', path: '/scoreboard', element: <ScoreBoard />, disable: room.roomId?true:false },
 	]
 	const { darkMode } = useUser()
 	const { snackbarOption, handleCloseSnackbar } = useSnackbar()

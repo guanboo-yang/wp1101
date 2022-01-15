@@ -9,7 +9,7 @@ import { Settings } from '.'
 import { Rocket } from '@mui/icons-material'
 const GOOGLE_CLIENT_ID = '202508058751-40ie9aunidgnnafl0pdqselm2bb0r6bq.apps.googleusercontent.com'
 
-const Appbar = ({ links }) => {
+const Appbar = ({ links, disabled }) => {
 	const { profile, darkMode, setDarkMode, logout } = useUser()
 	const [tabValue, setTabValue] = useStorage('tabvalue', 0, window.sessionStorage)
 	const [userMenuAnchorEl, setUserMenuAnchorEl] = useState(null)
@@ -20,18 +20,14 @@ const Appbar = ({ links }) => {
 
 	const user = profile?.name || ''
 
-	// console.log(theme)
-	// console.log(location)
-	// console.log(profile)
-
-	useEventListener('keydown', e => {
-		const key = Number(e.key)
-		if (key) {
-			if (key > 0 && key <= links.length) {
-				navigate(links[key - 1].path)
-			}
-		}
-	})
+	// useEventListener('keydown', e => {
+	// 	const key = Number(e.key)
+	// 	if (key) {
+	// 		if (key > 0 && key <= links.length) {
+	// 			navigate(links[key - 1].path)
+	// 		}
+	// 	}
+	// })
 
 	useEffect(() => {
 		if (links.find(link => link.path === location.pathname)) {
@@ -87,9 +83,10 @@ const Appbar = ({ links }) => {
 							indicatorColor='secondary'
 							sx={tabStyles}>
 							{links.map(
-								({ name, path }) =>
+								({ name, path, disable }) =>
 									name !== 'Login' && (
 										<Tab //
+											disabled={disable}
 											key={name}
 											label={name}
 											component={NavLink}
@@ -118,8 +115,8 @@ const Appbar = ({ links }) => {
 									width: 35,
 									height: 35,
 								}}
-								// src={profile ? `//joeschmoe.io/api/v1/${user}` : ''}></Avatar>
-								src={profile ? profile?.imageUrl : ''}></Avatar>
+								src={profile ? `//joeschmoe.io/api/v1/${user}` : ''}></Avatar>
+								{/* // src={profile ? profile?.imageUrl : ''}></Avatar> */}
 						</IconButton>
 					</Toolbar>
 					<Menu //

@@ -3,44 +3,42 @@ import { useUser } from '../../hooks/useUser'
 import Players from './Players'
 import Friend from './Friend'
 // TODO: [CHANGE] ask server to send all level information
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import SettingButton from '../SettingButton'
 import Message from './Message'
 import { useConnection } from '../../connection/connect'
 import { Dialog, DialogTitle, DialogActions } from '@mui/material'
 
 const Room = ({ setStep }) => {
-	const { profile, preGameState, login, /* setPreGameState, */ friends, room, exchangeRequire, setExchangeRequire } = useUser()
-	const { players, gameMode } = preGameState
-	const { leaveRoom, swapPosition, invitePlayer, exchangePosition, gameStart } = useConnection()
+	const { profile, preGameState, login, setRoom, friends, room, exchangeRequire, setExchangeRequire } = useUser()
+	const [ message, setMessage ] = useState('')
+	const { gameMode } = preGameState
+	const { leaveRoom, swapPosition, invitePlayer, exchangePosition, gameStart, sendMessage } = useConnection()
 	const [openDialog, setOpenDialog] = useState(false)
 
 	// const setPlayers = players => setPreGameState(prev => ({ ...prev, players }))
 	// TODO: get friends from server
 	// Problem, google photo
+	useEffect(()=> {
+		console.log(room);
+	}, [room])
+	const playersNum = () => room.players.filter(player => player).length
 
-	const msgs = [
-		{ name: 'Tristan', body: 'Hi' },
-		{ name: 'Eric', body: "What's up" },
-		{ name: 'Tristan', body: 'Hi' },
-		{ name: 'Eric', body: "What's up" },
-		{ name: 'Tristan', body: 'Hi' },
-		{ name: 'Eric', body: "What's up" },
-		{ name: 'Tristan', body: 'Hi' },
-		{ name: 'Eric', body: "What's up" },
-		{ name: 'Tristan', body: 'Hi' },
-		{ name: 'Eric', body: "What's up" },
-	]
-
-	const playersNum = () => players.filter(player => player).length
+	const handleMessage = (e) => {
+		if (e.key === 'Enter' && message){
+			setMessage('')
+			sendMessage({message, send: profile.name, roomId: room.roomId, players: room.players})
+		}
+	}
 
 	const handleLeave = () => {
 		leaveRoom(
 			room.roomId,
-			players.findIndex(player => player === profile.name),
-			players,
+			room.players.findIndex(player => player === profile.name),
+			room.players,
 			playersNum()
 		)
+		setRoom({...room, roomId: null, message: []})
 		setOpenDialog(false)
 		setStep(-1)
 		login()
@@ -49,15 +47,15 @@ const Room = ({ setStep }) => {
 	const handleStep = step => () => {
 		swapPosition(
 			room.roomId,
-			players.findIndex(player => player === profile.name),
+			room.players.findIndex(player => player === profile.name),
 			step,
-			players
+			room.players
 		)
 	}
 
 	const acceptExchange = () => {
 		setExchangeRequire({ ...exchangeRequire, state: false })
-		exchangePosition(exchangeRequire, players)
+		exchangePosition(exchangeRequire, room.players)
 	}
 
 	const handleAddPlayers = ({ players, name }) => {
@@ -85,20 +83,21 @@ const Room = ({ setStep }) => {
 					<Box backgroundColor='primary.dark' sx={{ py: 2, px: 1 }}>
 						<Typography variant='h5'>Chat Room</Typography>
 						<List sx={{ m: 1, overflow: 'auto', height: 247 }}>
-							{msgs.map(({ name, body }, i) => {
+							{room.message.map(({ name, body }, i) => {
 								return <Message name={name} body={body} key={i} />
 							})}
 						</List>
-						<Input placeholder='Type a message...' />
+						<Input placeholder='Type a message...' value={message} type='search' onKeyDown={handleMessage} onChange={(e) => setMessage(e.target.value)}/>
+						{/* <Input:Search></Input:Search> */}
 					</Box>
 				</Grid>
 				<Grid item xs={12} md={5}>
 					<Grid container backgroundColor='primary.dark' direction='column' justifyContent='center' alignItems='center' height='100%' sx={{ py: 2 }}>
 						<Grid item width='100%'>
 							<Players
-								players={players}
-								activeStep={players.findIndex(player => player === profile.name)}
-								completed={players.reduce((acc, player, index) => {
+								players={room.players}
+								activeStep={room.players.findIndex(player => player === profile.name)}
+								completed={room.players.reduce((acc, player, index) => {
 									if (player) acc[index] = true
 									return acc
 								}, {})}
@@ -109,7 +108,7 @@ const Room = ({ setStep }) => {
 						<Grid item>
 							{/* <SettingButton onClick={handleLeave}>leave</SettingButton> */}
 							<SettingButton onClick={() => setOpenDialog(true)}>leave</SettingButton>
-							<SettingButton disabled={notReadyToGo() || !room.isHost} onClick={() => gameStart({ roomId: room.roomId, players })}>
+							<SettingButton disabled={notReadyToGo() || !room.isHost} onClick={() => gameStart({ roomId: room.roomId, players: room.players })}>
 								{/* {room.isHost?'Start':'Prepare'} */}
 								Start
 							</SettingButton>
@@ -122,7 +121,7 @@ const Room = ({ setStep }) => {
 						<SettingButton variant='text'>Invite your friends!</SettingButton>
 						<List sx={{ overflow: 'auto', height: 250 }}>
 							{friends.map(({ name, image, online }, i) => (
-								<Friend key={i} name={name} image={image} online={online} players={players} handleAddPlayers={() => handleAddPlayers({ players, name })} />
+								<Friend key={i} name={name} image={image} online={online} players={room.players} handleAddPlayers={() => handleAddPlayers({ players: room.players, name })} />
 							))}
 						</List>
 					</Box>

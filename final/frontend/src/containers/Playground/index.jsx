@@ -11,8 +11,8 @@ import { bullet, explosion, mine, mine_p, missile, missile_p } from 'assets/weap
 import { ship, fire, shield } from 'assets/ship'
 
 const Playground = () => {
-	const { invitation, setInvitation, setRoom, step, setStep } = useUser()
-	const { acceptInvitation } = useConnection()
+	const { invitation, setInvitation, setRoom, room, step, setStep } = useUser()
+	const { acceptInvitation, requireFriend } = useConnection()
 
 	useEffect(() => {
 		imagePreloder([bullet, explosion, mine, mine_p, missile, missile_p, ship, fire, shield])
@@ -24,9 +24,10 @@ const Playground = () => {
 	}, [])
 
 	const acceptInvite = () => {
-		setRoom({ roomId: invitation.roomId, isHost: false })
+		setRoom({ ...room, roomId: invitation.roomId, isHost: false })
 		setInvitation({ ...invitation, invite: false })
 		acceptInvitation(invitation)
+		requireFriend()
 		setStep(1)
 	}
 

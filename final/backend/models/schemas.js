@@ -4,6 +4,7 @@ const PlayerSchema = new mongoose.Schema(
 	{
 		name: { type: String, required: true },
 		friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Player', default: [] }],
+		roomId: {type: String, default: null},
 		email: { type: String, required: true, unique: true },
 		password: { type: String },
 		wins: { type: Number, required: true, default: 0 },

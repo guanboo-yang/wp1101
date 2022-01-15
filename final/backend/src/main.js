@@ -4,7 +4,7 @@ import { Player, Room } from '../models/schemas'
 import { sendData, getFriendsList } from '../util/wssConnect'
 import { usualLogin, googleLogin, createAccount } from '../events/login'
 import { gameStart, eventHandler } from '../events/game'
-import { createNewRoom, leaveRoom, swapRequest, acceptInvitation, acceptExchange, invite } from '../events/room'
+import { createNewRoom, leaveRoom, swapRequest, acceptInvitation, acceptExchange, invite, newMessage } from '../events/room'
 const WebSocketServer = require('websocket').server
 const http = require('http')
 const db = connection
@@ -50,7 +50,7 @@ db.once('open', async () => {
         }
 
         let connection = request.accept('echo-protocol', request.origin)
-        // Using local storage to login
+        sendData(['getClientId', process.env.ClientId], connection)
         var user = request.resourceURL.query.name
         userDatas[user] = { online: true, connection: connection }
 
@@ -108,6 +108,9 @@ db.once('open', async () => {
                     break;
                 case 'gameEvent':
                     await eventHandler(userDatas, datas)
+                case 'newMessage':
+                    await newMessage(userDatas, datas)
+                    break;
                 default:
                     break
             }

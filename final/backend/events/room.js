@@ -1,9 +1,8 @@
-import { Player, Room } from '../models/schemas'
+import { Player, Room, Message } from '../models/schemas'
 import { sendData, roomBroadcast } from '../util/wssConnect'
 let gameId = 23754
 
-const createNewRoom = async (connection, datas) => {
-	var { gameMode, rounds, level, name } = datas
+const createNewRoom = async (connection, { gameMode, rounds, level, name }) => {
 	var creator = await Player.findOne({ name })
 	gameId += 1
 	let newRoom = new Room(
@@ -16,7 +15,7 @@ const createNewRoom = async (connection, datas) => {
 		},
 		{ autoIndex: false }
 	)
-
+	await Player.findOneAndUpdate({name}, {roomId: gameId})
 	await newRoom.save()
 	sendData(['roomCreated', { roomId: gameId }], connection)
 }
@@ -86,4 +85,12 @@ const acceptExchange = async (userDatas, datas) => {
 	roomBroadcast(players, ['updatedPosition', players], userDatas)
 }
 
-export { createNewRoom, leaveRoom, swapRequest, acceptInvitation, acceptExchange, invite }
+const newMessage = async (userDatas, {roomId, players, message, send}) => {
+	let newMessage = new Message({name: send, body: message});
+	await Room.findOneAndUpdate({roomId}, {"$push": { "messages": newMessage._id }})
+	await newMessage.save()
+	console.log(players);
+	roomBroadcast(players, ['newMessage', {message, send}], userDatas)
+}
+
+export { createNewRoom, leaveRoom, swapRequest, acceptInvitation, acceptExchange, invite, newMessage }

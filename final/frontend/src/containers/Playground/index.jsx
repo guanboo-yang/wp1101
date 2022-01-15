@@ -9,6 +9,7 @@ import { useConnection } from 'connection/connect'
 import { imagePreloder } from 'utils'
 import { bullet, explosion, mine, mine_p, missile, missile_p } from 'assets/weapons'
 import { ship, fire, shield } from 'assets/ship'
+import { GameProvider } from 'hooks/useGame'
 
 const Playground = () => {
 	const { invitation, setInvitation, setRoom, room, step, setStep } = useUser()
@@ -37,7 +38,11 @@ const Playground = () => {
 				{
 					0: <Mode setStart={() => setStep(1)} />,
 					1: <Room setStep={step => setStep(prev => prev + step)} />,
-					2: <Game />,
+					2: (
+						<GameProvider>
+							<Game />
+						</GameProvider>
+					),
 				}[step]
 			}
 			<Dialog

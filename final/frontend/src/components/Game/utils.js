@@ -48,14 +48,29 @@ export const draw = {
 		ctx.lineWidth = 3
 		ctx.lineWidth = 2 * camerascale
 		ctx.fillStyle = color
+		ctx.strokeStyle = 'white'
 		ctx.fillText(text, (pos.x - camera.x + camera.w / 2) * camerascale, (pos.y - camera.y + camera.h / 2 - 60) * camerascale)
 		ctx.strokeText(text, (pos.x - camera.x + camera.w / 2) * camerascale, (pos.y - camera.y + camera.h / 2 - 60) * camerascale)
 	},
-	rect: (ctx, color, rect = { w: 0, h: 0 }, pos = { x: 0, y: 0 }, camera = { x: 0, y: 0, w: CANVAS.IN.WIDTH, h: CANVAS.IN.HEIGHT }) => {
+	rect: (ctx, fillColor, strokeColor, rect = { w: 0, h: 0 }, pos = { x: 0, y: 0 }, camera = { x: 0, y: 0, w: CANVAS.IN.WIDTH, h: CANVAS.IN.HEIGHT }) => {
+		// console.log(rect, pos)
 		const camerascale = CANVAS.OUT.WIDTH / camera.w
 		ctx.beginPath()
-		ctx.fillStyle = color
-		ctx.fillRect((pos.x - camera.x + camera.w / 2) * camerascale, (pos.y - camera.y + camera.h / 2) * camerascale, rect.w * camerascale, rect.h * camerascale)
+		ctx.fillStyle = fillColor
+		ctx.strokeStyle = strokeColor
+		ctx.lineWidth = 4 * camerascale
+		ctx.fillRect(
+			(pos.x - rect.w / 2 - camera.x + camera.w / 2) * camerascale,
+			(pos.y - rect.h / 2 - camera.y + camera.h / 2) * camerascale,
+			rect.w * camerascale,
+			rect.h * camerascale
+		)
+		ctx.strokeRect(
+			(pos.x - rect.w / 2 - camera.x + camera.w / 2) * camerascale,
+			(pos.y - rect.h / 2 - camera.y + camera.h / 2) * camerascale,
+			rect.w * camerascale,
+			rect.h * camerascale
+		)
 		ctx.closePath()
 	},
 	line: (ctx, color, start = { x: 0, y: 0 }, end = { x: 0, y: 0 }, camera = { x: 0, y: 0, w: CANVAS.IN.WIDTH, h: CANVAS.IN.HEIGHT }) => {
@@ -86,11 +101,15 @@ export const setCameraOn = (camera, sprites, padding = 0) => {
 	const centerX = minX + width / 2
 	const centerY = minY + height / 2
 	const max = Math.max(width, height) + padding * 2
+	// console.log(minX, maxX, minY, maxY)
+	// console.log(centerX, centerY, max)
+	// console.log(camera.x, camera.y, camera.w, camera.h)
 	const ret = {
 		x: centerX * delta + camera.x * (1 - delta),
 		y: centerY * delta + camera.y * (1 - delta),
 		w: max * delta + camera.w * (1 - delta),
 		h: max * delta + camera.h * (1 - delta),
 	}
+	// console.log(ret)
 	return ret
 }

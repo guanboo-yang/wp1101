@@ -17,14 +17,22 @@ const addBounds = (/** @type {number} */ w, /** @type {number} */ h, /** @type {
 	]
 }
 
-const playersNum = (/** @type {{ filter: (arg0: (p: any) => any) => { (): any; new (): any; length: any; }; }} */ players) => players.filter((/** @type {any} */ p) => p).length
+const playersNum = (/** @type {string[]} */ players) => players.filter((/** @type {any} */ p) => p).length
 
 const toVertices = (/** @type {{ vertices: { x: any; y: any; }[]; }} */ e) => e.vertices.map(({ x, y }) => ({ x, y }))
 
 const ALL_GAME = {}
 
-const singleGame = (/** @type {string | number} */ roomId, players, /** @type {{ [x: string]: { online: any; }; }} */ userDatas) => {
+const singleGame = (
+	/** @type {string | number} */ roomId,
+	/** @type {string[]} */ players,
+	/** @type {{ [x: string]: { online: any; }; }} */ userDatas,
+	/** @type {number} */ rounds
+) => {
 	const bounds = [canvas.width, canvas.height]
+	const state = {
+		/** @type {number[]} */ deadId: [],
+	}
 
 	const sprites = {
 		ships: players.map((/** @type {any} */ p, /** @type {any} */ i) => {
@@ -45,14 +53,21 @@ const singleGame = (/** @type {string | number} */ roomId, players, /** @type {{
 
 	Events.on(engine, 'collisionStart', ({ pairs }) => {
 		// @ts-ignore
-		pairs.forEach(({ bodyA, bodyB }) => checkCollision(engine.world, sprites, bodyA, bodyB))
+		pairs.forEach(({ bodyA, bodyB }) => checkCollision(engine.world, sprites, bodyA, bodyB, state.deadId))
 	})
 
 	const bulletIntervals = setInterval(() => {
-		ALL_GAME[roomId].ships.forEach((/** @type {any} */ s) => {})
-	})
+		sprites.ships.forEach((ship, i) => {
+			if (!ship) return
+			if (ship.plugin.self.bullets < 3) ship.plugin.self.bullets++
+		})
+	}, 1500)
 
 	const gameInterval = setInterval(() => {
+		sprites.ships.forEach((ship, i) => {
+			if (!ship) return
+			if (ship.plugin.self.isFire > -1) ship.plugin.self.isFire--
+		})
 		try {
 			roomBroadcast(
 				players,
@@ -71,6 +86,12 @@ const singleGame = (/** @type {string | number} */ roomId, players, /** @type {{
 										y: ship.position.y,
 									},
 									angle: ship.angle,
+									// @ts-ignore
+									bullets: ship.plugin.self.bullets,
+									// @ts-ignore
+									isFire: ship.plugin.self.isFire,
+									// @ts-ignore
+									isBlank: ship.plugin.self.isBlank,
 								}
 							}),
 							...sprites.bullets.map(bullet => ({
@@ -83,10 +104,12 @@ const singleGame = (/** @type {string | number} */ roomId, players, /** @type {{
 							})),
 						],
 						bounds: bounds,
+						deadId: state.deadId,
 					},
 				],
 				userDatas
 			)
+			state.deadId.length = 0
 		} catch (e) {
 			console.log(e)
 		}
@@ -105,7 +128,14 @@ const singleGame = (/** @type {string | number} */ roomId, players, /** @type {{
 			Body.setAngle(ship, angle)
 			if (ALL_GAME[roomId].ships[index].shoot) {
 				ALL_GAME[roomId].ships[index].shoot = false
-				const bull = new bullet(x + Math.cos(angle) * 30, y + Math.sin(angle) * 30).body
+				ship.plugin.self.isFire = 3
+				if (ship.plugin.self.bullets < 1) {
+					ship.plugin.self.isBlank = true
+					return
+				}
+				ship.plugin.self.isBlank = false
+				const bull = new bullet(x + Math.cos(angle) * 30, y + Math.sin(angle) * 30, ship.id).body
+				ship.plugin.self.bullets--
 				sprites.bullets.push(bull)
 				Body.applyForce(ship, { x, y }, { x: -Math.cos(angle) * FORCE * 2, y: -Math.sin(angle) * FORCE * 2 })
 				Body.setAngle(bull, angle)
@@ -121,23 +151,44 @@ const singleGame = (/** @type {string | number} */ roomId, players, /** @type {{
 				players[index] = null
 			}
 		})
-		if (playersNum(players) === 0) {
+		if (playersNum(players) === 1) {
+			console.log('end')
+			clearInterval(bulletIntervals)
 			clearInterval(gameInterval)
+			Composite.clear(engine.world, true)
+			if (rounds > 1) {
+				ALL_GAME[roomId] = {
+					game: singleGame(roomId, players, userDatas, rounds--),
+					ships: [
+						{ turn: false, shoot: false },
+						{ turn: false, shoot: false },
+						{ turn: false, shoot: false },
+						{ turn: false, shoot: false },
+					],
+				}
+			} else {
+			}
+		}
+		if (playersNum(players) === 0) {
+			clearInterval(bulletIntervals)
+			clearInterval(gameInterval)
+			Composite.clear(engine.world, true)
+			Engine.clear(engine)
+			ALL_GAME[roomId] = null
 			return
 		}
 	}, frameRate)
 }
 
-export const game = (/** @type {number} */ roomId, /** @type {any} */ players, /** @type {any} */ userDatas) => {
-	// ALL_GAME[roomId] = { singleGame, players, userDatas }
-	// ALL_GAME[roomId].singleGame(ALL_GAME[roomId].players, ALL_GAME[roomId].userDatas)
+export const game = (/** @type {number} */ roomId, /** @type {any} */ players, /** @type {any} */ userDatas, /** @type {{ rounds: string | number; }} */ room) => {
+	const ROUND = [3, 5, 7]
 	ALL_GAME[roomId] = {
-		game: singleGame(roomId, players, userDatas),
+		game: singleGame(roomId, players, userDatas, ROUND[room.rounds]),
 		ships: [
-			{ turn: false, shoot: false, bullets: 3 },
-			{ turn: false, shoot: false, bullets: 3 },
-			{ turn: false, shoot: false, bullets: 3 },
-			{ turn: false, shoot: false, bullets: 3 },
+			{ turn: false, shoot: false },
+			{ turn: false, shoot: false },
+			{ turn: false, shoot: false },
+			{ turn: false, shoot: false },
 		],
 	}
 }
@@ -158,15 +209,22 @@ export const handleKey = (/** @type {number} */ roomId, /** @type {number} */ in
 	}
 }
 
-const checkCollision = (/** @type {Composite} */ world, /** @type {Body[]} */ sprites, /** @type {Composite} */ bodyA, /** @type {Composite} */ bodyB) => {
+const checkCollision = (
+	/** @type {Composite} */ world,
+	/** @type {Body[]} */ sprites,
+	/** @type {Composite} */ bodyA,
+	/** @type {Composite} */ bodyB,
+	/** @type {number[]} */ deadId
+) => {
 	// console.log(bodyA.label, bodyB.label)
 	if (bodyB.label === 'bullets') [bodyA, bodyB] = [bodyB, bodyA]
 	if (bodyA.label === 'bullets') {
-		Composite.remove(world, bodyA)
-		sprites[bodyA.label].splice(sprites[bodyA.label].indexOf(bodyA), 1)
-		if (bodyB.label === 'Rectangle Body') return
-		Composite.remove(world, bodyB)
 		// @ts-ignore
-		bodyB.plugin.self.destroy(world, sprites[bodyB.label])
+		bodyA.plugin.self.destroy(world, sprites[bodyA.label], deadId)
+		Composite.remove(world, bodyA)
+		if (bodyB.label === 'Rectangle Body') return
+		// @ts-ignore
+		bodyB.plugin.self.destroy(world, sprites[bodyB.label], deadId)
+		Composite.remove(world, bodyB)
 	}
 }

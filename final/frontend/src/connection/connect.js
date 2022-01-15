@@ -151,7 +151,11 @@ const useConnection = () => {
 	}
 
 	const sendData = data => {
-		client.send(JSON.stringify(data))
+		try {
+			client.send(JSON.stringify(data))
+		} catch (error) {
+			showMessage('WebSocket is in CLOSING or CLOSED state.', 'error', 10000)
+		}
 	}
 
 	return {

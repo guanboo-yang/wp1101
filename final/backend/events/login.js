@@ -9,9 +9,9 @@ const usualLogin = async (connection, { password, email }) => {
 		return { success: false }
 	} else {
 		let correctPwd = await bcrypt.compare(password, user.password)
-		if (correctPwd){
+		if (correctPwd) {
 			sendData(['loginSuccess', user], connection)
-		}else{
+		} else {
 			sendData(['loginFail', null], connection)
 			return { success: false }
 		}

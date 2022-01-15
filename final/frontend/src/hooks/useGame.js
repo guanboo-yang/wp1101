@@ -9,6 +9,7 @@ const GameProvider = ({ children }) => {
 	const [sprites, setSprites] = useState({
 		sprites: [],
 		bounds: [],
+		deadId: [],
 	})
 
 	const updateGame = sprites => {

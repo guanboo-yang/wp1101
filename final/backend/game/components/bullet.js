@@ -15,15 +15,18 @@ class bullet {
 			frictionStatic: 1,
 			restitution: 1,
 			inertia: Infinity,
+			plugin: { self: this },
 		})
 	}
 	/**
 	 * @param {Composite} world
 	 * @param {import("matter-js").Body[]} arr
+	 * @param {number[]} deadId
 	 */
-	destroy(world, arr) {
+	destroy(world, arr, deadId) {
 		Composite.remove(world, this.body)
 		arr.splice(arr.indexOf(this.body), 1)
+		deadId.push(this.body.id)
 	}
 }
 

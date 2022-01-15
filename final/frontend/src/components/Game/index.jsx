@@ -26,7 +26,11 @@ const Game = () => {
 		if (e.key === ' ') {
 			gameEvent({ roomId: room.roomId, evt: 'space', name: profile.name })
 		}
-		// if (e.key === 's') console.log(sprites.ships) // debug
+		if (e.key === 'd') {
+			// debug
+			// console.log(state.objects)
+			// console.log(sprites.deadId)
+		}
 	})
 	useEventListener('keyup', e => {
 		if (e.key === 'Enter') {
@@ -42,7 +46,7 @@ const Game = () => {
 	const [camera, setCamera] = useState(camera_o)
 
 	const changeCamera = ships => {
-		setCamera(camera => setCameraOn(camera, ships, 400))
+		setCamera(camera => setCameraOn(camera, ships, 500))
 	}
 
 	useEffect(() => {
@@ -66,13 +70,13 @@ const Game = () => {
 
 		if (sprites.bounds) {
 			const [w, h] = sprites.bounds
-			draw.rect(ctx, '#00e9d8', '#048c85', { w: w, h: 6 }, { x: w / 2, y: 0 }, camera)
-			draw.rect(ctx, '#00e9d8', '#048c85', { w: 6, h: h }, { x: 0, y: h / 2 }, camera)
-			draw.rect(ctx, '#00e9d8', '#048c85', { w: w, h: 6 }, { x: w / 2, y: h }, camera)
-			draw.rect(ctx, '#00e9d8', '#048c85', { w: 6, h: h }, { x: w, y: h / 2 }, camera)
+			draw.rect(ctx, '#00e9d8', '#048c85', { w: w, h: 8 }, { x: w / 2, y: 0 }, camera)
+			draw.rect(ctx, '#00e9d8', '#048c85', { w: 8, h: h }, { x: 0, y: h / 2 }, camera)
+			draw.rect(ctx, '#00e9d8', '#048c85', { w: w, h: 8 }, { x: w / 2, y: h }, camera)
+			draw.rect(ctx, '#00e9d8', '#048c85', { w: 8, h: h }, { x: w, y: h / 2 }, camera)
 		}
 
-		if (sprites.sprites.length > 0) {
+		if (sprites.sprites?.length > 0) {
 			sprites.sprites.forEach(sprite => {
 				if (!sprite) return
 				if (state.objects[sprite.id]) {
@@ -92,6 +96,13 @@ const Game = () => {
 				}
 			})
 		}
+
+		if (sprites.deadId?.length > 0) {
+			sprites.deadId.forEach(id => {
+				delete state.objects[id]
+			})
+		}
+
 		// don't rerender on camera change
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [sprites])

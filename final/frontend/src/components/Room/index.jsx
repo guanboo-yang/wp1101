@@ -7,27 +7,29 @@ import { useEffect, useState } from 'react'
 import SettingButton from '../SettingButton'
 import Message from './Message'
 import { useConnection } from '../../connection/connect'
+import { useSnackbar } from 'hooks/useSnackbar'
 import { Dialog, DialogTitle, DialogActions } from '@mui/material'
 
 const Room = ({ setStep }) => {
 	const { profile, preGameState, login, setRoom, friends, room, exchangeRequire, setExchangeRequire } = useUser()
-	const [ message, setMessage ] = useState('')
+	const [message, setMessage] = useState('')
 	const { gameMode } = preGameState
 	const { leaveRoom, swapPosition, invitePlayer, exchangePosition, gameStart, sendMessage } = useConnection()
 	const [openDialog, setOpenDialog] = useState(false)
+	const { showMessage } = useSnackbar()
 
 	// const setPlayers = players => setPreGameState(prev => ({ ...prev, players }))
 	// TODO: get friends from server
 	// Problem, google photo
-	useEffect(()=> {
-		console.log(room);
+	useEffect(() => {
+		// console.log(room)
 	}, [room])
 	const playersNum = () => room.players.filter(player => player).length
 
-	const handleMessage = (e) => {
-		if (e.key === 'Enter' && message){
+	const handleMessage = e => {
+		if (e.key === 'Enter' && message) {
 			setMessage('')
-			sendMessage({message, send: profile.name, roomId: room.roomId, players: room.players})
+			sendMessage({ message, send: profile.name, roomId: room.roomId, players: room.players })
 		}
 	}
 
@@ -38,7 +40,8 @@ const Room = ({ setStep }) => {
 			room.players,
 			playersNum()
 		)
-		setRoom({...room, roomId: null, message: []})
+		showMessage('Goodbye!')
+		setRoom({ ...room, roomId: null, message: [] })
 		setOpenDialog(false)
 		setStep(-1)
 		login()
@@ -52,7 +55,7 @@ const Room = ({ setStep }) => {
 				step,
 				room.players
 			)
-		}
+	}
 
 	const acceptExchange = () => {
 		setExchangeRequire({ ...exchangeRequire, state: false })
@@ -60,10 +63,10 @@ const Room = ({ setStep }) => {
 	}
 
 	const handleAddPlayers = ({ players, name }) => {
-		// TODO: [CHANGE] if player id is not in players:
 		if (!players.includes(name)) {
 			if (playersNum === 4) {
-				console.log('The Room has been full')
+				// console.log('The room is full')
+				showMessage('The room is full', 'error')
 			} else {
 				const index = players.indexOf(null)
 				invitePlayer(room.roomId, index, name, profile.name, players)
@@ -88,7 +91,7 @@ const Room = ({ setStep }) => {
 								return <Message name={name} body={body} key={i} />
 							})}
 						</List>
-						<Input placeholder='Type a message...' value={message} type='search' onKeyDown={handleMessage} onChange={(e) => setMessage(e.target.value)}/>
+						<Input placeholder='Type a message...' value={message} type='search' onKeyDown={handleMessage} onChange={e => setMessage(e.target.value)} />
 						{/* <Input:Search></Input:Search> */}
 					</Box>
 				</Grid>

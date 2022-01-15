@@ -4,11 +4,12 @@ import { game, handleKey } from '../game'
 
 const gameStart = async (userDatas, { roomId, players }) => {
 	console.log(roomId)
-	// await Room.findOne({roomId})
+	const room = await Room.findOne({ roomId })
+	// console.log(room)
 
 	roomBroadcast(players, ['gameStart', players], userDatas)
 
-	game(roomId, players, userDatas)
+	game(roomId, players, userDatas, room)
 }
 
 const eventHandler = (userDatas, { roomId, index, evt, name }) => {

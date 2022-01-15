@@ -12,7 +12,7 @@ const Login = () => {
 	const [signup, setSignup] = useState(false)
 	const { createAccount, loginAccount, loginWithGoogle } = useConnection()
 	const [wrongPassword, setWorngPassword] = useState(false)
-	const {clientId} = useUser()
+	const { clientId } = useUser()
 
 	useEffect(() => {
 		const input = document.querySelectorAll('input')
@@ -23,19 +23,19 @@ const Login = () => {
 		setValues(values => ({ ...values, showPassword: false }))
 	}, [signup])
 
-	const handleSignUp = async (e) => {
+	const handleSignUp = async e => {
 		e.preventDefault()
 		if (values.password !== values.confirmPassword) {
 			setWorngPassword(true)
 		} else {
 			setWorngPassword(false)
-			createAccount({email: values.email, name: values.name, password: await bcrypt.hash(values.password, saltRound)})
+			createAccount({ email: values.email, name: values.name, password: await bcrypt.hash(values.password, saltRound) })
 		}
 	}
 
-	const handleSubmit = async (e) => {
+	const handleSubmit = async e => {
 		e.preventDefault()
-		loginAccount({email: values.email, password: values.password})
+		loginAccount({ email: values.email, password: values.password })
 	}
 
 	const style = {
@@ -125,8 +125,7 @@ const Login = () => {
 						<Button type='submit' variant='contained' color='secondary' onClick={handleSubmit} fullWidth sx={{ my: 1 }}>
 							Login
 						</Button>
-						{
-							clientId?
+						{clientId ? (
 							<GoogleLogin //
 								clientId={clientId}
 								render={renderProps => (
@@ -137,8 +136,10 @@ const Login = () => {
 								onSuccess={onGoogleSuccess}
 								onFailure={onGoogleFailure}
 								cookiePolicy='single_host_origin'
-							/>:"Sorry~ Please Waiting"
-						}
+							/>
+						) : (
+							'Sorry~ Please Waiting'
+						)}
 					</>
 				)}
 			</form>

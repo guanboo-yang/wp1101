@@ -10,8 +10,8 @@ const gameStart = async(userDatas, {roomId, players}) => {
     roomBroadcast(players, ['gameStart', players], userDatas)
 }
 
-const eventHandler = (userDatas, {roomId, evt, name}) => {
-    console.log(name, evt);
+const eventHandler = (userDatas, {roomId, index, evt, name}) => {
+    console.log(name, evt, index);
 }
 
 export { gameStart, eventHandler }

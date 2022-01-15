@@ -45,6 +45,7 @@ const Room = ({ setStep }) => {
 	}
 
 	const handleStep = step => () => {
+		if (room.players.findIndex(player => player === profile.name) )
 		swapPosition(
 			room.roomId,
 			room.players.findIndex(player => player === profile.name),

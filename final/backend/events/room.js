@@ -3,7 +3,7 @@ import { sendData, roomBroadcast } from '../util/wssConnect'
 let gameId = 23754
 
 const createNewRoom = async (connection, { gameMode, rounds, level, name }) => {
-	var creator = await Player.findOne({ name })
+	const creator = await Player.findOneAndUpdate({ name },  {roomId: gameId})
 	gameId += 1
 	let newRoom = new Room(
 		{
@@ -15,13 +15,12 @@ const createNewRoom = async (connection, { gameMode, rounds, level, name }) => {
 		},
 		{ autoIndex: false }
 	)
-	await Player.findOneAndUpdate({name}, {roomId: gameId})
 	await newRoom.save()
 	sendData(['roomCreated', { roomId: gameId }], connection)
 }
 
-const leaveRoom = async (userDatas, datas) => {
-	var { roomId, index, players, playersNum } = datas
+const leaveRoom = async (userDatas, { roomId, index, players, playersNum, name }) => {
+	await Player.findOneAndUpdate({name}, {roomId: null})
 	if (playersNum === 1) {
 		await Room.deleteOne({ roomId })
 	} else {
@@ -59,11 +58,10 @@ const swapRequest = async (userDatas, datas) => {
 	}
 }
 
-const acceptInvitation = async (userDatas, datas) => {
-	var { roomId, index, name, players } = datas
+const acceptInvitation = async (userDatas, { roomId, index, name, players }) => {
 	var room = await Room.findOne({ roomId })
 	var users = room.players
-	var user = await Player.findOne({ name })
+	var user = await Player.findOneAndUpdate({ name }, { roomId })
 	players[index] = name
 	users[index] = user._id
 	await Room.findOneAndUpdate({ roomId }, { players: users })

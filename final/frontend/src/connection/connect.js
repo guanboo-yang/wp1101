@@ -77,6 +77,14 @@ const useConnection = () => {
 	}
 
 	client.onclose = () => {
+		if (room.roomId){
+			leaveRoom(
+				room.roomId,
+				room.players.findIndex(player => player === profile.name),
+				room.players,
+				room.players.filter(player => player).length
+			)
+		}
 		showMessage('Sorry, you are disconnected, please reload!', 'error', 10000)
 	}
 	// Login Part
@@ -112,7 +120,7 @@ const useConnection = () => {
 	}
 
 	const leaveRoom = (roomId, index, players, playersNum) => {
-		sendData(['leaveRoom', { roomId, index, players, playersNum }])
+		sendData(['leaveRoom', { roomId, index, players, playersNum, name: profile.name }])
 	}
 
 	const invitePlayer = (roomId, index, name, inviter, players) => {
@@ -137,7 +145,7 @@ const useConnection = () => {
 	}
 
 	const gameEvent = ({ roomId, evt, name }) => {
-		sendData(['gameEvent', { roomId, evt, name }])
+		sendData(['gameEvent', { roomId, evt, name, index: room.players.findIndex(player => player === profile.name) }])
 	}
 
 	const sendData = data => {

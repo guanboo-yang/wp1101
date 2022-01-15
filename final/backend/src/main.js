@@ -1,7 +1,7 @@
 import { connect, connection } from 'mongoose'
 import dotenv from 'dotenv-defaults'
 import { Player, Room } from '../models/schemas'
-import { sendData, getFriendsList } from '../util/wssConnect'
+import { sendData, getFriendsList, updateFriends } from '../util/wssConnect'
 import { usualLogin, googleLogin, createAccount } from '../events/login'
 import { gameStart, eventHandler } from '../events/game'
 import { createNewRoom, leaveRoom, swapRequest, acceptInvitation, acceptExchange, invite, newMessage } from '../events/room'
@@ -48,38 +48,47 @@ db.once('open', async () => {
             )
             return
         }
-
+        
         let connection = request.accept('echo-protocol', request.origin)
         sendData(['getClientId', process.env.ClientId], connection)
         var user = request.resourceURL.query.name
-        userDatas[user] = { online: true, connection: connection }
+        if (user){
+            userDatas[user] = { online: true, connection: connection }
+            updateFriends(userDatas)
+        }
 
         connection.on('message', async (message) => {
             const [type, datas] = JSON.parse(message.utf8Data)
             switch (type) {
                 case 'login':
                     var res = await usualLogin(connection, datas)
-                    if (res.success)
+                    if (res.success){
                         userDatas[res.name] = {
                             online: true,
                             connection: connection
                         }
+                        updateFriends(userDatas)
+                    }
                     break
                 case 'googleLogin':
                     var res = await googleLogin(connection, datas)
-                    if (res.success)
+                    if (res.success){
                         userDatas[res.name] = {
                             online: true,
                             connection: connection
                         }
+                        updateFriends(userDatas)
+                    }
                     break
                 case 'create':
                     var res = await createAccount(connection, datas)
-                    if (res.success)
+                    if (res.success){
                         userDatas[res.name] = {
                             online: true,
                             connection: connection
                         }
+                        updateFriends(userDatas)
+                    }
                     break
                 case 'requireFriends':
                     let returnValue = getFriendsList(userDatas)
@@ -89,6 +98,7 @@ db.once('open', async () => {
                     createNewRoom(connection, datas)
                     break
                 case 'leaveRoom':
+                    console.log(datas);
                     leaveRoom(userDatas, datas)
                     break
                 case 'invitePlayer':
@@ -108,6 +118,7 @@ db.once('open', async () => {
                     break;
                 case 'gameEvent':
                     await eventHandler(userDatas, datas)
+                    break;
                 case 'newMessage':
                     await newMessage(userDatas, datas)
                     break;
@@ -116,7 +127,10 @@ db.once('open', async () => {
             }
         })
         connection.on('close', () => {
-            userDatas[user] = { ...user, online: false }
+            if (user){
+                userDatas[user] = { ...user, online: false }
+                updateFriends(userDatas)
+            }
             console.log('Disconnected')
         })
     })

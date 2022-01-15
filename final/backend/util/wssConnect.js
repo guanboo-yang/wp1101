@@ -19,4 +19,12 @@ const getFriendsList = userDatas => {
 	return friends
 }
 
-export { sendData, roomBroadcast, getFriendsList }
+const updateFriends = (userDatas) => {
+	let friends = getFriendsList(userDatas)
+	for (const [_, value] of Object.entries(userDatas)) {
+		if (value.connection)
+		sendData(['friendLists', friends], value.connection)
+	}
+}
+
+export { sendData, roomBroadcast, getFriendsList, updateFriends }

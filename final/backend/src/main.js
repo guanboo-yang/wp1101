@@ -128,7 +128,7 @@ db.once('open', async () => {
         })
         connection.on('close', () => {
             if (user){
-                userDatas[user] = { ...user, online: false }
+                userDatas[user] = { ...user, online: false, connection: null }
                 updateFriends(userDatas)
             }
             console.log('Disconnected')

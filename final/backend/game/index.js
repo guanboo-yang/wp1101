@@ -29,7 +29,7 @@ const singleGame = (/** @type {string | number} */ roomId, players, /** @type {{
 	const sprites = {
 		ships: players.map((/** @type {any} */ p, /** @type {any} */ i) => {
 			if (!p) return null
-			return ship()
+			return new ship().body
 		}),
 		bullets: [],
 		bounds: addBounds(...bounds, 100),
@@ -46,6 +46,10 @@ const singleGame = (/** @type {string | number} */ roomId, players, /** @type {{
 	Events.on(engine, 'collisionStart', ({ pairs }) => {
 		// @ts-ignore
 		pairs.forEach(({ bodyA, bodyB }) => checkCollision(engine.world, sprites, bodyA, bodyB))
+	})
+
+	const bulletIntervals = setInterval(() => {
+		ALL_GAME[roomId].ships.forEach((/** @type {any} */ s) => {})
 	})
 
 	const gameInterval = setInterval(() => {
@@ -90,7 +94,7 @@ const singleGame = (/** @type {string | number} */ roomId, players, /** @type {{
 			if (!ship) return
 			const { x, y } = ship.position
 			let angle = ship.angle
-			if (ALL_GAME[roomId].keys[index].turn) {
+			if (ALL_GAME[roomId].ships[index].turn) {
 				angle += 0.1
 			}
 			const force = {
@@ -99,9 +103,9 @@ const singleGame = (/** @type {string | number} */ roomId, players, /** @type {{
 			}
 			Body.applyForce(ship, { x, y }, force)
 			Body.setAngle(ship, angle)
-			if (ALL_GAME[roomId].keys[index].shoot) {
-				ALL_GAME[roomId].keys[index].shoot = false
-				const bull = bullet(x + Math.cos(angle) * 30, y + Math.sin(angle) * 30)
+			if (ALL_GAME[roomId].ships[index].shoot) {
+				ALL_GAME[roomId].ships[index].shoot = false
+				const bull = new bullet(x + Math.cos(angle) * 30, y + Math.sin(angle) * 30).body
 				sprites.bullets.push(bull)
 				Body.applyForce(ship, { x, y }, { x: -Math.cos(angle) * FORCE * 2, y: -Math.sin(angle) * FORCE * 2 })
 				Body.setAngle(bull, angle)
@@ -129,11 +133,11 @@ export const game = (/** @type {number} */ roomId, /** @type {any} */ players, /
 	// ALL_GAME[roomId].singleGame(ALL_GAME[roomId].players, ALL_GAME[roomId].userDatas)
 	ALL_GAME[roomId] = {
 		game: singleGame(roomId, players, userDatas),
-		keys: [
-			{ turn: false, shoot: false },
-			{ turn: false, shoot: false },
-			{ turn: false, shoot: false },
-			{ turn: false, shoot: false },
+		ships: [
+			{ turn: false, shoot: false, bullets: 3 },
+			{ turn: false, shoot: false, bullets: 3 },
+			{ turn: false, shoot: false, bullets: 3 },
+			{ turn: false, shoot: false, bullets: 3 },
 		],
 	}
 }
@@ -141,13 +145,13 @@ export const game = (/** @type {number} */ roomId, /** @type {any} */ players, /
 export const handleKey = (/** @type {number} */ roomId, /** @type {number} */ index, /** @type {string} */ key) => {
 	switch (key) {
 		case 'enter':
-			ALL_GAME[roomId].keys[index].turn = true
+			ALL_GAME[roomId].ships[index].turn = true
 			break
 		case 'leave':
-			ALL_GAME[roomId].keys[index].turn = false
+			ALL_GAME[roomId].ships[index].turn = false
 			break
 		case 'space':
-			ALL_GAME[roomId].keys[index].shoot = true
+			ALL_GAME[roomId].ships[index].shoot = true
 			break
 		default:
 			break
@@ -162,10 +166,7 @@ const checkCollision = (/** @type {Composite} */ world, /** @type {Body[]} */ sp
 		sprites[bodyA.label].splice(sprites[bodyA.label].indexOf(bodyA), 1)
 		if (bodyB.label === 'Rectangle Body') return
 		Composite.remove(world, bodyB)
-		if (bodyB.label === 'ships') {
-			sprites[bodyB.label].splice(sprites[bodyB.label].indexOf(bodyB), 1, null)
-		} else {
-			sprites[bodyB.label].splice(sprites[bodyB.label].indexOf(bodyB), 1)
-		}
+		// @ts-ignore
+		bodyB.plugin.self.destroy(world, sprites[bodyB.label])
 	}
 }

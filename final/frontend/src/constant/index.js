@@ -11,9 +11,9 @@ export const MODE = [
 export const LEVEL = [
 	//
 	{ name: 'RANDOM' },
-	{ name: 'BEGINNER' },
-	{ name: 'INTERMEDIATE' },
-	{ name: 'ADVANCED' },
+	{ name: 'MAZE' },
+	{ name: 'CACHE' },
+	{ name: 'MOON' },
 ]
 
 export const CANVAS = {

@@ -11,11 +11,15 @@
 
 ### Report
 
-[110-1] Web Programming Final
+- [110-1] Web Programming Final
+
 (Group 22) Astro party
-[組員]
+
+- [組員]
+
 B09703085 吳柏賢
 B09902064 楊冠柏
+
 [服務簡介]
 創造一個多人的連線遊戲
 [介紹影片連結]

@@ -145,7 +145,7 @@ const singleGame = (
 
 	// const restartGameInterval = setInterval(() => {})
 
-	const gameInterval = setInterval(async() => {
+	const gameInterval = setInterval(async () => {
 		sprites.ships.forEach((ship, i) => {
 			if (!ship) return
 			if (ship.plugin.self.isFire > -1) ship.plugin.self.isFire--
@@ -282,7 +282,7 @@ const checkCollision = (
 			const parent = bodyA.plugin.self.pid
 			// use parent id to find the ship index
 			// @ts-ignore
-			const index = sprites.ships.findIndex((/** @type {Body} */ ship) => ship.id === parent)
+			const index = sprites.ships.findIndex((/** @type {Body} */ ship) => ship?.id === parent)
 			kills[index]++
 		}
 		// @ts-ignore

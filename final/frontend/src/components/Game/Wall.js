@@ -1,6 +1,7 @@
 import wall from 'assets/wall/1.png'
 import wall2 from 'assets/wall/2.png'
 import { Sprite } from './Sprite'
+import { explode } from './utils'
 
 export class Wall extends Sprite {
 	type = 'weapon'
@@ -19,5 +20,7 @@ export class Wall extends Sprite {
 		draw.withoutAngle(ctx, this.img, this.rect, this.pos, this.scale, camera)
 	}
 
-	destroy() {}
+	destroy() {
+		explode(this.pos.x, this.pos.y, 'orange', 30)
+	}
 }

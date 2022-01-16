@@ -101,7 +101,7 @@ const useConnection = () => {
 				setReady(payLoad)
 				break
 			case 'gameOver':
-				if (payLoad && payLoad.length == 4) {
+				if (payLoad && payLoad.length === 4) {
 					showMessage(`P1: ${payLoad[0]} P2: ${payLoad[1]} P3: ${payLoad[2]} P4: ${payLoad[3]}`, 'success', 10000)
 				}
 				setStep(1)

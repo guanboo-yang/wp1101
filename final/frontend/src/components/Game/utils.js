@@ -120,7 +120,7 @@ export const particles = []
 
 export const explode = (x, y, color = '#fff', num = 10) => {
 	for (let i = 0; i < num; i++) {
-		console.log(color)
+		// console.log(color)
 		let dx = (Math.random() - 0.5) * 10
 		let dy = (Math.random() - 0.5) * 10
 		let radius = 2

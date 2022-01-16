@@ -1,7 +1,7 @@
 import './App.css'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { Appbar, NotFound } from './components'
-import { Playground, Login, ScoreBoard } from './containers'
+import { Playground, Login, ScoreBoard, About } from './containers'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { Toolbar, Box, Snackbar, Alert } from '@mui/material'
 import { useUser } from './hooks/useUser'
@@ -18,6 +18,7 @@ const App = () => {
 		{ name: 'Playground', path: '/', element: <Playground />, disable: false },
 		// { name: 'Chat', path: '/chat', element: <Chat />, disable: room.roomId ? true : false },
 		{ name: 'Scoreboard', path: '/scoreboard', element: <ScoreBoard />, disable: room.roomId ? true : false },
+		{ name: 'About', path: '/about', element: <About />, disable: room.roomId ? true : false },
 	]
 	const { darkMode } = useUser()
 	const { snackbarOption, handleCloseSnackbar } = useSnackbar()

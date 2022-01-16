@@ -29,7 +29,8 @@ const leaveRoom = async (userDatas, { roomId, index, players, playersNum, name }
 		users[index] = null
 		players[index] = null
 		Room.findOneAndUpdate({ roomId }, { players: users })
-		roomBroadcast(players, ['updatedPosition', players], userDatas)
+		const newHost = players.find(player => player)
+		roomBroadcast(players, ['updatedPosition', {players, newHost}], userDatas)
 	}
 }
 
@@ -54,7 +55,7 @@ const swapRequest = async (userDatas, datas) => {
 		players[to] = players[from]
 		players[from] = null
 		await Room.findOneAndUpdate({ roomId }, { players: users })
-		roomBroadcast(players, ['updatedPosition', players], userDatas)
+		roomBroadcast(players, ['updatedPosition', {players}], userDatas)
 	}
 }
 
@@ -65,7 +66,7 @@ const acceptInvitation = async (userDatas, { roomId, index, name, players }) => 
 	players[index] = name
 	users[index] = user._id
 	await Room.findOneAndUpdate({ roomId }, { players: users })
-	roomBroadcast(players, ['updatedPosition', players], userDatas)
+	roomBroadcast(players, ['updatedPosition', {players}], userDatas)
 }
 
 const acceptExchange = async (userDatas, datas) => {
@@ -80,7 +81,7 @@ const acceptExchange = async (userDatas, datas) => {
 	players[from] = players[to]
 	players[to] = temp
 	await Room.findOneAndUpdate({ roomId }, { players: users })
-	roomBroadcast(players, ['updatedPosition', players], userDatas)
+	roomBroadcast(players, ['updatedPosition', {players}], userDatas)
 }
 
 const newMessage = async (userDatas, {roomId, players, message, send}) => {

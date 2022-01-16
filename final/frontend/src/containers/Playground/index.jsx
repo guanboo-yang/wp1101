@@ -46,7 +46,7 @@ const Playground = () => {
 				}[step]
 			}
 			<Dialog
-				open={invitation.invite}
+				open={invitation.invite && !room.gameStart}
 				// onClose={() => setOpenDialog(false)}
 				PaperProps={{ style: { backgroundColor: theme => theme.palette.primary.main, border: '4px solid #fff' } }}>
 				<DialogTitle>{`${invitation.inviter} invites you to the Room ${invitation.roomId}`}</DialogTitle>

@@ -6,9 +6,10 @@ import { useGame } from '../hooks/useGame'
 let userProfile = JSON.parse(localStorage.getItem('profile'))
 
 const client = new WebSocket(userProfile ? `ws://localhost:5000?name=${userProfile.name}` : `ws://localhost:5000`, 'echo-protocol')
+// const client = new WebSocket(userProfile ? `ws://172.20.10.9:5000?name=${userProfile.name}` : `ws://172.20.10.9:5000`, 'echo-protocol')
 
 const useConnection = () => {
-	const { login, setFriends, setRoom, room, profile, setInvitation, setExchangeRequire, setStep, setClientId } = useUser()
+	const { login, setFriends, setRoom, room, profile, isHost, setInvitation, setExchangeRequire, setStep, setClientId } = useUser()
 	const { showMessage } = useSnackbar()
 	const { updateGame } = useGame()
 	const navigate = useNavigate()
@@ -53,15 +54,18 @@ const useConnection = () => {
 				setRoom({ ...room, roomId: payLoad.roomId, isHost: true })
 				break
 			case 'updatedPosition':
-				// setPlayers(payLoad)
-				console.log(payLoad)
-				setRoom({ ...room, players: payLoad })
+				if (payLoad.newHost){
+					setRoom({ ...room, players: payLoad.players, isHost: payLoad.newHost === profile.name})
+				}else{
+					setRoom({ ...room, players: payLoad.players})
+				}
 				break
 			case 'invitation':
 				const { roomId, index, inviter, players } = payLoad
 				setInvitation({ invite: true, roomId, index, inviter, players })
 				break
 			case 'gameStart':
+				setRoom({...room, gameStart: true})
 				setStep(2)
 				break
 			case 'newMessage':

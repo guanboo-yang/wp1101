@@ -112,6 +112,7 @@ const Game = () => {
 								break
 							case 'wall':
 								state.objects[sprite.id] = new Wall(sprite.pos, sprite.breakable)
+								break
 							default:
 								break
 						}

@@ -1,7 +1,7 @@
 import './App.css'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { Appbar, NotFound } from './components'
-import { Chat, Playground, Login, ScoreBoard } from './containers'
+import { Playground, Login, ScoreBoard } from './containers'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { Toolbar, Box, Snackbar, Alert } from '@mui/material'
 import { useUser } from './hooks/useUser'

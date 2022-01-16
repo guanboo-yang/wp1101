@@ -8,7 +8,7 @@ let userProfile = JSON.parse(localStorage.getItem('profile'))
 const client = new WebSocket(userProfile ? `${process.env.REACT_APP_WEBSOCKET_URL}?name=${userProfile.name}` : process.env.REACT_APP_WEBSOCKET_URL, 'echo-protocol')
 
 const useConnection = () => {
-	const { login, setFriends, setRoom, room, profile, isHost, setInvitation, setExchangeRequire, setStep, setClientId, setJoinRequire } = useUser()
+	const { login, setFriends, setRoom, room, profile, setInvitation, setExchangeRequire, setStep, setClientId, setJoinRequire } = useUser()
 	const { showMessage } = useSnackbar()
 	const { updateGame, setReady } = useGame()
 	const navigate = useNavigate()
@@ -84,12 +84,15 @@ const useConnection = () => {
 				break
 			case 'fullRoom':
 				showMessage('Sorry~ The room is full....', 'error', 2000)
+				break;
 			case 'wannaJoin':
 				setJoinRequire({ requireName: payLoad.name, state: true })
 				break
 			case 'disconnect':
+				console.log(room.players);
+				console.log(payLoad);
 				let newList = room.players.map(name => {
-					return name === payLoad.name ? null : name
+					return name === payLoad.user ? null : name
 				})
 				console.log(newList)
 				setRoom({ ...room, players: newList })

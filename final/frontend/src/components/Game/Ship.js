@@ -1,6 +1,6 @@
 import { ship, fire } from 'assets/ship'
 import { Sprite } from './Sprite'
-import { Bullet, Missile, Mine } from './Weapons'
+// import { Bullet, Missile, Mine } from './Weapons'
 import { colors } from 'constant'
 
 const getHeadPos = (pos, angle, size) => {

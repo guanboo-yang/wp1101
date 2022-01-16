@@ -75,8 +75,7 @@ const Room = ({ setStep }) => {
 	}
 
 	const notReadyToGo = () => {
-		return false
-		// return (gameMode === 2 && playersNum() < 3) || playersNum() < 2
+		return (gameMode === 2 && playersNum() < 3) || playersNum() < 2
 	}
 
 	return (

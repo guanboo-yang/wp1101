@@ -1,4 +1,5 @@
 import { CANVAS } from 'constant'
+import { Particle } from './Particle'
 
 const drawWithAngle = (ctx, img = new Image(), rect = { x: 0, y: 0, w: 0, h: 0, s: 0 }, pos = { x: 0, y: 0 }, angle = 0, scale = 0) => {
 	ctx.translate(pos.x, pos.y)
@@ -42,9 +43,9 @@ export const draw = {
 		const camerascale = CANVAS.OUT.WIDTH / camera.w
 		drawWithAngle(ctx, img, rect, { x: (pos.x - (camera.x - camera.w / 2)) * camerascale, y: (pos.y - (camera.y - camera.h / 2)) * camerascale }, angle, camerascale * scale)
 	},
-	text: (ctx, text, color = '#000', pos = { x: 0, y: 0 }, camera = { x: 0, y: 0, w: CANVAS.IN.WIDTH, h: CANVAS.IN.HEIGHT }) => {
+	text: (ctx, text, color = '#000', pos = { x: 0, y: 0 }, camera = { x: 0, y: 0, w: CANVAS.IN.WIDTH, h: CANVAS.IN.HEIGHT }, fontSize = 40) => {
 		const camerascale = CANVAS.OUT.WIDTH / camera.w
-		ctx.font = `${40 * camerascale}px Bungee`
+		ctx.font = `${fontSize * camerascale}px Bungee`
 		ctx.lineWidth = 3
 		ctx.lineWidth = 2 * camerascale
 		ctx.fillStyle = color
@@ -113,4 +114,16 @@ export const setCameraOn = (camera, sprites, padding = 0) => {
 	}
 	// console.log(ret)
 	return ret
+}
+
+export const particles = []
+
+export const explode = (x, y, color = '#fff') => {
+	for (let i = 0; i < 100; i++) {
+		let dx = (Math.random() - 0.5) * (Math.random() * 6)
+		let dy = (Math.random() - 0.5) * (Math.random() * 6)
+		let radius = Math.random() * 3
+		let particle = new Particle({ x, y }, radius, dx, dy)
+		particles.push(particle)
+	}
 }

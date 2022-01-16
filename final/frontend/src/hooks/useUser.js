@@ -1,5 +1,6 @@
 import { createContext, useContext, useState } from 'react'
 import { useDarkMode, useStorage } from '.'
+
 const UserContext = createContext({
 	profile: null,
 	darkMode: false,
@@ -30,7 +31,7 @@ const UserProvider = ({ children }) => {
 	const [clientId, setClientId] = useState('')
 	const [friends, setFriends] = useState([])
 	const [invitation, setInvitation] = useState({ invite: false, roomId: null, position: null, inviter: null, players: null })
-	const [joinRequire, setJoinRequire] = useState({requireNmae: null, state: false})
+	const [joinRequire, setJoinRequire] = useState({ requireNmae: null, state: false })
 	const [exchangeRequire, setExchangeRequire] = useState({ from: null, to: null, name: null, state: false })
 	const [room, setRoom] = useState({ roomId: null, isHost: true, message: [], players: [null, null, null, null], gameStart: false })
 	const [step, setStep] = useState(0)

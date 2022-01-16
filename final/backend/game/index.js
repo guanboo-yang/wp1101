@@ -2,22 +2,23 @@ import { Engine, Events, Bodies, Composite, Body } from 'matter-js'
 import { roomBroadcast } from '../util/wssConnect'
 import ship from './components/ship'
 import bullet from './components/bullet'
+import wall from './components/wall'
+import { positions } from './positions'
 
 const frameRate = 1000 / 30
 const FORCE = 0.0007
 const bullet_speed = 30
-const canvas = { width: 1500, height: 1000 }
 
 const addBounds = (/** @type {number} */ w, /** @type {number} */ h, /** @type {number} */ b) => {
 	return [
-		Bodies.rectangle(w / 2, -b / 2, w + 2 * b, b, { isStatic: true }),
-		Bodies.rectangle(w / 2, h + b / 2, w + 2 * b, b, { isStatic: true }),
-		Bodies.rectangle(-b / 2, h / 2, b, h + 2 * b, { isStatic: true }),
-		Bodies.rectangle(w + b / 2, h / 2, b, h + 2 * b, { isStatic: true }),
+		Bodies.rectangle(w / 2, -b / 2, w + 2 * b, b, { isStatic: true, label: 'blocks' }),
+		Bodies.rectangle(w / 2, h + b / 2, w + 2 * b, b, { isStatic: true, label: 'blocks' }),
+		Bodies.rectangle(-b / 2, h / 2, b, h + 2 * b, { isStatic: true, label: 'blocks' }),
+		Bodies.rectangle(w + b / 2, h / 2, b, h + 2 * b, { isStatic: true, label: 'blocks' }),
 	]
 }
 
-const playersNum = (/** @type {string[]} */ players) => players.filter((/** @type {any} */ p) => p).length
+const playersNum = players => players.filter((/** @type {any} */ p) => p).length
 
 const toVertices = (/** @type {{ vertices: { x: any; y: any; }[]; }} */ e) => e.vertices.map(({ x, y }) => ({ x, y }))
 
@@ -27,19 +28,27 @@ const singleGame = (
 	/** @type {string | number} */ roomId,
 	/** @type {string[]} */ players,
 	/** @type {{ [x: string]: { online: any; }; }} */ userDatas,
-	/** @type {number} */ rounds
+	/** @type {number} */ rounds,
+	/** @type {number} */ level
 ) => {
-	const bounds = [canvas.width, canvas.height]
+	const gameLevel = level === 0 ? Math.floor(Math.random() * 3) + 1 : level
+	const gamePositions = positions[gameLevel]
+	const bounds = [gamePositions.canvas.width, gamePositions.canvas.height]
+
 	const state = {
 		/** @type {number[]} */ deadId: [],
 	}
 
+	// console.log(gameLevel)
+
 	const sprites = {
 		ships: players.map((/** @type {any} */ p, /** @type {any} */ i) => {
 			if (!p) return null
-			return new ship().body
+			return new ship(gamePositions.ships[i].pos, gamePositions.ships[i].angle).body
 		}),
 		bullets: [],
+		walls: gamePositions.walls.filter((/** @type {any} */ w) => w.b).map((/** @type {any} */ w) => new wall((w.x * 2 + 1) * 40, (w.y * 2 + 1) * 40, w.b).body),
+		blocks: gamePositions.walls.filter((/** @type {any} */ w) => !w.b).map((/** @type {any} */ w) => new wall((w.x * 2 + 1) * 40, (w.y * 2 + 1) * 40, w.b).body),
 		bounds: addBounds(...bounds, 100),
 	}
 
@@ -56,6 +65,77 @@ const singleGame = (
 		pairs.forEach(({ bodyA, bodyB }) => checkCollision(engine.world, sprites, bodyA, bodyB, state.deadId))
 	})
 
+	const sendGameState = () => {
+		roomBroadcast(
+			players,
+			[
+				'gameUpdate',
+				{
+					sprites: [
+						...sprites.ships.map((/** @type {{ id: any; position: { x: any; y: any; }; angle: any; }} */ ship, /** @type {any} */ index) => {
+							if (!ship) return null
+							return {
+								type: 'ship',
+								id: ship.id,
+								color: index,
+								pos: {
+									x: ship.position.x,
+									y: ship.position.y,
+								},
+								angle: ship.angle,
+								// @ts-ignore
+								bullets: ship.plugin.self.bullets,
+								// @ts-ignore
+								isFire: ship.plugin.self.isFire,
+								// @ts-ignore
+								isBlank: ship.plugin.self.isBlank,
+							}
+						}),
+						...sprites.bullets.map(bullet => ({
+							type: 'bullet',
+							pos: {
+								x: bullet.position.x,
+								y: bullet.position.y,
+							},
+							id: bullet.id,
+						})),
+						...sprites.walls.map(wall => ({
+							type: 'wall',
+							pos: {
+								x: wall.position.x,
+								y: wall.position.y,
+							},
+							breakable: wall.plugin.self.breakable,
+							id: wall.id,
+						})),
+						...sprites.blocks.map(block => ({
+							type: 'wall',
+							pos: {
+								x: block.position.x,
+								y: block.position.y,
+							},
+							breakable: block.plugin.self.breakable,
+							id: block.id,
+						})),
+					],
+					bounds: bounds,
+					deadId: state.deadId,
+				},
+			],
+			userDatas
+		)
+	}
+
+	sendGameState()
+
+	let gameStart = false
+
+	roomBroadcast(players, ['gameReady', 'ready'], userDatas)
+	setTimeout(() => {
+		roomBroadcast(players, ['gameReady', 'fight'], userDatas)
+		gameStart = true
+	}, 1500)
+
 	const bulletIntervals = setInterval(() => {
 		sprites.ships.forEach((ship, i) => {
 			if (!ship) return
@@ -63,63 +143,25 @@ const singleGame = (
 		})
 	}, 1500)
 
+	// const restartGameInterval = setInterval(() => {})
+
 	const gameInterval = setInterval(() => {
 		sprites.ships.forEach((ship, i) => {
 			if (!ship) return
 			if (ship.plugin.self.isFire > -1) ship.plugin.self.isFire--
 		})
 		try {
-			roomBroadcast(
-				players,
-				[
-					'gameUpdate',
-					{
-						sprites: [
-							...sprites.ships.map((/** @type {{ id: any; position: { x: any; y: any; }; angle: any; }} */ ship, /** @type {any} */ index) => {
-								if (!ship) return null
-								return {
-									type: 'ship',
-									id: ship.id,
-									color: index,
-									pos: {
-										x: ship.position.x,
-										y: ship.position.y,
-									},
-									angle: ship.angle,
-									// @ts-ignore
-									bullets: ship.plugin.self.bullets,
-									// @ts-ignore
-									isFire: ship.plugin.self.isFire,
-									// @ts-ignore
-									isBlank: ship.plugin.self.isBlank,
-								}
-							}),
-							...sprites.bullets.map(bullet => ({
-								type: 'bullet',
-								pos: {
-									x: bullet.position.x,
-									y: bullet.position.y,
-								},
-								id: bullet.id,
-							})),
-						],
-						bounds: bounds,
-						deadId: state.deadId,
-					},
-				],
-				userDatas
-			)
+			sendGameState()
 			state.deadId.length = 0
 		} catch (e) {
 			console.log(e)
 		}
+		if (!gameStart) return
 		sprites.ships.forEach((/** @type {Body} */ ship, /** @type {string | number} */ index) => {
 			if (!ship) return
 			const { x, y } = ship.position
 			let angle = ship.angle
-			if (ALL_GAME[roomId].ships[index].turn) {
-				angle += 0.1
-			}
+			if (ALL_GAME[roomId].ships[index].turn) angle += 0.1
 			const force = {
 				x: Math.cos(angle) * FORCE,
 				y: Math.sin(angle) * FORCE,
@@ -134,7 +176,7 @@ const singleGame = (
 					return
 				}
 				ship.plugin.self.isBlank = false
-				const bull = new bullet(x + Math.cos(angle) * 30, y + Math.sin(angle) * 30, ship.id).body
+				const bull = new bullet(x + Math.cos(angle) * 35, y + Math.sin(angle) * 35, ship.id).body
 				ship.plugin.self.bullets--
 				sprites.bullets.push(bull)
 				Body.applyForce(ship, { x, y }, { x: -Math.cos(angle) * FORCE * 2, y: -Math.sin(angle) * FORCE * 2 })
@@ -151,14 +193,14 @@ const singleGame = (
 				players[index] = null
 			}
 		})
-		if (playersNum(players) === 1) {
-			console.log('end')
+		if (playersNum(sprites.ships) === 1) {
+			console.log('end', rounds)
 			clearInterval(bulletIntervals)
 			clearInterval(gameInterval)
 			Composite.clear(engine.world, true)
 			if (rounds > 1) {
 				ALL_GAME[roomId] = {
-					game: singleGame(roomId, players, userDatas, rounds--),
+					game: singleGame(roomId, players, userDatas, --rounds, level),
 					ships: [
 						{ turn: false, shoot: false },
 						{ turn: false, shoot: false },
@@ -167,7 +209,14 @@ const singleGame = (
 					],
 				}
 			} else {
+				roomBroadcast(players, ['gameOver', {}], userDatas)
+				ALL_GAME[roomId] = null
+				return
 			}
+			roomBroadcast(players, ['gameRestart', {}], userDatas)
+			// setTimeout(() => {
+			// 	roomBroadcast(players, ['gameStart', {}], userDatas)
+			// }, 1000)
 		}
 		if (playersNum(players) === 0) {
 			clearInterval(bulletIntervals)
@@ -180,10 +229,11 @@ const singleGame = (
 	}, frameRate)
 }
 
-export const game = (/** @type {number} */ roomId, /** @type {any} */ players, /** @type {any} */ userDatas, /** @type {{ rounds: string | number; }} */ room) => {
+export const game = (/** @type {number} */ roomId, /** @type {any} */ players, /** @type {any} */ userDatas, /** @type {{ rounds: string | number; level: any; }} */ room) => {
 	const ROUND = [3, 5, 7]
+	console.log(room.level)
 	ALL_GAME[roomId] = {
-		game: singleGame(roomId, players, userDatas, ROUND[room.rounds]),
+		game: singleGame(roomId, players, userDatas, ROUND[room.rounds], room.level),
 		ships: [
 			{ turn: false, shoot: false },
 			{ turn: false, shoot: false },
@@ -222,7 +272,7 @@ const checkCollision = (
 		// @ts-ignore
 		bodyA.plugin.self.destroy(world, sprites[bodyA.label], deadId)
 		Composite.remove(world, bodyA)
-		if (bodyB.label === 'Rectangle Body') return
+		if (bodyB.label === 'blocks') return
 		// @ts-ignore
 		bodyB.plugin.self.destroy(world, sprites[bodyB.label], deadId)
 		Composite.remove(world, bodyB)

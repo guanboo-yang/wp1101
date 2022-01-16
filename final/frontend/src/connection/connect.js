@@ -5,13 +5,12 @@ import { useGame } from '../hooks/useGame'
 
 let userProfile = JSON.parse(localStorage.getItem('profile'))
 
-const client = new WebSocket(userProfile ? `ws://localhost:5000?name=${userProfile.name}` : `ws://localhost:5000`, 'echo-protocol')
-// const client = new WebSocket(userProfile ? `ws://172.20.10.9:5000?name=${userProfile.name}` : `ws://172.20.10.9:5000`, 'echo-protocol')
+const client = new WebSocket(userProfile ? `${process.env.REACT_APP_WEBSOCKET_URL}?name=${userProfile.name}` : process.env.REACT_APP_WEBSOCKET_URL, 'echo-protocol')
 
 const useConnection = () => {
 	const { login, setFriends, setRoom, room, profile, isHost, setInvitation, setExchangeRequire, setStep, setClientId, setJoinRequire } = useUser()
 	const { showMessage } = useSnackbar()
-	const { updateGame } = useGame()
+	const { updateGame, setReady } = useGame()
 	const navigate = useNavigate()
 
 	client.onopen = () => {
@@ -55,10 +54,10 @@ const useConnection = () => {
 				break
 			case 'updatedPosition':
 				setStep(1)
-				if (payLoad.newHost){
-					setRoom({ ...room, players: payLoad.players, isHost: payLoad.newHost === profile.name})
-				}else{
-					setRoom({ ...room, players: payLoad.players})
+				if (payLoad.newHost) {
+					setRoom({ ...room, players: payLoad.players, isHost: payLoad.newHost === profile.name })
+				} else {
+					setRoom({ ...room, players: payLoad.players })
 				}
 				break
 			case 'invitation':
@@ -66,7 +65,7 @@ const useConnection = () => {
 				setInvitation({ invite: true, roomId, index, inviter, players })
 				break
 			case 'gameStart':
-				setRoom({...room, gameStart: true})
+				setRoom({ ...room, gameStart: true })
 				setStep(2)
 				break
 			case 'newMessage':
@@ -74,24 +73,29 @@ const useConnection = () => {
 				setRoom({ ...room, message: [...room.message, { body: message, name: send }] })
 				break
 			case 'gameUpdate':
-				// console.log(payLoad)
 				updateGame(payLoad)
 				break
 			case 'emptyRoom':
 				showMessage("Sorry~ We can't find the room....", 'error', 2000)
-				break;
+				break
 			case 'fullRoom':
 				showMessage('Sorry~ The room is full....', 'error', 2000)
 			case 'wannaJoin':
-				setJoinRequire({requireName: payLoad.name, state: true})
-				break;
+				setJoinRequire({ requireName: payLoad.name, state: true })
+				break
 			case 'disconnect':
-				let newList = room.players.map((name) => {
+				let newList = room.players.map(name => {
 					return name === payLoad.name ? null : name
 				})
-				console.log(newList);
-				setRoom({...room, players: newList})
-				break;
+				console.log(newList)
+				setRoom({ ...room, players: newList })
+				break
+			case 'gameReady':
+				setReady(payLoad)
+				break
+			case 'gameOver':
+				setStep(3)
+				break
 			default:
 				console.log('Unknown task:', task, payLoad)
 				break
@@ -160,9 +164,9 @@ const useConnection = () => {
 	const sendMessage = ({ players, roomId, message, send }) => {
 		sendData(['newMessage', { players, roomId, send, message }])
 	}
-	
-	const joinRoom = ({roomId}) => {
-		sendData(['joinRoom', {roomId, name: profile.name}])
+
+	const joinRoom = ({ roomId }) => {
+		sendData(['joinRoom', { roomId, name: profile.name }])
 	}
 	// Game
 	const gameStart = ({ roomId, players }) => {
@@ -173,8 +177,8 @@ const useConnection = () => {
 		sendData(['gameEvent', { roomId, evt, name, index: room.players.findIndex(player => player === profile.name) }])
 	}
 
-	const agreeRequire = ({name, roomId, players}) => {
-		sendData(['acceptRequire', {name, roomId, players}])
+	const agreeRequire = ({ name, roomId, players }) => {
+		sendData(['acceptRequire', { name, roomId, players }])
 	}
 
 	const logoutCase = () => {
@@ -205,7 +209,7 @@ const useConnection = () => {
 		gameEvent,
 		joinRoom,
 		agreeRequire,
-		logoutCase
+		logoutCase,
 	}
 }
 

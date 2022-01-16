@@ -16,8 +16,8 @@ const App = () => {
 
 	const links = [
 		{ name: 'Playground', path: '/', element: <Playground />, disable: false },
-		{ name: 'Chat', path: '/chat', element: <Chat />, disable: room.roomId?true:false },
-		{ name: 'Scoreboard', path: '/scoreboard', element: <ScoreBoard />, disable: room.roomId?true:false },
+		// { name: 'Chat', path: '/chat', element: <Chat />, disable: room.roomId ? true : false },
+		{ name: 'Scoreboard', path: '/scoreboard', element: <ScoreBoard />, disable: room.roomId ? true : false },
 	]
 	const { darkMode } = useUser()
 	const { snackbarOption, handleCloseSnackbar } = useSnackbar()

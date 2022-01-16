@@ -6,6 +6,7 @@ import { GoogleLogin } from 'react-google-login'
 import { Google } from '@mui/icons-material'
 import { useConnection } from 'connection/connect'
 import { saltRound } from 'constant'
+import { useSnackbar } from 'hooks/useSnackbar'
 import bcrypt from 'bcryptjs'
 
 const Login = () => {
@@ -13,6 +14,7 @@ const Login = () => {
 	const { createAccount, loginAccount, loginWithGoogle } = useConnection()
 	const [wrongPassword, setWorngPassword] = useState(false)
 	const { clientId } = useUser()
+	const { showMessage } = useSnackbar()
 
 	useEffect(() => {
 		const input = document.querySelectorAll('input')
@@ -73,7 +75,8 @@ const Login = () => {
 	}
 
 	const onGoogleFailure = res => {
-		console.log(res)
+		// console.log(res)
+		showMessage('Google login failed', 'error')
 	}
 
 	return (

@@ -2,12 +2,13 @@ import { Bodies, Composite, Body } from 'matter-js'
 // import bullet from './bullet'
 
 class ship {
-	constructor() {
+	constructor(pos, angle) {
 		this.bullets = 3
 		this.isFire = false
 		this.isBlank = false
-		this.body = Bodies.circle(100, 100, 18, {
+		this.body = Bodies.circle(pos.x, pos.y, 20, {
 			label: 'ships',
+			angle: angle,
 			friction: 0,
 			frictionAir: 0.03,
 			frictionStatic: 1,

@@ -128,10 +128,10 @@ const acceptRequire = async (userDatas, { name, roomId, players }) => {
 	let room = await Room.findOne({ roomId })
 	let users = room.players
 	// console.log(roo);
-	console.log(users)
 	users[position] = user._id
 	await Room.findOneAndUpdate({ roomId }, { players: users })
-	roomBroadcast(players, ['updatedPosition', { players }], userDatas)
+	roomBroadcast(players, ['updatedPosition', { players, roomId }], userDatas)
+	sendData(['updateRoom', {roomId}], userDatas[name].connection)
 }
 
 export { createNewRoom, leaveRoom, swapRequest, acceptInvitation, acceptExchange, invite, newMessage, joinRoom, acceptRequire }

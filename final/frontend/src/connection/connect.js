@@ -60,6 +60,10 @@ const useConnection = () => {
 					setRoom({ ...room, players: payLoad.players })
 				}
 				break
+			case 'updateRoom':
+				setStep(1)
+				setRoom({...room, roomId: payLoad.roomId})
+				break;
 			case 'invitation':
 				const { roomId, index, inviter, players } = payLoad
 				setInvitation({ invite: true, roomId, index, inviter, players })

@@ -12,12 +12,17 @@ import { useConnection } from '../connection/connect'
 const Appbar = ({ links }) => {
 	const { profile, darkMode, setDarkMode, logout, clientId } = useUser()
 	const [tabValue, setTabValue] = useStorage('tabvalue', 0, window.sessionStorage)
-	const { logoutCase } = useConnection()
+	const { logoutCase, getScoreData } = useConnection()
 	const [userMenuAnchorEl, setUserMenuAnchorEl] = useState(null)
 	const [openSettings, setOpenSettings] = useState(false)
 	const theme = useTheme()
 	const location = useLocation()
 	// const navigate = useNavigate()
+	const requireScoreData = (name) => {
+		if (name === 'Scoreboard'){
+			getScoreData()
+		}
+	}
 
 	const user = profile?.name || ''
 
@@ -86,6 +91,7 @@ const Appbar = ({ links }) => {
 											key={name}
 											label={name}
 											component={NavLink}
+											onClick={() => requireScoreData(name)}
 											to={path}
 											value={path}
 											sx={{ fontSize: theme => theme.typography.body1.fontSize }}

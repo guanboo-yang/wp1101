@@ -18,4 +18,6 @@ export class Wall extends Sprite {
 	draw(ctx, draw, camera) {
 		draw.withoutAngle(ctx, this.img, this.rect, this.pos, this.scale, camera)
 	}
+
+	destroy() {}
 }

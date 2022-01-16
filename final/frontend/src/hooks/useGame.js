@@ -1,8 +1,10 @@
 import { createContext, useContext, useState } from 'react'
 
 const GameContext = createContext({
+	text: '',
 	sprites: {},
 	updateGame: () => {},
+	setReady: () => {},
 })
 
 const GameProvider = ({ children }) => {

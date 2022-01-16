@@ -122,6 +122,8 @@ const Game = () => {
 
 		if (sprites.deadId?.length > 0) {
 			sprites.deadId.forEach(id => {
+				console.log(state.objects[id])
+				state.objects[id]?.destroy()
 				delete state.objects[id]
 			})
 		}
@@ -129,8 +131,7 @@ const Game = () => {
 		if (particles.length > 0) {
 			particles.forEach(particle => {
 				particle.draw(ctx, draw, camera)
-				if (particle.opacity <= 0) {
-					clearInterval(particle.interval)
+				if (particle.opacity <= 0.3) {
 					particles.splice(particles.indexOf(particle), 1)
 				}
 			})
@@ -142,10 +143,10 @@ const Game = () => {
 
 	useEffect(() => {
 		if (text && sprites.bounds) {
-			console.log(sprites.bounds)
+			// console.log(sprites.bounds)
 			setTexts(texts => [...texts, new Text({ x: sprites.bounds[0] / 2, y: sprites.bounds[1] / 2 }, 'red', text)])
 		}
-	}, [text])
+	}, [text]) // eslint-disable-line react-hooks/exhaustive-deps
 
 	return (
 		<div align='center'>

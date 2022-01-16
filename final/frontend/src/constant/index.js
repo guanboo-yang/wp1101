@@ -4,7 +4,7 @@ export const colors = ['#005eff', '#009e22', '#ff00ff', '#ff3030', '#ff9800', '#
 
 export const MODE = [
 	// { name: 'PILOT HUNTER', rounds: [1, 3, 5] },
-	{ name: 'SHIP HUNTER', rounds: [3, 5, 7] },
+	{ name: 'SHIP HUNTER', rounds: [1, 3, 5] },
 	// { name: 'TEAM MATCH', rounds: [3, 6, 10] },
 ]
 

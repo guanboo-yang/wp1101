@@ -1,26 +1,25 @@
-let particles = []
-
 export class Particle {
 	type = 'particle'
 	opacity = 1
-	interval = [undefined]
 
-	constructor(pos, radius, dx, dy) {
+	constructor(pos, radius, dx, dy, color) {
 		this.pos = pos
 		this.rect = { x: 0, y: 0, w: radius, h: radius }
 		this.dx = dx
 		this.dy = dy
+		this.color = color
 	}
 
 	move() {
-		this.opacity -= 0.01
+		this.opacity -= 0.1
 		this.pos.x += this.dx
 		this.pos.y += this.dy
 	}
 
 	draw(ctx, draw, camera) {
+		this.move()
 		ctx.globalAlpha = this.opacity
-		draw.withoutAngle(ctx, this.img, this.rect, this.pos, this.scale, camera)
+		draw.rect(ctx, this.color, this.color, this.rect, this.pos, camera)
 		ctx.globalAlpha = 1
 	}
 }

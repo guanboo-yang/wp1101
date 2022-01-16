@@ -118,12 +118,13 @@ export const setCameraOn = (camera, sprites, padding = 0) => {
 
 export const particles = []
 
-export const explode = (x, y, color = '#fff') => {
-	for (let i = 0; i < 100; i++) {
-		let dx = (Math.random() - 0.5) * (Math.random() * 6)
-		let dy = (Math.random() - 0.5) * (Math.random() * 6)
-		let radius = Math.random() * 3
-		let particle = new Particle({ x, y }, radius, dx, dy)
+export const explode = (x, y, color = '#fff', num = 10) => {
+	for (let i = 0; i < num; i++) {
+		console.log(color)
+		let dx = (Math.random() - 0.5) * 10
+		let dy = (Math.random() - 0.5) * 10
+		let radius = 2
+		let particle = new Particle({ x, y }, radius, dx, dy, color)
 		particles.push(particle)
 	}
 }

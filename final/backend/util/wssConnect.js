@@ -44,12 +44,12 @@ const saveToDB = async (players, datas) => {
             if (num === i)
                 await Player.findOneAndUpdate(
                     { name: players[num] },
-                    { $inc: { wins: 1, kills: datas[i], totalGames: 1 } },
+                    { $inc: { wins: 1, kills: datas[num], totalGames: 1 } },
                 )
             else
                 await Player.findOneAndUpdate(
                     { name: players[num] },
-                    { $inc: { loses: 1, kills: datas[i], totalGames: 1 } },
+                    { $inc: { loses: 1, kills: datas[num], totalGames: 1 } },
                 )
         }
     }

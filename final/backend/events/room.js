@@ -27,12 +27,11 @@ const leaveRoom = async (userDatas, { roomId, index, players, playersNum, name }
 		await Room.deleteOne({ roomId })
 	} else {
 		const room = await Room.findOne({ roomId })
-		console.log(room)
 		let users = room.players
 		users[index] = null
 		players[index] = null
 		if (room.host === name) {
-			console.log(players)
+			// console.log(players)
 			const newHost = players.find(player => player)
 			await Room.findOneAndUpdate({ roomId }, { players: users, host: newHost })
 			roomBroadcast(players, ['updatedPosition', { players, newHost }], userDatas)
@@ -97,7 +96,7 @@ const newMessage = async (userDatas, { roomId, players, message, send }) => {
 	let newMessage = new Message({ name: send, body: message })
 	await Room.findOneAndUpdate({ roomId }, { $push: { messages: newMessage._id } })
 	await newMessage.save()
-	console.log(players)
+	// console.log(players)
 	roomBroadcast(players, ['newMessage', { message, send }], userDatas)
 }
 
@@ -121,8 +120,8 @@ const joinRoom = async (connection, userDatas, { roomId, name }) => {
 
 const acceptRequire = async (userDatas, { name, roomId, players }) => {
 	let position = players.findIndex(player => !player)
-	console.log(players)
-	console.log(position)
+	// console.log(players)
+	// console.log(position)
 	players[position] = name
 	let user = await Player.findOne({ name })
 	let room = await Room.findOne({ roomId })

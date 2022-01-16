@@ -3,7 +3,7 @@ import { roomBroadcast } from '../util/wssConnect'
 import { game, handleKey } from '../game'
 
 const gameStart = async (userDatas, { roomId, players }) => {
-	console.log(roomId)
+	// console.log(roomId)
 	const room = await Room.findOne({ roomId })
 	// console.log(room)
 

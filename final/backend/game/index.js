@@ -1,5 +1,5 @@
 import { Engine, Events, Bodies, Composite, Body } from 'matter-js'
-import { roomBroadcast } from '../util/wssConnect'
+import { roomBroadcast, saveToDB } from '../util/wssConnect'
 import ship from './components/ship'
 import bullet from './components/bullet'
 import wall from './components/wall'
@@ -145,7 +145,7 @@ const singleGame = (
 
 	// const restartGameInterval = setInterval(() => {})
 
-	const gameInterval = setInterval(() => {
+	const gameInterval = setInterval(async() => {
 		sprites.ships.forEach((ship, i) => {
 			if (!ship) return
 			if (ship.plugin.self.isFire > -1) ship.plugin.self.isFire--
@@ -211,6 +211,7 @@ const singleGame = (
 				}
 			} else {
 				roomBroadcast(players, ['gameOver', ALL_GAME[roomId]?.kills], userDatas)
+				await saveToDB(players, ALL_GAME[roomId]?.kills)
 				ALL_GAME[roomId] = null
 				return
 			}

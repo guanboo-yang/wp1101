@@ -8,13 +8,14 @@ let userProfile = JSON.parse(localStorage.getItem('profile'))
 const client = new WebSocket(userProfile ? `${process.env.REACT_APP_WEBSOCKET_URL}?name=${userProfile.name}` : process.env.REACT_APP_WEBSOCKET_URL, 'echo-protocol')
 
 const useConnection = () => {
-	const { login, setFriends, setRoom, room, profile, setInvitation, setExchangeRequire, setStep, setClientId, setJoinRequire } = useUser()
+	const { login, setFriends, setRoom, room, profile, setInvitation, setExchangeRequire, setStep, setClientId, setJoinRequire, setScore, score } = useUser()
 	const { showMessage } = useSnackbar()
 	const { updateGame, setReady } = useGame()
 	const navigate = useNavigate()
 
 	client.onopen = () => {
 		showMessage('Connected Successfully', 'success', 2000)
+		// getScoreData()
 	}
 
 	client.onmessage = async byteString => {
@@ -106,6 +107,14 @@ const useConnection = () => {
 				}
 				setStep(1)
 				break
+			case 'scoreDatas':
+				let scores = payLoad.sort((a, b) => {
+					if (b.wins === a.wins)
+						return b.rates - a.rates
+					return b.wins - a.wins
+				})
+				setScore({...score, scores: scores})
+				break;
 			default:
 				console.log('Unknown task:', task, payLoad)
 				break
@@ -190,6 +199,10 @@ const useConnection = () => {
 	const agreeRequire = ({ name, roomId, players }) => {
 		sendData(['acceptRequire', { name, roomId, players }])
 	}
+	
+	const getScoreData = () => {
+		sendData(['getScoreData', null])		
+	}
 
 	const logoutCase = () => {
 		client.send([JSON.stringify(['logout', { name: profile.name }])])
@@ -220,6 +233,7 @@ const useConnection = () => {
 		joinRoom,
 		agreeRequire,
 		logoutCase,
+		getScoreData
 	}
 }
 

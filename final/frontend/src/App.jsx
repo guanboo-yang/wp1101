@@ -6,6 +6,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { Toolbar, Box, Snackbar, Alert } from '@mui/material'
 import { useUser } from './hooks/useUser'
 import { useSnackbar } from './hooks/useSnackbar'
+
 const RequireAuth = ({ children }) => {
 	const { profile } = useUser()
 	return profile ? children : <Navigate to='/login' />
@@ -13,7 +14,6 @@ const RequireAuth = ({ children }) => {
 
 const App = () => {
 	const { room } = useUser()
-
 	const links = [
 		{ name: 'Playground', path: '/', element: <Playground />, disable: false },
 		// { name: 'Chat', path: '/chat', element: <Chat />, disable: room.roomId ? true : false },

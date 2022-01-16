@@ -9,6 +9,8 @@ const PlayerSchema = new mongoose.Schema(
 		password: { type: String },
 		wins: { type: Number, required: true, default: 0 },
 		loses: { type: Number, required: true, default: 0 },
+		totalGames: {type: Number, required: true, default: 0},
+		kills: {type: Number, required: true, default: 0}
 	},
 	{ timestamps: true }
 )

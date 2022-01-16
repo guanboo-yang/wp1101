@@ -12,6 +12,8 @@ const UserContext = createContext({
 	step: null,
 	clientId: '',
 	joinRequire: {},
+	score: [],
+	setScore: () => {},
 	setJoinRequire: () => {},
 	setClientId: () => {},
 	setStep: () => {},
@@ -34,6 +36,7 @@ const UserProvider = ({ children }) => {
 	const [joinRequire, setJoinRequire] = useState({ requireNmae: null, state: false })
 	const [exchangeRequire, setExchangeRequire] = useState({ from: null, to: null, name: null, state: false })
 	const [room, setRoom] = useState({ roomId: null, isHost: true, message: [], players: [null, null, null, null], gameStart: false })
+	const [score, setScore] = useState({scores: []})
 	const [step, setStep] = useState(0)
 	const [profile, setProfile, removeProfile] = useStorage('profile', null, window.localStorage)
 	// const [players, setPlayers] = useState([null, null, null, null])
@@ -82,6 +85,8 @@ const UserProvider = ({ children }) => {
 				step,
 				clientId,
 				joinRequire,
+				score, 
+				setScore,
 				setJoinRequire,
 				setClientId,
 				setStep,

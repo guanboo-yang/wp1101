@@ -4,6 +4,7 @@ import { Player, Room } from '../models/schemas'
 import { sendData, getFriendsList, updateFriends, broadcastToAll } from '../util/wssConnect'
 import { usualLogin, googleLogin, createAccount } from '../events/login'
 import { gameStart, eventHandler } from '../events/game'
+import { sendScores } from '../events/scoreboard'
 import { createNewRoom, leaveRoom, swapRequest, acceptInvitation, acceptExchange, invite, newMessage, joinRoom, acceptRequire } from '../events/room'
 const WebSocketServer = require('websocket').server
 const http = require('http')
@@ -29,6 +30,10 @@ const originIsAllowed = origin => {
 	return true
 }
 
+setInterval(async() => {
+	await sendScores(userDatas)
+}, 10000)
+
 db.once('open', async () => {
 	// Setting db
 	await Room.deleteMany({})
@@ -50,6 +55,7 @@ db.once('open', async () => {
 		if (user) {
 			userDatas[user] = { online: true, connection: connection }
 			updateFriends(userDatas)
+			
 		}
 
 		connection.on('message', async message => {
@@ -130,6 +136,10 @@ db.once('open', async () => {
 					userDatas[name] = { ...userDatas[name], online: false, connection: null }
 					updateFriends(userDatas)
 					broadcastToAll(userDatas, ['disconnect', {name}])
+					break
+				case 'scoreData':
+					console.log('test');
+					await sendScores(userDatas)
 					break
 				default:
 					break

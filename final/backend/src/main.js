@@ -1,10 +1,10 @@
 import { connect, connection } from 'mongoose'
 import dotenv from 'dotenv-defaults'
 import { Player, Room } from '../models/schemas'
-import { sendData, getFriendsList, updateFriends } from '../util/wssConnect'
+import { sendData, getFriendsList, updateFriends, broadcastToAll } from '../util/wssConnect'
 import { usualLogin, googleLogin, createAccount } from '../events/login'
 import { gameStart, eventHandler } from '../events/game'
-import { createNewRoom, leaveRoom, swapRequest, acceptInvitation, acceptExchange, invite, newMessage } from '../events/room'
+import { createNewRoom, leaveRoom, swapRequest, acceptInvitation, acceptExchange, invite, newMessage, joinRoom, acceptRequire } from '../events/room'
 const WebSocketServer = require('websocket').server
 const http = require('http')
 const db = connection
@@ -45,7 +45,7 @@ db.once('open', async () => {
 		}
 
 		let connection = request.accept('echo-protocol', request.origin)
-		sendData(['getClientId', process.env.CLIENT_ID], connection)
+		sendData(['getClientId', process.env.GOOGLE_CLIENT_ID], connection)
 		let user = request.resourceURL.query.name
 		if (user) {
 			userDatas[user] = { online: true, connection: connection }
@@ -95,6 +95,9 @@ db.once('open', async () => {
 				case 'createRoom':
 					createNewRoom(connection, datas)
 					break
+				case 'joinRoom':
+					joinRoom(connection, userDatas, datas)
+					break;
 				case 'leaveRoom':
 					leaveRoom(userDatas, datas)
 					break
@@ -119,10 +122,14 @@ db.once('open', async () => {
 				case 'newMessage':
 					await newMessage(userDatas, datas)
 					break
+				case 'acceptRequire':
+					await acceptRequire(userDatas, datas)
+					break
 				case 'logout':
 					var { name } = datas
 					userDatas[name] = { ...userDatas[name], online: false, connection: null }
 					updateFriends(userDatas)
+					broadcastToAll(userDatas, ['disconnect', {name}])
 					break
 				default:
 					break
@@ -131,9 +138,10 @@ db.once('open', async () => {
 		connection.on('close', () => {
 			if (user) {
 				userDatas[user] = { ...user, online: false, connection: null }
+				broadcastToAll(userDatas, ['disconnect', {user}])
 				updateFriends(userDatas)
+				console.log(user, 'disconnected')
 			}
-			console.log(user, 'disconnected')
 		})
 	})
 

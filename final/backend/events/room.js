@@ -4,7 +4,6 @@ let gameId = 23754
 
 const createNewRoom = async (connection, { gameMode, rounds, level, name }) => {
 	const creator = await Player.findOneAndUpdate({ name },  {roomId: gameId})
-	gameId += 1
 	let newRoom = new Room(
 		{
 			gameMode,
@@ -12,25 +11,33 @@ const createNewRoom = async (connection, { gameMode, rounds, level, name }) => {
 			level,
 			players: [creator._id, undefined, undefined, undefined],
 			roomId: gameId,
+			host: name
 		},
-		{ autoIndex: false }
-	)
+		{ autoIndex: false })
 	await newRoom.save()
 	sendData(['roomCreated', { roomId: gameId }], connection)
+	gameId += 1
 }
-
+	
 const leaveRoom = async (userDatas, { roomId, index, players, playersNum, name }) => {
 	await Player.findOneAndUpdate({name}, {roomId: null})
 	if (playersNum === 1) {
 		await Room.deleteOne({ roomId })
 	} else {
-		var room = await Room.findOne({ roomId })
-		var users = room.players
+		const room = await Room.findOne({ roomId })
+		console.log(room);
+		let users = room.players
 		users[index] = null
 		players[index] = null
-		Room.findOneAndUpdate({ roomId }, { players: users })
-		const newHost = players.find(player => player)
-		roomBroadcast(players, ['updatedPosition', {players, newHost}], userDatas)
+		if (room.host === name){
+			console.log(players);
+			const newHost = players.find(player => player)
+			await Room.findOneAndUpdate({ roomId }, { players: users, host: newHost })
+			roomBroadcast(players, ['updatedPosition', {players, newHost}], userDatas)
+		}else{
+			await Room.findOneAndUpdate({ roomId }, { players: users })
+			roomBroadcast(players, ['updatedPosition', {players}], userDatas)
+		}
 	}
 }
 
@@ -92,4 +99,37 @@ const newMessage = async (userDatas, {roomId, players, message, send}) => {
 	roomBroadcast(players, ['newMessage', {message, send}], userDatas)
 }
 
-export { createNewRoom, leaveRoom, swapRequest, acceptInvitation, acceptExchange, invite, newMessage }
+const joinRoom = async (connection, userDatas, {roomId, name}) => {
+	let room = await Room.findOne({roomId}).populate('players')
+	// No this room
+	if (!room){
+		sendData(['emptyRoom', null], connection)
+	}else{
+		if (room.players.length === 4){
+			sendData(['fullRoom', null], connection)
+		}else{
+			let host = room.host
+			sendData(['wannaJoin', {name}], userDatas[host].connection)
+		}
+	}
+	// console.log(players[0], players[1], players[2], players[3]);
+	// console.log(room);
+	// console.log(players);
+}
+
+const acceptRequire = async (userDatas, {name, roomId, players}) => {
+	let position = players.findIndex(player => !player)
+	console.log(players);
+	console.log(position);
+	players[position] = name
+	let user = await Player.findOne({name})
+	let room = await Room.findOne({roomId})
+	let users = room.players
+	// console.log(roo);
+	console.log(users);
+	users[position] = user._id;
+	await Room.findOneAndUpdate({roomId}, {players: users})
+	roomBroadcast(players, ['updatedPosition', {players}], userDatas)
+}
+
+export { createNewRoom, leaveRoom, swapRequest, acceptInvitation, acceptExchange, invite, newMessage, joinRoom, acceptRequire }

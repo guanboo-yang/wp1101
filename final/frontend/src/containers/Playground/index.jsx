@@ -12,8 +12,8 @@ import { ship, fire, shield } from 'assets/ship'
 import { GameProvider } from 'hooks/useGame'
 
 const Playground = () => {
-	const { invitation, setInvitation, setRoom, room, step, setStep } = useUser()
-	const { acceptInvitation, requireFriend } = useConnection()
+	const { invitation, setInvitation, setRoom, room, step, setStep, joinRequire, setJoinRequire } = useUser()
+	const { acceptInvitation, requireFriend, agreeRequire } = useConnection()
 
 	useEffect(() => {
 		imagePreloder([bullet, explosion, mine, mine_p, missile, missile_p, ship, fire, shield])
@@ -30,6 +30,12 @@ const Playground = () => {
 		acceptInvitation(invitation)
 		requireFriend()
 		setStep(1)
+	}
+
+	const acceptRequire = () => {
+		agreeRequire({name: joinRequire.requireName, roomId: room.roomId, players: room.players})
+		setJoinRequire({requireName: null, state: false})
+
 	}
 
 	return (
@@ -53,6 +59,18 @@ const Playground = () => {
 				<DialogActions>
 					<SettingButton onClick={() => setInvitation({ ...invitation, invite: false })}>reject</SettingButton>
 					<SettingButton onClick={acceptInvite} autoFocus>
+						Accept
+					</SettingButton>
+				</DialogActions>
+			</Dialog>
+			<Dialog
+				open={joinRequire.state && !room.gameStart}
+				onClose={() => setJoinRequire({...joinRequire, state: false})}
+				PaperProps={{ style: { backgroundColor: theme => theme.palette.primary.main, border: '4px solid #fff' } }}>
+				<DialogTitle>{`${joinRequire.requireName} wanna join your room. Do you agree?`}</DialogTitle>
+				<DialogActions>
+					<SettingButton onClick={() => setJoinRequire({ ...joinRequire, state: false })}>reject</SettingButton>
+					<SettingButton onClick={acceptRequire} autoFocus>
 						Accept
 					</SettingButton>
 				</DialogActions>

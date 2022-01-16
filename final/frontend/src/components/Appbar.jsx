@@ -7,11 +7,12 @@ import { useUser } from '../hooks/useUser'
 import { GoogleLogout } from 'react-google-login'
 import { Settings } from '.'
 import { Rocket } from '@mui/icons-material'
-const GOOGLE_CLIENT_ID = '202508058751-40ie9aunidgnnafl0pdqselm2bb0r6bq.apps.googleusercontent.com'
+import { useConnection } from '../connection/connect'
 
-const Appbar = ({ links, disabled }) => {
-	const { profile, darkMode, setDarkMode, logout } = useUser()
+const Appbar = ({ links }) => {
+	const { profile, darkMode, setDarkMode, logout, clientId } = useUser()
 	const [tabValue, setTabValue] = useStorage('tabvalue', 0, window.sessionStorage)
+	const { logoutCase } = useConnection()
 	const [userMenuAnchorEl, setUserMenuAnchorEl] = useState(null)
 	const [openSettings, setOpenSettings] = useState(false)
 	const theme = useTheme()
@@ -20,15 +21,10 @@ const Appbar = ({ links, disabled }) => {
 
 	const user = profile?.name || ''
 
-	// useEventListener('keydown', e => {
-	// 	const key = Number(e.key)
-	// 	if (key) {
-	// 		if (key > 0 && key <= links.length) {
-	// 			navigate(links[key - 1].path)
-	// 		}
-	// 	}
-	// })
-
+	const leaveGame = () => {
+		logout();
+		logoutCase();
+	}
 	useEffect(() => {
 		if (links.find(link => link.path === location.pathname)) {
 			setTabValue(location.pathname)
@@ -128,10 +124,10 @@ const Appbar = ({ links, disabled }) => {
 							<div>
 								<MenuItem align='center'>{user}</MenuItem>
 								<GoogleLogout
-									clientId={GOOGLE_CLIENT_ID}
+									clientId={clientId}
 									render={renderProps => <MenuItem onClick={renderProps.onClick}>Logout</MenuItem>}
-									onLogoutSuccess={logout}
-									onFailure={logout}
+									onLogoutSuccess={leaveGame}
+									onFailure={leaveGame}
 								/>
 								<MenuItem onClick={() => setOpenSettings(true)}>
 									Setting

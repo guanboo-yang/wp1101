@@ -1,7 +1,5 @@
 import { createContext, useContext, useState } from 'react'
 import { useDarkMode, useStorage } from '.'
-const client = new WebSocket(`ws://localhost:5000`, 'echo-protocol')
-// const client = new WebSocket(`ws://172.20.10.9:5000`, 'echo-protocol')
 const UserContext = createContext({
 	profile: null,
 	darkMode: false,
@@ -12,6 +10,8 @@ const UserContext = createContext({
 	exchangeRequire: {},
 	step: null,
 	clientId: '',
+	joinRequire: {},
+	setJoinRequire: () => {},
 	setClientId: () => {},
 	setStep: () => {},
 	setExchangeRequire: () => {},
@@ -30,6 +30,7 @@ const UserProvider = ({ children }) => {
 	const [clientId, setClientId] = useState('')
 	const [friends, setFriends] = useState([])
 	const [invitation, setInvitation] = useState({ invite: false, roomId: null, position: null, inviter: null, players: null })
+	const [joinRequire, setJoinRequire] = useState({requireNmae: null, state: false})
 	const [exchangeRequire, setExchangeRequire] = useState({ from: null, to: null, name: null, state: false })
 	const [room, setRoom] = useState({ roomId: null, isHost: true, message: [], players: [null, null, null, null], gameStart: false })
 	const [step, setStep] = useState(0)
@@ -60,7 +61,6 @@ const UserProvider = ({ children }) => {
 	}
 
 	const logout = () => {
-		client.send([JSON.stringify(['logout', { name: profile.name }])])
 		removeProfile()
 		removePreGameState()
 	}
@@ -80,6 +80,8 @@ const UserProvider = ({ children }) => {
 				exchangeRequire,
 				step,
 				clientId,
+				joinRequire,
+				setJoinRequire,
 				setClientId,
 				setStep,
 				setExchangeRequire,

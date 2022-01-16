@@ -15,6 +15,7 @@ const PlayerSchema = new mongoose.Schema(
 
 const RoomSchema = new mongoose.Schema({
 	players: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Player' }],
+	host: {type: String},
 	roomId: { type: String, required: true },
 	messages: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Message', default: [] }],
 	gameMode: { type: Number, default: 0 },

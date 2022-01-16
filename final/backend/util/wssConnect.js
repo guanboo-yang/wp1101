@@ -27,4 +27,10 @@ const updateFriends = userDatas => {
 	}
 }
 
-export { sendData, roomBroadcast, getFriendsList, updateFriends }
+const broadcastToAll = (userDatas, datas) => {
+	for (const [_, value] of Object.entries(userDatas)) {
+		if (value.connection) sendData(datas, value.connection)
+	}
+}
+
+export { sendData, roomBroadcast, getFriendsList, updateFriends, broadcastToAll }

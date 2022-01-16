@@ -6,10 +6,10 @@ import SettingButton from './SettingButton'
 import { useConnection } from 'connection/connect'
 
 const Mode = ({ setStart }) => {
-	const { requireFriend, createRoom } = useConnection()
+	const { requireFriend, createRoom, joinRoom } = useConnection()
 	const { preGameState, setPreGameState, room, profile, setRoom } = useUser()
 	const { gameMode, rounds, level } = preGameState
-	const [rommID, setRommID] = useState(null)
+	const [roomId, setRoomId] = useState(null)
 
 	const increaseGameMode = () => setPreGameState(prev => ({ ...prev, gameMode: (prev.gameMode + 1) % MODE.length }))
 	const increaseRounds = () => setPreGameState(prev => ({ ...prev, rounds: (prev.rounds + 1) % MODE[gameMode].rounds.length }))
@@ -24,8 +24,9 @@ const Mode = ({ setStart }) => {
 	}
 
 	const handleJoinRoom = () => {
-		if (!rommID) return
+		if (!roomId) return
 		// TODO: join room with { roomId }
+		joinRoom({roomId})
 	}
 
 	return (
@@ -47,7 +48,7 @@ const Mode = ({ setStart }) => {
 					<SettingButton onClick={handleCreateRoom}>create room</SettingButton>
 				</Grid>
 				<Grid item>
-					<TextField variant='standard' margin='dense' label='Room ID' color='secondary' fullWidth onChange={e => setRommID(e.target.value)} />
+					<TextField variant='standard' margin='dense' label='Room ID' color='secondary' fullWidth onChange={e => setRoomId(e.target.value)} />
 					<SettingButton onClick={handleJoinRoom}>join</SettingButton>
 				</Grid>
 			</Grid>

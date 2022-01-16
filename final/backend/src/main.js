@@ -30,9 +30,9 @@ const originIsAllowed = origin => {
 	return true
 }
 
-setInterval(async() => {
-	await sendScores(userDatas)
-}, 10000)
+// setInterval(async() => {
+// 	await sendScores(userDatas)
+// }, 10000)
 
 db.once('open', async () => {
 	// Setting db
@@ -137,8 +137,7 @@ db.once('open', async () => {
 					updateFriends(userDatas)
 					broadcastToAll(userDatas, ['disconnect', {name}])
 					break
-				case 'scoreData':
-					console.log('test');
+				case 'getScoreData':
 					await sendScores(userDatas)
 					break
 				default:

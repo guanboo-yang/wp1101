@@ -31,7 +31,7 @@ const originIsAllowed = origin => {
 
 db.once('open', async () => {
 	// Setting db
-	Room.deleteMany({})
+	await Room.deleteMany({})
 	let users = await Player.find({})
 	users.forEach(user => {
 		userDatas[user.name] = { online: false, connection: null }

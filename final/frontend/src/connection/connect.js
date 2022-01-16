@@ -8,11 +8,7 @@ let userProfile = JSON.parse(localStorage.getItem('profile'))
 const client = new WebSocket(userProfile ? `${process.env.REACT_APP_WEBSOCKET_URL}?name=${userProfile.name}` : process.env.REACT_APP_WEBSOCKET_URL, 'echo-protocol')
 
 const useConnection = () => {
-<<<<<<< Updated upstream
 	const { login, setFriends, setRoom, room, profile, setInvitation, setExchangeRequire, setStep, setClientId, setJoinRequire } = useUser()
-=======
-	const { login, setFriends, setRoom, room, profile, /* isHost, */ setInvitation, setExchangeRequire, setStep, setClientId, setJoinRequire } = useUser()
->>>>>>> Stashed changes
 	const { showMessage } = useSnackbar()
 	const { updateGame, setReady } = useGame()
 	const navigate = useNavigate()
@@ -66,8 +62,8 @@ const useConnection = () => {
 				break
 			case 'updateRoom':
 				setStep(1)
-				setRoom({...room, roomId: payLoad.roomId})
-				break;
+				setRoom({ ...room, roomId: payLoad.roomId })
+				break
 			case 'invitation':
 				const { roomId, index, inviter, players } = payLoad
 				setInvitation({ invite: true, roomId, index, inviter, players })
@@ -88,17 +84,13 @@ const useConnection = () => {
 				break
 			case 'fullRoom':
 				showMessage('Sorry~ The room is full....', 'error', 2000)
-<<<<<<< Updated upstream
-				break;
-=======
 				break
->>>>>>> Stashed changes
 			case 'wannaJoin':
 				setJoinRequire({ requireName: payLoad.name, state: true })
 				break
 			case 'disconnect':
-				console.log(room.players);
-				console.log(payLoad);
+				// console.log(room.players)
+				// console.log(payLoad)
 				let newList = room.players.map(name => {
 					return name === payLoad.user ? null : name
 				})

@@ -122,7 +122,7 @@ const Game = () => {
 
 		if (sprites.deadId?.length > 0) {
 			sprites.deadId.forEach(id => {
-				console.log(state.objects[id])
+				// console.log(state.objects[id])
 				state.objects[id]?.destroy()
 				delete state.objects[id]
 			})

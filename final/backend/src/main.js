@@ -32,7 +32,7 @@ const originIsAllowed = origin => {
 
 // setInterval(async() => {
 // 	await sendScores(userDatas)
-// }, 10000)
+// }, 1000)
 
 db.once('open', async () => {
 	// Setting db
@@ -41,7 +41,7 @@ db.once('open', async () => {
 	users.forEach(user => {
 		userDatas[user.name] = { online: false, connection: null }
 	})
-
+	
 	wsServer.on('request', request => {
 		if (!originIsAllowed(request.origin)) {
 			request.reject()
@@ -108,6 +108,7 @@ db.once('open', async () => {
 					leaveRoom(userDatas, datas)
 					break
 				case 'invitePlayer':
+					console.log(datas);
 					await invite(userDatas, datas)
 					break
 				case 'swapPosition':

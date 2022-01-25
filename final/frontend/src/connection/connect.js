@@ -105,6 +105,7 @@ const useConnection = () => {
 				if (payLoad && payLoad.length === 4) {
 					showMessage(`P1: ${payLoad[0]} P2: ${payLoad[1]} P3: ${payLoad[2]} P4: ${payLoad[3]}`, 'success', 10000)
 				}
+				setRoom({...room, gameStart: false})
 				setStep(1)
 				break
 			case 'scoreDatas':
